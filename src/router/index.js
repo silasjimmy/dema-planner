@@ -4,6 +4,7 @@ import VueRouter from 'vue-router'
 import EasterEgg from '@/components/EasterEgg.vue';
 import Home from '@/components/Home.vue';
 import SignIn from '@/components/SignIn.vue';
+import SignUp from '@/components/SignUp.vue';
 
 Vue.use(VueRouter)
 
@@ -21,6 +22,11 @@ const routes = [
     path: '/sign-in',
     name: 'sign-in',
     component: SignIn
+  },
+  {
+    path: '/sign-up',
+    name: 'sign-up',
+    component: SignUp
   },
   {
     path: '/easter-egg',
