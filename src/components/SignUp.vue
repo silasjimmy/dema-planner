@@ -37,6 +37,7 @@
 
 export default {
   name: "SignUp",
+  title: "Sign up",
   data() {
     return {
       email: "",
