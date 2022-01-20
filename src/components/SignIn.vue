@@ -25,9 +25,26 @@
         label="Password"
         type="password"
       ></v-text-field>
-      <v-btn rounded @click="login" color="success" class="text-none"
+      <div class="d-flex justify-space-between align-center">
+        <v-checkbox
+          hide-details
+          dense
+          class="my-0"
+          label="Remember me"
+          color="success"
+        ></v-checkbox>
+        <v-btn plain link rounded class="text-none">Forgot password?</v-btn>
+      </div>
+      <v-btn rounded @click="login" color="success" class="text-none my-4"
         >Log in</v-btn
       >
+      <div class="d-flex flex-column">
+        <span>or</span>
+      </div>
+      <v-btn outlined rounded color="grey darken-3" class="my-4 text-none">
+        <v-icon left>mdi-google</v-icon>
+        continue in with Google
+      </v-btn>
     </v-col>
   </v-row>
 </template>
