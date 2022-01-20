@@ -1,7 +1,7 @@
 <template>
   <v-row align="center" class="text-center fill-height">
     <v-col cols="4" class="mx-auto">
-      <h1 class="text-h4 font-weight-medium my-4">Get started...</h1>
+      <h1 class="text-h4 font-weight-medium my-4">Create account</h1>
       <v-text-field
         dense
         outlined
@@ -25,9 +25,30 @@
         label="Password"
         type="password"
       ></v-text-field>
-      <v-btn rounded @click="createAccount" color="success" class="text-none"
-        >Create account</v-btn
+      <div class="d-flex justify-space-between align-center">
+        <v-checkbox
+          hide-details
+          dense
+          class="my-0"
+          label="Remember me"
+          color="success"
+        ></v-checkbox>
+        <v-btn plain link rounded class="text-none"
+          >I don't have an account</v-btn
+        >
+      </div>
+      <v-btn
+        rounded
+        @click="createAccount"
+        color="success"
+        class="text-none my-4"
+        >Submit</v-btn
       >
+      <div class="text-center">or</div>
+      <v-btn outlined rounded color="grey darken-3" class="my-4 text-none">
+        <v-icon left>mdi-google</v-icon>
+        sign up in with Google
+      </v-btn>
     </v-col>
   </v-row>
 </template>
@@ -42,6 +63,7 @@ export default {
     return {
       email: "",
       password: "",
+      showPassword: false,
     };
   },
   methods: {

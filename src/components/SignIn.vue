@@ -38,9 +38,7 @@
       <v-btn rounded @click="login" color="success" class="text-none my-4"
         >Log in</v-btn
       >
-      <div class="d-flex flex-column">
-        <span>or</span>
-      </div>
+      <div class="text-center">or</div>
       <v-btn outlined rounded color="grey darken-3" class="my-4 text-none">
         <v-icon left>mdi-google</v-icon>
         continue in with Google
