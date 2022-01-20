@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import EasterEgg from '@/components/EasterEgg.vue';
+import Users from '@/components/Users.vue';
 import Home from '@/components/Home.vue';
 import SignIn from '@/components/SignIn.vue';
 import SignUp from '@/components/SignUp.vue';
@@ -29,8 +29,8 @@ const routes = [
     component: SignUp
   },
   {
-    path: '/easter-egg',
-    component: EasterEgg,
+    path: '/users',
+    component: Users,
   }
 ]
 
