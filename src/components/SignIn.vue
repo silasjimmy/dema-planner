@@ -1,7 +1,7 @@
 <template>
   <v-row align="center" class="text-center fill-height">
     <v-col cols="4" class="mx-auto">
-      <h1 class="text-h4 my-4">Welcome back!</h1>
+      <h1 class="text-h4 font-weight-medium my-4">Welcome back!</h1>
       <v-text-field
         dense
         outlined
