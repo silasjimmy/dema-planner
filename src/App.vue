@@ -7,16 +7,27 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn plain link class="text-none" to="/home">Home</v-btn>
-      <v-btn plain link class="text-none" to="/sign-in">Log in</v-btn>
-      <v-btn plain link class="text-none" to="/sign-up">Sign up</v-btn>
+      <v-btn plain rounded link class="text-none" to="/home">Home</v-btn>
+      <v-btn plain rounded link class="text-none" to="/sign-in">Log in</v-btn>
+      <v-btn plain rounded link class="text-none" to="/sign-up">Sign up</v-btn>
     </v-app-bar>
 
-    <v-main class="b">
-      <v-container fluid>
-        <router-view />
-      </v-container>
+    <v-main>
+      <router-view />
     </v-main>
+
+    <v-footer app absolute padless>
+      <v-row justify="center" align="center" no-gutters>
+        <v-btn text rounded class="my-2 text-none"> Home </v-btn>
+        <v-col class="pa-2 d-flex align-center" cols="12">
+          <v-btn link plain class="text-none">Terms & Conditions</v-btn>
+          <v-spacer></v-spacer>
+          <span>{{ new Date().getFullYear() }} — <strong>Dema</strong></span>
+          <v-spacer></v-spacer>
+          <span>All rights reserved.</span>
+        </v-col>
+      </v-row>
+    </v-footer>
   </v-app>
 </template>
 

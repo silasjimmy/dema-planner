@@ -1,5 +1,5 @@
 <template>
-  <v-row class="text-center b">
+  <v-row align="center" class="text-center fill-height">
     <v-col cols="4" class="mx-auto">
       <h1 class="text-h4 my-4">Get started...</h1>
       <v-text-field
