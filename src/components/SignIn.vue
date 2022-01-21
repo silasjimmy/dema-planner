@@ -35,11 +35,17 @@
         ></v-checkbox>
         <v-btn plain link rounded class="text-none">Forgot password?</v-btn>
       </div>
-      <v-btn rounded @click="login" color="success" class="text-none my-4"
+      <v-btn rounded @click="emailSIgnIn" color="success" class="text-none my-4"
         >Log in</v-btn
       >
       <div class="text-center">or</div>
-      <v-btn outlined rounded color="grey darken-3" class="my-4 text-none">
+      <v-btn
+        outlined
+        rounded
+        @click="googleSignIn"
+        color="grey darken-3"
+        class="my-4 text-none"
+      >
         <v-icon left>mdi-google</v-icon>
         continue in with Google
       </v-btn>
@@ -48,7 +54,12 @@
 </template>
 
 <script>
-// import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+} from "firebase/auth";
 
 export default {
   name: "SignIn",
@@ -61,20 +72,32 @@ export default {
     };
   },
   methods: {
-    login() {
-      console.log(this.email, this.password);
+    emailSIgnIn() {
+      // console.log(this.email, this.password);
 
-      //   const auth = getAuth();
-      //   signInWithEmailAndPassword(auth, this.email, this.password)
-      //     .then((userCredential) => {
-      //       console.log(userCredential);
+      const auth = getAuth();
+      signInWithEmailAndPassword(auth, this.email, this.password)
+        .then((userCredential) => {
+          console.log(userCredential);
 
-      //       // Redirect to dashboard
-      //       this.$router.push({ path: "easter-egg" });
-      //     })
-      //     .catch((error) => {
-      //       console.log(error.message);
-      //     });
+          // Redirect to dashboard
+          this.$router.push({ path: "easter-egg" });
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    },
+    googleSignIn() {
+      const auth = getAuth();
+      const provider = new GoogleAuthProvider();
+
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
     },
   },
 };

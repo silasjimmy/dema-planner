@@ -1,5 +1,10 @@
 <template>
   <v-row>
+    <v-col cols="12">
+      <v-btn rounded @click="logout" color="success" class="text-none"
+        >Log out</v-btn
+      >
+    </v-col>
     <v-col cols="6" class="mx-auto">
       <v-data-table
         show-expand
@@ -122,6 +127,8 @@
 </template>
 
 <script>
+import { getAuth, signOut } from "firebase/auth";
+
 export default {
   name: "Users",
   title: "Users",
@@ -172,6 +179,17 @@ export default {
   },
 
   methods: {
+    logout() {
+      const auth = getAuth();
+
+      signOut(auth)
+        .then(() => {
+          console.log("Signed out");
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    },
     initialize() {
       this.desserts = [
         {

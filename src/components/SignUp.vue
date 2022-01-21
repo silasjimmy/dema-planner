@@ -37,15 +37,17 @@
           >I don't have an account</v-btn
         >
       </div>
-      <v-btn
-        rounded
-        @click="createAccount"
-        color="success"
-        class="text-none my-4"
+      <v-btn rounded @click="emailSignUp" color="success" class="text-none my-4"
         >Submit</v-btn
       >
       <div class="text-center">or</div>
-      <v-btn outlined rounded color="grey darken-3" class="my-4 text-none">
+      <v-btn
+        outlined
+        rounded
+        @click="googleSignUp"
+        color="grey darken-3"
+        class="my-4 text-none"
+      >
         <v-icon left>mdi-google</v-icon>
         sign up in with Google
       </v-btn>
@@ -54,7 +56,12 @@
 </template>
 
 <script>
-// import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 
 export default {
   name: "SignUp",
@@ -67,20 +74,33 @@ export default {
     };
   },
   methods: {
-    createAccount() {
-      console.log(this.email, this.password);
+    emailSignUp() {
+      // console.log(this.email, this.password);
 
-      // const auth = getAuth();
-      // createUserWithEmailAndPassword(auth, this.email, this.password)
-      //   .then((userCredential) => {
-      //     console.log(userCredential)
+      const auth = getAuth();
+      createUserWithEmailAndPassword(auth, this.email, this.password)
+        .then((userCredential) => {
+          console.log(userCredential);
 
-      //     // Redirect to dashboard
-      //     this.$router.push({ path: "dashboard" });
-      //   })
-      //   .catch((error) => {
-      //     console.log(error.message);
-      //   });
+          // Redirect to dashboard
+          this.$router.push({ path: "/users" });
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    },
+    googleSignUp() {
+      const provider = new GoogleAuthProvider();
+      const auth = getAuth();
+
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          console.log(result);
+          // this.$router.replace({path: '/users'})
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
     },
   },
 };
