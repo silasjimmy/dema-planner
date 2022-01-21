@@ -3,12 +3,13 @@
     <v-col cols="6" class="mx-auto">
       <v-data-table
         show-expand
+        fixed-header
         single-expand
         item-key="name"
         :headers="headers"
         :items="desserts"
         sort-by="calories"
-        class="elevation-4"
+        class="elevation-4 text-center"
       >
         <template v-slot:top>
           <v-toolbar flat>
@@ -98,6 +99,14 @@
             </v-dialog>
           </v-toolbar>
         </template>
+        <template v-slot:item.online="{ item }">
+          <v-avatar size="20" color="success" v-if="item.online">
+            <v-icon small class="white--text">mdi-plus</v-icon>
+          </v-avatar>
+          <v-avatar size="20" color="grey" v-if="!item.online">
+            <v-icon small class="white--text">mdi-minus</v-icon>
+          </v-avatar>
+        </template>
         <template v-slot:item.actions="{ item }">
           <v-icon small class="mr-2" @click="editItem(item)">
             mdi-pencil
@@ -168,7 +177,7 @@ export default {
         {
           name: "Silas jimmy",
           email: "jimmysilas17@gmail.com",
-          online: true,
+          online: false,
         },
       ];
     },
