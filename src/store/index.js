@@ -1,8 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import SET_USER_EMAIL from './mutation-types'
-import SET_USER_ROLE from './mutation-types'
-import SET_AUTHENTICATION from './mutation-types'
 
 Vue.use(Vuex)
 
@@ -13,13 +10,13 @@ export default new Vuex.Store({
     userRole: ''
   },
   mutations: {
-    [SET_USER_EMAIL](state, email) {
+    setUserEmail(state, email) {
       state.userEmail = email
     },
-    [SET_USER_ROLE](state, role) {
+    setUserRole(state, role) {
       state.userRole = role
     },
-    [SET_AUTHENTICATION](state, status) {
+    setAuthentication(state, status) {
       state.authenticated = status
     },
   },

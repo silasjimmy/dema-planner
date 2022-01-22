@@ -32,8 +32,29 @@
 </template>
 
 <script>
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
 export default {
   name: "App",
+  created() {
+    const auth = getAuth();
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // Store the user email locally
+        localStorage.setItem("userEmail", user.email);
+
+        // Set logged in to true
+        localStorage.setItem("loggedIn", "true");
+      } else {
+        // Remove user email from local storage
+        localStorage.removeItem("userEmail");
+
+        // Set logged in to false
+        localStorage.setItem("loggedIn", "false");
+      }
+    });
+  },
 };
 </script>
 

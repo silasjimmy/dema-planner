@@ -184,7 +184,14 @@ export default {
 
       signOut(auth)
         .then(() => {
-          console.log("Signed out");
+          // Remove user email from local storage
+          localStorage.removeItem("userEmail");
+
+          // Set logged in to false
+          localStorage.setItem("loggedIn", "false");
+
+          // Direct to sign in page
+          this.$router.replace({ name: "sign-in" });
         })
         .catch((error) => {
           console.log(error.message);

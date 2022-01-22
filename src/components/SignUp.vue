@@ -37,13 +37,19 @@
           >I don't have an account</v-btn
         >
       </div>
-      <v-btn rounded @click="emailSignUp" color="success" class="text-none my-4"
+      <v-btn
+        rounded
+        :loading="emailCreateLoad"
+        @click="emailSignUp"
+        color="success"
+        class="text-none my-4"
         >Submit</v-btn
       >
       <div class="text-center">or</div>
       <v-btn
         outlined
         rounded
+        :loading="googleCreateLoad"
         @click="googleSignUp"
         color="grey darken-3"
         class="my-4 text-none"
@@ -71,34 +77,50 @@ export default {
       email: "",
       password: "",
       showPassword: false,
+      emailCreateLoad: false,
+      googleCreateLoad: false,
     };
   },
   methods: {
     emailSignUp() {
-      // console.log(this.email, this.password);
+      this.emailCreateLoad = true;
 
       const auth = getAuth();
       createUserWithEmailAndPassword(auth, this.email, this.password)
-        .then((userCredential) => {
-          console.log(userCredential);
+        .then((response) => {
+          // Store the user email locally
+          localStorage.setItem("userEmail", response.user.email);
 
-          // Redirect to dashboard
-          this.$router.push({ path: "/users" });
+          // Set logged in to true
+          localStorage.setItem("loggedIn", "true");
+
+          // Direct to create profile page
+          this.$router.replace({ name: "create-profile" });
         })
         .catch((error) => {
+          this.emailCreateLoad = false;
           console.log(error.message);
         });
     },
     googleSignUp() {
+      this.googleCreateLoad = true;
+
       const provider = new GoogleAuthProvider();
       const auth = getAuth();
 
       signInWithPopup(auth, provider)
-        .then((result) => {
-          console.log(result);
-          // this.$router.replace({path: '/users'})
+        .then((response) => {
+          // Store the user email locally
+          localStorage.setItem("userEmail", response.user.email);
+
+          // Set logged in to true
+          localStorage.setItem("loggedIn", "true");
+
+          // Direct to create profile page
+          this.$router.replace({ name: "create-profile" });
         })
         .catch((error) => {
+          this.googleCreateLoad = false;
           console.log(error.message);
         });
     },

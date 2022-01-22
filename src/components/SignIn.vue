@@ -35,13 +35,19 @@
         ></v-checkbox>
         <v-btn plain link rounded class="text-none">Forgot password?</v-btn>
       </div>
-      <v-btn rounded @click="emailSIgnIn" color="success" class="text-none my-4"
+      <v-btn
+        rounded
+        :loading="emailAuthLoad"
+        @click="emailSignIn"
+        color="success"
+        class="text-none my-4"
         >Log in</v-btn
       >
       <div class="text-center">or</div>
       <v-btn
         outlined
         rounded
+        :loading="googleAuthLoad"
         @click="googleSignIn"
         color="grey darken-3"
         class="my-4 text-none"
@@ -54,6 +60,7 @@
 </template>
 
 <script>
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -69,35 +76,81 @@ export default {
       email: "",
       password: "",
       showPassword: false,
+      emailAuthLoad: false,
+      googleAuthLoad: false,
     };
   },
   methods: {
-    emailSIgnIn() {
-      // console.log(this.email, this.password);
+    emailSignIn() {
+      this.emailAuthLoad = true;
 
       const auth = getAuth();
       signInWithEmailAndPassword(auth, this.email, this.password)
-        .then((userCredential) => {
-          console.log(userCredential);
+        .then((response) => {
+          // Store the user email locally
+          localStorage.setItem("userEmail", response.user.email);
 
-          // Redirect to dashboard
-          this.$router.push({ path: "easter-egg" });
+          // Set logged in to true
+          localStorage.setItem("loggedIn", "true");
         })
+        .then(() => this.redirect())
         .catch((error) => {
+          this.emailAuthLoad = false;
           console.log(error.message);
         });
     },
     googleSignIn() {
+      this.googleAuthLoad = true;
+
       const auth = getAuth();
       const provider = new GoogleAuthProvider();
 
       signInWithPopup(auth, provider)
-        .then((result) => {
-          console.log(result);
+        .then((response) => {
+          // Store the user email locally
+          localStorage.setItem("userEmail", response.user.email);
+
+          // Set logged in to true
+          localStorage.setItem("loggedIn", "true");
         })
+        .then(() => this.redirect())
         .catch((error) => {
+          this.googleAuthLoad = false;
           console.log(error.message);
         });
+    },
+    async redirect() {
+      const db = getFirestore();
+
+      // Check if user has a profile
+      const profile = await getDoc(
+        doc(db, "profiles", localStorage.getItem("userEmail"))
+      );
+
+      this.emailAuthLoad = false;
+      this.googleAuthLoad = false;
+
+      if (profile.exists()) {
+        // If has profile, redirect based on role
+        const profileData = profile.data();
+
+        // Set user role
+        localStorage.setItem("role", profileData.role);
+
+        switch (profileData.role) {
+          case "consumer":
+            this.$router.replace({ name: "users" });
+            break;
+          case "eatery":
+            this.$router.replace({ name: "users" });
+            break;
+          default:
+            this.$router.replace({ path: "/home" });
+        }
+      } else {
+        // If has no profile, redirect to create profile page
+        this.$router.replace({ name: "create-profile" });
+      }
     },
   },
 };
