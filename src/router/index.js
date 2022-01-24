@@ -6,8 +6,7 @@ import Users from '@/components/Users.vue';
 import Home from '@/components/Home.vue';
 import SignIn from '@/components/SignIn.vue';
 import SignUp from '@/components/SignUp.vue';
-import CreateProfile from '@/components/CreateProfile.vue';
-import NotAuthorized from '@/components/NotAuthorized.vue';
+import Foods from '@/components/Foods.vue';
 
 Vue.use(VueRouter)
 
@@ -43,15 +42,12 @@ const routes = [
     path: '/users',
     name: 'users',
     component: Users,
-    meta: {
-      requiresAuth: true
-    }
   },
   {
-    path: '/not-authorized',
-    name: 'not-authorized',
-    component: NotAuthorized
-  },
+    path: '/foods',
+    name: 'foods',
+    component: Foods,
+  }
 ]
 
 const router = new VueRouter({
