@@ -12,6 +12,8 @@ import MealPlanner from '@/components/MealPlanner.vue';
 import AvailableFoods from '@/components/AvailableFoods.vue';
 import NearestEateries from '@/components/NearestEateries.vue';
 import EateryDetails from '@/components/EateryDetails.vue';
+// import Profile from '@/components/Profile.vue';
+import Settings from '@/components/Settings.vue';
 
 Vue.use(VueRouter)
 
@@ -71,7 +73,17 @@ const routes = [
   {
     path: '/nearest-eateries/:id',
     component: EateryDetails,
-  }
+  },
+  // {
+  //   path: '/profile',
+  //   name: 'profile',
+  //   component: Profile,
+  // },
+  {
+    path: '/settings',
+    name: 'settings',
+    component: Settings,
+  },
 ]
 
 const router = new VueRouter({

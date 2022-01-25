@@ -310,7 +310,7 @@
                 <v-list-item-title>Nearest eateries</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item link to="/user-profile">
+            <v-list-item link to="/profile">
               <v-list-item-icon>
                 <v-icon>mdi-account</v-icon>
               </v-list-item-icon>
@@ -318,7 +318,7 @@
                 <v-list-item-title>Profile</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-            <v-list-item link to="/user-settings">
+            <v-list-item link to="/settings">
               <v-list-item-icon>
                 <v-icon>mdi-account</v-icon>
               </v-list-item-icon>
