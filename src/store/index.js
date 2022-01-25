@@ -6,8 +6,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     userEmail: '',
-    authenticated: false,
-    userRole: ''
+    signedIn: '',
+    userRole: 'consumer'
   },
   mutations: {
     setUserEmail(state, email) {
@@ -16,8 +16,8 @@ export default new Vuex.Store({
     setUserRole(state, role) {
       state.userRole = role
     },
-    setAuthentication(state, status) {
-      state.authenticated = status
+    setSignedIn(state, status) {
+      state.signedIn = status
     },
   },
   actions: {

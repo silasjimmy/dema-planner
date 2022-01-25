@@ -7,6 +7,7 @@ import Home from '@/components/Home.vue';
 import SignIn from '@/components/SignIn.vue';
 import SignUp from '@/components/SignUp.vue';
 import Foods from '@/components/Foods.vue';
+import CreateProfile from '@/components/CreateProfile.vue';
 
 Vue.use(VueRouter)
 

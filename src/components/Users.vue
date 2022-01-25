@@ -127,7 +127,7 @@
 </template>
 
 <script>
-import { getAuth, signOut } from "firebase/auth";
+// import { getAuth, signOut } from "firebase/auth";
 
 export default {
   name: "Users",
@@ -175,27 +175,32 @@ export default {
   },
 
   created() {
+    console.log(this.$store.signedIn);
     this.initialize();
   },
 
   methods: {
     logout() {
-      const auth = getAuth();
+      localStorage.setItem("loggedIn", "false");
+      this.$store.commit("setSignedIn", false);
+      this.$router.replace({ name: "sign-in" });
 
-      signOut(auth)
-        .then(() => {
-          // Remove user email from local storage
-          localStorage.removeItem("userEmail");
+      // const auth = getAuth();
 
-          // Set logged in to false
-          localStorage.setItem("loggedIn", "false");
+      // signOut(auth)
+      //   .then(() => {
+      //     // Remove user email from local storage
+      //     localStorage.removeItem("userEmail");
 
-          // Direct to sign in page
-          this.$router.replace({ name: "sign-in" });
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
+      //     // Set logged in to false
+      //     localStorage.setItem("loggedIn", "false");
+
+      //     // Direct to sign in page
+      //     this.$router.replace({ name: "sign-in" });
+      //   })
+      //   .catch((error) => {
+      //     console.log(error.message);
+      //   });
     },
     initialize() {
       this.desserts = [

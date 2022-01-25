@@ -63,7 +63,7 @@
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 import {
   getAuth,
-  signInWithEmailAndPassword,
+  // signInWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
 } from "firebase/auth";
@@ -82,22 +82,26 @@ export default {
   },
   methods: {
     emailSignIn() {
-      this.emailAuthLoad = true;
+      localStorage.setItem("loggedIn", "true");
+      this.$store.commit("setSignedIn", true);
+      this.$router.replace({ name: "users" });
 
-      const auth = getAuth();
-      signInWithEmailAndPassword(auth, this.email, this.password)
-        .then((response) => {
-          // Store the user email locally
-          localStorage.setItem("userEmail", response.user.email);
+      // this.emailAuthLoad = true;
 
-          // Set logged in to true
-          localStorage.setItem("loggedIn", "true");
-        })
-        .then(() => this.redirect())
-        .catch((error) => {
-          this.emailAuthLoad = false;
-          console.log(error.message);
-        });
+      // const auth = getAuth();
+      // signInWithEmailAndPassword(auth, this.email, this.password)
+      //   .then((response) => {
+      //     // Store the user email locally
+      //     localStorage.setItem("userEmail", response.user.email);
+
+      //     // Set logged in to true
+      //     localStorage.setItem("loggedIn", "true");
+      //   })
+      //   .then(() => this.redirect())
+      //   .catch((error) => {
+      //     this.emailAuthLoad = false;
+      //     console.log(error.message);
+      //   });
     },
     googleSignIn() {
       this.googleAuthLoad = true;
