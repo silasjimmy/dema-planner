@@ -8,6 +8,7 @@ import SignIn from '@/components/SignIn.vue';
 import SignUp from '@/components/SignUp.vue';
 import Foods from '@/components/Foods.vue';
 import CreateProfile from '@/components/CreateProfile.vue';
+import MealPlanner from '@/components/MealPlanner.vue';
 
 Vue.use(VueRouter)
 
@@ -48,6 +49,11 @@ const routes = [
     path: '/foods',
     name: 'foods',
     component: Foods,
+  },
+  {
+    path: '/meal-planner',
+    name: 'meal-planner',
+    component: MealPlanner,
   }
 ]
 
