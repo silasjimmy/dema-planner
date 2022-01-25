@@ -10,6 +10,8 @@ import Foods from '@/components/Foods.vue';
 import CreateProfile from '@/components/CreateProfile.vue';
 import MealPlanner from '@/components/MealPlanner.vue';
 import AvailableFoods from '@/components/AvailableFoods.vue';
+import NearestEateries from '@/components/NearestEateries.vue';
+import EateryDetails from '@/components/EateryDetails.vue';
 
 Vue.use(VueRouter)
 
@@ -60,6 +62,15 @@ const routes = [
     path: '/available-foods',
     name: 'available-foods',
     component: AvailableFoods,
+  },
+  {
+    path: '/nearest-eateries',
+    name: 'nearest-eateries',
+    component: NearestEateries,
+  },
+  {
+    path: '/nearest-eateries/:id',
+    component: EateryDetails,
   }
 ]
 
