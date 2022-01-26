@@ -11,8 +11,11 @@
           <v-tab class="text-none subtitle-1 font-weight-medium"
             >Consumer</v-tab
           >
-          <v-tab class="text-none subtitle-1 font-weight-medium">Eatery</v-tab>
+          <v-tab disabled class="text-none subtitle-1 font-weight-medium"
+            >Eatery</v-tab
+          >
 
+          <!-- Consumer tab item -->
           <v-tab-item>
             <v-card elevation="0" class="ma-4">
               <v-card-title class="font-weight-medium">{{
@@ -20,7 +23,7 @@
               }}</v-card-title>
               <v-card-subtitle>{{ currentSubtitle }}</v-card-subtitle>
 
-              <v-window v-model="windowStep">
+              <v-window v-model="consumerWindowStep">
                 <v-window-item :value="1">
                   <v-subheader class="text-center">Primary</v-subheader>
                   <v-container>
@@ -34,6 +37,7 @@
                           label="Name"
                           color="success"
                           type="text"
+                          prepend-icon="mdi-account"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="6">
@@ -45,6 +49,7 @@
                           label="Date of birth"
                           color="success"
                           type="date"
+                          prepend-icon="mdi-calendar"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="6">
@@ -57,6 +62,7 @@
                           item-color="success"
                           :items="['Male', 'Female']"
                           label="Gender"
+                          prepend-icon="mdi-gender-male-female"
                         ></v-select>
                       </v-col>
                       <v-col cols="6">
@@ -69,11 +75,12 @@
                           label="Location"
                           color="success"
                           type="text"
+                          prepend-icon="mdi-map-marker"
                         ></v-text-field>
                       </v-col>
                     </v-row>
                   </v-container>
-                  <v-subheader class="text-center">Secondary</v-subheader>
+                  <!-- <v-subheader class="text-center">Secondary</v-subheader>
                   <v-container>
                     <v-row>
                       <v-col cols="6">
@@ -152,10 +159,10 @@
                         </v-chip-group>
                       </v-col>
                     </v-row>
-                  </v-container>
+                  </v-container> -->
                 </v-window-item>
 
-                <v-window-item :value="2">
+                <!-- <v-window-item :value="2">
                   <v-subheader>Primary diet</v-subheader>
                   <v-card-text>
                     <v-item-group v-model="consumerProfile.diet">
@@ -324,9 +331,9 @@
                       </v-card>
                     </div>
                   </v-card-text>
-                </v-window-item>
+                </v-window-item> -->
 
-                <v-window-item :value="4">
+                <v-window-item :value="2">
                   <v-card-text>
                     <div class="text-center mb-2">
                       <v-img
@@ -336,7 +343,11 @@
                         height="100px"
                         src="../assets/logo.png"
                       ></v-img>
-                      <v-btn text @click="termsAndConditionsDialog = true">
+                      <v-btn
+                        text
+                        rounded
+                        @click="termsAndConditionsDialog = true"
+                      >
                         <span class="subtitle-1 text-none font-weight-medium"
                           ><strong class="green--text">Dema</strong> terms and
                           conditions</span
@@ -419,14 +430,15 @@
                   </v-card-text>
                 </v-window-item>
               </v-window>
+
               <v-card-actions class="py-4">
                 <v-btn
                   rounded
                   text
                   class="text-none"
-                  :disabled="windowStep === 1"
-                  v-if="windowStep > 1"
-                  @click="windowStep--"
+                  :disabled="consumerWindowStep === 1"
+                  v-if="consumerWindowStep > 1"
+                  @click="consumerWindowStep--"
                 >
                   <v-icon left>mdi-chevron-left</v-icon>
                   <span class="text-none mr-2">Back</span>
@@ -435,24 +447,28 @@
                 <v-btn
                   rounded
                   text
-                  :disabled="windowStep === 4"
-                  v-if="windowStep < 4"
-                  @click="windowStep++"
+                  :disabled="consumerWindowStep === 2"
+                  v-if="consumerWindowStep < 2"
+                  @click="consumerWindowStep++"
                 >
                   <span class="text-none ml-2">Next</span>
                   <v-icon right>mdi-chevron-right</v-icon>
                 </v-btn>
                 <v-btn
                   rounded
-                  v-if="windowStep === 4"
-                  @click="createProfile"
+                  v-if="consumerWindowStep === 2"
+                  @click="createConsumerProfile"
                   :disabled="!agreeTermsAndConditions"
                   color="success"
-                  ><span class="text-none mx-2">Finish</span></v-btn
                 >
+                  <v-icon left>mdi-check-all</v-icon>
+                  <span class="text-none mr-2">Finish</span>
+                </v-btn>
               </v-card-actions>
             </v-card>
           </v-tab-item>
+
+          <!-- Eatery tab item -->
           <v-tab-item>hello eatery</v-tab-item>
         </v-tabs>
       </v-col>
@@ -464,62 +480,63 @@
 // import { getFirestore, setDoc, doc } from "firebase/firestore";
 
 export default {
-  name: "CreateProfile",
+  name: "createConsumerProfile",
   title: "Create profile",
   data() {
     return {
-      windowStep: 1,
+      consumerWindowStep: 1,
       agreeTermsAndConditions: false,
       agreeToReceiveNews: true,
       termsAndConditionsDialog: false,
       setWeightGoal: false,
       consumerProfile: {
+        role: "consumer",
         name: "",
         dateOfBirth: "",
-        weight: { amount: null, units: "kg" },
-        height: { amount: null, units: "cm" },
+        // weight: { amount: null, units: "kg" },
+        // height: { amount: null, units: "cm" },
         gender: "",
         location: "Kilifi, Kenya",
-        activityLevel: "",
-        healthCondition: "",
-        bodyFat: "",
-        diet: "",
-        allergies: [],
-        objective: "Maintain weight",
-        weightGoal: "",
-        dailySpending: { amount: null, units: "ksh" },
+        // activityLevel: "",
+        // healthCondition: "",
+        // bodyFat: "",
+        // diet: "",
+        // allergies: [],
+        // objective: "Maintain weight",
+        // weightGoal: "",
+        // dailySpending: { amount: null, units: "ksh" },
         receiveNews: true,
       },
     };
   },
   computed: {
     currentTitle() {
-      switch (this.windowStep) {
+      switch (this.consumerWindowStep) {
         case 1:
           return "Personal information";
-        case 2:
-          return "Dietary information";
-        case 3:
-          return "Goals";
+        // case 2:
+        //   return "Dietary information";
+        // case 3:
+        //   return "Goals";
         default:
           return "Finish up";
       }
     },
     currentSubtitle() {
-      switch (this.windowStep) {
+      switch (this.consumerWindowStep) {
         case 1:
           return "Take your time and tell us about yourself.";
-        case 2:
-          return "Select your preferred diet and any foods you are allergic to.";
-        case 3:
-          return "Anything you want to achieve by doing this?";
+        // case 2:
+        //   return "Select your preferred diet and any foods you are allergic to.";
+        // case 3:
+        //   return "Anything you want to achieve by doing this?";
         default:
           return "Just one more thing...";
       }
     },
   },
   methods: {
-    createProfile() {
+    createConsumerProfile() {
       console.log(this.consumerProfile);
       // const db = getFirestore();
 

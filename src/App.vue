@@ -288,7 +288,7 @@
           <div v-if="userRole === 'consumer'">
             <v-list-item link to="/meal-planner">
               <v-list-item-icon>
-                <v-icon>mdi-home</v-icon>
+                <v-icon>mdi-hamburger</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title>Meal planner</v-list-item-title>
@@ -304,7 +304,7 @@
             </v-list-item>
             <v-list-item link to="/nearest-eateries">
               <v-list-item-icon>
-                <v-icon>mdi-home</v-icon>
+                <v-icon>mdi-table-chair</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title>Nearest eateries</v-list-item-title>
@@ -312,7 +312,7 @@
             </v-list-item>
             <v-list-item link to="/profile">
               <v-list-item-icon>
-                <v-icon>mdi-account</v-icon>
+                <v-icon>mdi-account-details</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title>Profile</v-list-item-title>
@@ -320,7 +320,7 @@
             </v-list-item>
             <v-list-item link to="/settings">
               <v-list-item-icon>
-                <v-icon>mdi-account</v-icon>
+                <v-icon>mdi-cog</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title>Settings</v-list-item-title>
@@ -340,6 +340,7 @@
             class="text-none my-4"
             color="success"
           >
+            <v-icon left>mdi-logout</v-icon>
             Log out
           </v-btn>
         </div>
@@ -488,42 +489,50 @@
 </template>
 
 <script>
-// import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
 export default {
   name: "App",
   created() {
-    // Sets the sign in status on app creation
-    const ls = localStorage.getItem("loggedIn");
-    let status = null;
+    // Sets the sign in status, user email and user role in store on app creation
+    this.$store.commit(
+      "setSignedIn",
+      localStorage.getItem("loggedIn") === "true"
+    );
+    this.$store.commit("setUserEmail", localStorage.getItem("userEmail"));
+    this.$store.commit("setUserRole", localStorage.getItem("userRole"));
 
-    if (ls === "true") status = true;
-    else status = false;
-
-    this.$store.commit("setSignedIn", status);
-    this.loggedIn = this.$store.signedIn;
-    console.log(status);
+    console.log(
+      this.$store.state.signedIn,
+      this.$store.state.userEmail,
+      this.$store.state.userRole
+    );
   },
   mounted() {
-    // // Monitor the user sign in activity
-    // const auth = getAuth();
-    // onAuthStateChanged(auth, (user) => {
-    //   if (user) {
-    //     // Store the user email locally
-    //     localStorage.setItem("userEmail", user.email);
-    //     // Set logged in to true
-    //     localStorage.setItem("loggedIn", "true");
-    //     // Update app store
-    //     this.$store.commit("setSignedIn", true);
-    //   } else {
-    //     // Remove user email from local storage
-    //     localStorage.removeItem("userEmail");
-    //     // Set logged in to false
-    //     localStorage.setItem("loggedIn", "false");
-    //     // Update app store
-    //     this.$store.commit("setSignedIn", false);
-    //   }
-    // });
+    // Monitor the user sign in activity
+    const auth = getAuth();
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // Store the user email locally
+        localStorage.setItem("userEmail", user.email);
+
+        // Set logged in to true
+        localStorage.setItem("loggedIn", "true");
+      } else {
+        // Remove user email from local storage
+        localStorage.removeItem("userEmail");
+
+        // Remove user role from local storage
+        localStorage.removeItem("userRole");
+
+        // Set logged in to false
+        localStorage.setItem("loggedIn", "false");
+
+        // Update app store
+        this.$store.commit("setSignedIn", false);
+      }
+    });
   },
   data() {
     return {
@@ -535,7 +544,20 @@ export default {
   },
   methods: {
     logout() {
-      console.log("Log out!");
+      // localStorage.setItem("loggedIn", "false");
+      // this.$store.commit("setSignedIn", false);
+      // this.$router.replace({ name: "sign-in" });
+
+      const auth = getAuth();
+
+      signOut(auth)
+        .then(() => {
+          // Direct to sign in page
+          this.$router.replace({ name: "sign-in" });
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
     },
   },
   computed: {

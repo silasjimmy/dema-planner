@@ -41,48 +41,69 @@ const routes = [
     path: '/create-profile',
     name: 'create-profile',
     component: CreateProfile,
-    meta: {
-      requiresAuth: true
-    }
   },
   {
     path: '/users',
     name: 'users',
     component: Users,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/foods',
     name: 'foods',
     component: Foods,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/meal-planner',
     name: 'meal-planner',
     component: MealPlanner,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/available-foods',
     name: 'available-foods',
     component: AvailableFoods,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/nearest-eateries',
     name: 'nearest-eateries',
     component: NearestEateries,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/nearest-eateries/:id',
     component: EateryDetails,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/profile',
     name: 'profile',
     component: Profile,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/settings',
     name: 'settings',
     component: Settings,
+    meta: {
+      requiresAuth: true
+    }
   },
 ]
 

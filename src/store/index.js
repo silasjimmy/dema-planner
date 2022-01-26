@@ -7,7 +7,7 @@ export default new Vuex.Store({
   state: {
     userEmail: '',
     signedIn: '',
-    userRole: 'consumer'
+    userRole: ''
   },
   mutations: {
     setUserEmail(state, email) {

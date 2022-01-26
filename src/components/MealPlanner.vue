@@ -38,8 +38,10 @@
             @click="showMeals = true"
             color="success"
             class="text-none"
-            >Generate</v-btn
           >
+            <v-icon left>mdi-rotate-right</v-icon>
+            Generate
+          </v-btn>
         </div>
       </v-col>
       <v-col cols="12" v-if="showMeals">

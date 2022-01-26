@@ -63,7 +63,7 @@
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 import {
   getAuth,
-  // signInWithEmailAndPassword,
+  signInWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
 } from "firebase/auth";
@@ -82,26 +82,26 @@ export default {
   },
   methods: {
     emailSignIn() {
-      localStorage.setItem("loggedIn", "true");
-      this.$store.commit("setSignedIn", true);
-      this.$router.replace({ name: "users" });
+      // localStorage.setItem("loggedIn", "true");
+      // this.$store.commit("setSignedIn", true);
+      // this.$router.replace({ name: "users" });
 
-      // this.emailAuthLoad = true;
+      this.emailAuthLoad = true;
 
-      // const auth = getAuth();
-      // signInWithEmailAndPassword(auth, this.email, this.password)
-      //   .then((response) => {
-      //     // Store the user email locally
-      //     localStorage.setItem("userEmail", response.user.email);
+      const auth = getAuth();
+      signInWithEmailAndPassword(auth, this.email, this.password)
+        .then((response) => {
+          // Store the user email locally
+          localStorage.setItem("userEmail", response.user.email);
 
-      //     // Set logged in to true
-      //     localStorage.setItem("loggedIn", "true");
-      //   })
-      //   .then(() => this.redirect())
-      //   .catch((error) => {
-      //     this.emailAuthLoad = false;
-      //     console.log(error.message);
-      //   });
+          // Set logged in to true
+          localStorage.setItem("loggedIn", "true");
+        })
+        .then(() => this.redirect())
+        .catch((error) => {
+          this.emailAuthLoad = false;
+          console.log(error.message);
+        });
     },
     googleSignIn() {
       this.googleAuthLoad = true;
@@ -135,21 +135,27 @@ export default {
       this.googleAuthLoad = false;
 
       if (profile.exists()) {
+        // Update signed in state in store
+        this.$store.commit("setSignedIn", true);
+
         // If has profile, redirect based on role
         const profileData = profile.data();
 
         // Set user role
-        localStorage.setItem("role", profileData.role);
+        localStorage.setItem("userRole", profileData.role);
+
+        // Update user role state in store
+        this.$store.commit("setUserRole", profileData.role);
 
         switch (profileData.role) {
           case "consumer":
-            this.$router.replace({ name: "users" });
+            this.$router.replace({ name: "meal-planner" });
             break;
           case "eatery":
-            this.$router.replace({ name: "users" });
+            this.$router.replace({ name: "menu" });
             break;
           default:
-            this.$router.replace({ path: "/home" });
+            this.$router.replace({ name: "menu" });
         }
       } else {
         // If has no profile, redirect to create profile page

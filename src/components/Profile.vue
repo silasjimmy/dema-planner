@@ -257,7 +257,7 @@
                     class="text-none"
                     @click="saveProfile"
                   >
-                    <v-icon left>mdi-home</v-icon>
+                    <v-icon left>mdi-content-save</v-icon>
                     Save
                   </v-btn>
                 </v-col>
