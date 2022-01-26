@@ -13,6 +13,7 @@ import AvailableFoods from '@/components/AvailableFoods.vue';
 import NearestEateries from '@/components/NearestEateries.vue';
 import EateryDetails from '@/components/EateryDetails.vue';
 import Menu from '@/components/Menu.vue';
+import FoodRequest from '@/components/FoodRequest.vue';
 import Profile from '@/components/Profile.vue';
 import Settings from '@/components/Settings.vue';
 
@@ -94,6 +95,14 @@ const routes = [
     path: '/menu',
     name: 'menu',
     component: Menu,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/food-request',
+    name: 'food-request',
+    component: FoodRequest,
     meta: {
       requiresAuth: true
     }
