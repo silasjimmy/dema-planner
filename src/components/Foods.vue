@@ -14,9 +14,10 @@
               label="Search..."
               color="green"
             ></v-text-field>
+
             <v-spacer></v-spacer>
 
-            <!-- Food ad/edit dialog -->
+            <!-- Food add/edit dialog -->
             <v-dialog v-model="foodFormDialog" max-width="500px">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn icon v-bind="attrs" v-on="on">
@@ -64,6 +65,7 @@
                   <v-spacer></v-spacer>
                   <v-btn
                     text
+                    rounded
                     @click="closeFoodDeleteDialog"
                     class="text-none mr-4"
                     color="error"
@@ -71,6 +73,7 @@
                   >
                   <v-btn
                     text
+                    rounded
                     class="text-none ml-4"
                     color="success"
                     @click="deleteFoodConfirm"

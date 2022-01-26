@@ -12,6 +12,7 @@ import MealPlanner from '@/components/MealPlanner.vue';
 import AvailableFoods from '@/components/AvailableFoods.vue';
 import NearestEateries from '@/components/NearestEateries.vue';
 import EateryDetails from '@/components/EateryDetails.vue';
+import Menu from '@/components/Menu.vue';
 import Profile from '@/components/Profile.vue';
 import Settings from '@/components/Settings.vue';
 
@@ -85,6 +86,14 @@ const routes = [
   {
     path: '/nearest-eateries/:id',
     component: EateryDetails,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/menu',
+    name: 'menu',
+    component: Menu,
     meta: {
       requiresAuth: true
     }
