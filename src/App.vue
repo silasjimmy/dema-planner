@@ -388,7 +388,7 @@
       <router-view />
     </v-main>
 
-    <!-- <v-footer app absolute padless>
+    <v-footer app absolute padless v-if="!signedIn">
       <v-row justify="center" align="center" no-gutters>
         <v-btn text rounded class="my-2 text-none"> Home </v-btn>
         <v-col class="pa-2 d-flex align-center" cols="12">
@@ -399,12 +399,12 @@
           <span>All rights reserved.</span>
         </v-col>
       </v-row>
-    </v-footer> -->
+    </v-footer>
   </v-app>
 </template>
 
 <script>
-// import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
 export default {
   name: "App",
@@ -423,32 +423,32 @@ export default {
       this.$store.state.userRole
     );
   },
-  // mounted() {
-  //   // Monitor the user sign in activity
-  //   const auth = getAuth();
+  mounted() {
+    // Monitor the user sign in activity
+    const auth = getAuth();
 
-  //   onAuthStateChanged(auth, (user) => {
-  //     if (user) {
-  //       // Store the user email locally
-  //       localStorage.setItem("userEmail", user.email);
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // Store the user email locally
+        localStorage.setItem("userEmail", user.email);
 
-  //       // Set logged in to true
-  //       localStorage.setItem("loggedIn", "true");
-  //     } else {
-  //       // Remove user email from local storage
-  //       localStorage.removeItem("userEmail");
+        // Set logged in to true
+        localStorage.setItem("loggedIn", "true");
+      } else {
+        // Remove user email from local storage
+        localStorage.removeItem("userEmail");
 
-  //       // Remove user role from local storage
-  //       localStorage.removeItem("userRole");
+        // Remove user role from local storage
+        localStorage.removeItem("userRole");
 
-  //       // Set logged in to false
-  //       localStorage.setItem("loggedIn", "false");
+        // Set logged in to false
+        localStorage.setItem("loggedIn", "false");
 
-  //       // Update app store
-  //       this.$store.commit("setSignedIn", false);
-  //     }
-  //   });
-  // },
+        // Update app store
+        this.$store.commit("setSignedIn", false);
+      }
+    });
+  },
   data() {
     return {
       homeSidenav: false,
@@ -477,20 +477,20 @@ export default {
   },
   methods: {
     logout() {
-      localStorage.setItem("loggedIn", "false");
-      this.$store.commit("setSignedIn", false);
-      this.$router.replace({ name: "sign-in" });
+      // localStorage.setItem("loggedIn", "false");
+      // this.$store.commit("setSignedIn", false);
+      // this.$router.replace({ name: "sign-in" });
 
-      // const auth = getAuth();
+      const auth = getAuth();
 
-      // signOut(auth)
-      //   .then(() => {
-      //     // Direct to sign in page
-      //     this.$router.replace({ name: "sign-in" });
-      //   })
-      //   .catch((error) => {
-      //     console.log(error.message);
-      //   });
+      signOut(auth)
+        .then(() => {
+          // Direct to sign in page
+          this.$router.replace({ name: "sign-in" });
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
     },
   },
   computed: {

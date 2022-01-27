@@ -60,10 +60,10 @@
 </template>
 
 <script>
-// import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 import {
   getAuth,
-  // signInWithEmailAndPassword,
+  signInWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
 } from "firebase/auth";
@@ -84,23 +84,23 @@ export default {
     emailSignIn() {
       this.emailAuthLoad = true;
 
-      localStorage.setItem("loggedIn", "true");
-      this.redirect();
+      // localStorage.setItem("loggedIn", "true");
+      // this.redirect();
 
-      // const auth = getAuth();
-      // signInWithEmailAndPassword(auth, this.email, this.password)
-      //   .then((response) => {
-      //     // Store the user email locally
-      //     localStorage.setItem("userEmail", response.user.email);
+      const auth = getAuth();
+      signInWithEmailAndPassword(auth, this.email, this.password)
+        .then((response) => {
+          // Store the user email locally
+          localStorage.setItem("userEmail", response.user.email);
 
-      //     // Set logged in to true
-      //     localStorage.setItem("loggedIn", "true");
-      //   })
-      //   .then(() => this.redirect())
-      //   .catch((error) => {
-      //     this.emailAuthLoad = false;
-      //     console.log(error.message);
-      //   });
+          // Set logged in to true
+          localStorage.setItem("loggedIn", "true");
+        })
+        .then(() => this.redirect())
+        .catch((error) => {
+          this.emailAuthLoad = false;
+          console.log(error.message);
+        });
     },
     googleSignIn() {
       this.googleAuthLoad = true;
@@ -123,47 +123,47 @@ export default {
         });
     },
     async redirect() {
-      // const db = getFirestore();
+      const db = getFirestore();
 
-      // // Check if user has a profile
-      // const profile = await getDoc(
-      //   doc(db, "profiles", localStorage.getItem("userEmail"))
-      // );
+      // Check if user has a profile
+      const profile = await getDoc(
+        doc(db, "profiles", localStorage.getItem("userEmail"))
+      );
 
       this.emailAuthLoad = false;
       this.googleAuthLoad = false;
 
-      localStorage.setItem("userRole", "admin");
-      this.$store.commit("setUserRole", "admin");
-      this.$router.replace({ name: "summary" });
+      // localStorage.setItem("userRole", "admin");
+      // this.$store.commit("setUserRole", "admin");
+      // this.$router.replace({ name: "summary" });
 
-      // if (profile.exists()) {
-      //   // Update signed in state in store
-      //   this.$store.commit("setSignedIn", true);
+      if (profile.exists()) {
+        // Update signed in state in store
+        this.$store.commit("setSignedIn", true);
 
-      //   // If has profile, redirect based on role
-      //   const profileData = profile.data();
+        // If has profile, redirect based on role
+        const profileData = profile.data();
 
-      // // Set user role
-      // localStorage.setItem("userRole", profileData.role);
+        // Set user role
+        localStorage.setItem("userRole", profileData.role);
 
-      // // Update user role state in store
-      // this.$store.commit("setUserRole", profileData.role);
+        // Update user role state in store
+        this.$store.commit("setUserRole", profileData.role);
 
-      //   switch (profileData.role) {
-      //     case "consumer":
-      //       this.$router.replace({ name: "meal-planner" });
-      //       break;
-      //     case "eatery":
-      //       this.$router.replace({ name: "menu" });
-      //       break;
-      //     default:
-      //       this.$router.replace({ name: "menu" });
-      //   }
-      // } else {
-      //   // If has no profile, redirect to create profile page
-      //   this.$router.replace({ name: "create-profile" });
-      // }
+        switch (profileData.role) {
+          case "consumer":
+            this.$router.replace({ name: "meal-planner" });
+            break;
+          case "eatery":
+            this.$router.replace({ name: "menu" });
+            break;
+          default:
+            this.$router.replace({ name: "menu" });
+        }
+      } else {
+        // If has no profile, redirect to create profile page
+        this.$router.replace({ name: "create-profile" });
+      }
     },
   },
 };
