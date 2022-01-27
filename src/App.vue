@@ -215,7 +215,7 @@
         <v-list-item-group>
           <v-list-item
             link
-            v-for="link in adminLinks"
+            v-for="link in consumerLinks"
             :key="link.text"
             :to="link.url"
           >
@@ -456,9 +456,9 @@ export default {
       rightSidenav: false,
       notificationsMenu: false,
       adminLinks: [
-        { url: "/summary", icon: "mdi-home", text: "Summary" },
-        { url: "/users", icon: "mdi-account", text: "Users" },
-        { url: "/foods", icon: "mdi-pizza", text: "Foods" },
+        { url: "/summary", icon: "mdi-chart-box", text: "Summary" },
+        { url: "/users", icon: "mdi-account-group", text: "Users" },
+        { url: "/foods", icon: "mdi-food", text: "Foods" },
       ],
       consumerLinks: [
         { url: "/meal-planner", icon: "mdi-hamburger", text: "Meal planner" },
@@ -470,8 +470,8 @@ export default {
         },
       ],
       eateryLinks: [
-        { url: "/menu", icon: "mdi-home", text: "Menu" },
-        { url: "/food-request", icon: "mdi-pizza", text: "Food request" },
+        { url: "/menu", icon: "mdi-book-open-variant", text: "Menu" },
+        { url: "/food-request", icon: "mdi-food-off", text: "Food request" },
       ],
     };
   },
