@@ -3,8 +3,8 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
-
-// Import the functions you need from the SDKs you need
+import titleMixin from './mixins/titleMixin'
+import { firestorePlugin } from 'vuefire'
 import { initializeApp } from "firebase/app";
 
 // Your web app's Firebase configuration
@@ -19,6 +19,12 @@ const firebaseConfig = {
 
 // Initialize Firebase
 initializeApp(firebaseConfig);
+
+// Register vuefire plugin
+Vue.use(firestorePlugin)
+
+// Register title mixin
+Vue.mixin(titleMixin)
 
 Vue.config.productionTip = false
 
