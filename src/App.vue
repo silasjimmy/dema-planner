@@ -213,120 +213,35 @@
       <!-- Navigation links -->
       <v-list rounded>
         <v-list-item-group>
-          <div v-if="userRole === 'eatery'">
-            <v-list-item link @click="pageTitle = 'Menu'" to="/menu">
-              <v-list-item-icon>
-                <v-icon>mdi-menu</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>Menu</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item
-              link
-              @click="pageTitle = 'Food request'"
-              to="/food-request"
-            >
-              <v-list-item-icon>
-                <v-icon>mdi-pizza</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>Food request</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item
-              link
-              @click="pageTitle = 'Settings'"
-              to="/eatery-settings"
-            >
-              <v-list-item-icon>
-                <v-icon>mdi-account</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>Settings</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </div>
-          <div v-if="userRole === 'admin'">
-            <v-list-item link @click="pageTitle = 'Summary'" to="/summary">
-              <v-list-item-icon>
-                <v-icon>mdi-home</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>Summary</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item link @click="pageTitle = 'Users'" to="/users">
-              <v-list-item-icon>
-                <v-icon>mdi-account</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>Users</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item link @click="pageTitle = 'Foods'" to="/foods">
-              <v-list-item-icon>
-                <v-icon>mdi-pizza</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>Foods</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item
-              link
-              @click="pageTitle = 'Settings'"
-              to="/admin-settings"
-            >
-              <v-list-item-icon>
-                <v-icon>mdi-account</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>Settings</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </div>
-          <div v-if="userRole === 'consumer'">
-            <v-list-item link to="/meal-planner">
-              <v-list-item-icon>
-                <v-icon>mdi-hamburger</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>Meal planner</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item link to="/available-foods">
-              <v-list-item-icon>
-                <v-icon>mdi-pizza</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>Available foods</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item link to="/nearest-eateries">
-              <v-list-item-icon>
-                <v-icon>mdi-table-chair</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>Nearest eateries</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item link to="/profile">
-              <v-list-item-icon>
-                <v-icon>mdi-account-details</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>Profile</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item link to="/settings">
-              <v-list-item-icon>
-                <v-icon>mdi-cog</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>Settings</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </div>
+          <v-list-item
+            link
+            v-for="link in adminLinks"
+            :key="link.text"
+            :to="link.url"
+          >
+            <v-list-item-icon>
+              <v-icon>{{ link.icon }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>{{ link.text }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item link to="/profile">
+            <v-list-item-icon>
+              <v-icon>mdi-account-details</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Profile</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item link to="/settings">
+            <v-list-item-icon>
+              <v-icon>mdi-cog</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Settings</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
         </v-list-item-group>
       </v-list>
 
@@ -540,6 +455,24 @@ export default {
       leftSidenav: false,
       rightSidenav: false,
       notificationsMenu: false,
+      adminLinks: [
+        { url: "/summary", icon: "mdi-home", text: "Summary" },
+        { url: "/users", icon: "mdi-account", text: "Users" },
+        { url: "/foods", icon: "mdi-pizza", text: "Foods" },
+      ],
+      consumerLinks: [
+        { url: "/meal-planner", icon: "mdi-hamburger", text: "Meal planner" },
+        { url: "/available-foods", icon: "mdi-pizza", text: "Available foods" },
+        {
+          url: "/nearest-eateries",
+          icon: "mdi-table-chair",
+          text: "Nearest eateries",
+        },
+      ],
+      eateryLinks: [
+        { url: "/menu", icon: "mdi-home", text: "Menu" },
+        { url: "/food-request", icon: "mdi-pizza", text: "Food request" },
+      ],
     };
   },
   methods: {

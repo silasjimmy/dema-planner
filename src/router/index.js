@@ -14,8 +14,10 @@ import NearestEateries from '@/components/NearestEateries.vue';
 import EateryDetails from '@/components/EateryDetails.vue';
 import Menu from '@/components/Menu.vue';
 import FoodRequest from '@/components/FoodRequest.vue';
+import Summary from '@/components/Summary.vue';
 import Profile from '@/components/Profile.vue';
 import Settings from '@/components/Settings.vue';
+import PageNotFound from '@/components/PageNotFound.vue';
 
 Vue.use(VueRouter)
 
@@ -43,22 +45,6 @@ const routes = [
     path: '/create-profile',
     name: 'create-profile',
     component: CreateProfile,
-  },
-  {
-    path: '/users',
-    name: 'users',
-    component: Users,
-    meta: {
-      requiresAuth: true
-    }
-  },
-  {
-    path: '/foods',
-    name: 'foods',
-    component: Foods,
-    meta: {
-      requiresAuth: true
-    }
   },
   {
     path: '/meal-planner',
@@ -108,6 +94,30 @@ const routes = [
     }
   },
   {
+    path: '/summary',
+    name: 'summary',
+    component: Summary,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/users',
+    name: 'users',
+    component: Users,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/foods',
+    name: 'foods',
+    component: Foods,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: '/profile',
     name: 'profile',
     component: Profile,
@@ -122,6 +132,11 @@ const routes = [
     meta: {
       requiresAuth: true
     }
+  },
+  {
+    path: '/page-not-found',
+    name: 'page-not-found',
+    component: PageNotFound,
   },
 ]
 

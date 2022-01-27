@@ -133,9 +133,9 @@ export default {
       this.emailAuthLoad = false;
       this.googleAuthLoad = false;
 
-      localStorage.setItem("userRole", "eatery");
-      this.$store.commit("setUserRole", "eatery");
-      this.$router.replace({ name: "menu" });
+      localStorage.setItem("userRole", "admin");
+      this.$store.commit("setUserRole", "admin");
+      this.$router.replace({ name: "summary" });
 
       // if (profile.exists()) {
       //   // Update signed in state in store
