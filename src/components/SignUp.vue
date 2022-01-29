@@ -1,12 +1,11 @@
 <template>
   <v-row align="center" class="text-center fill-height">
-    <v-col cols="4" class="mx-auto">
-      <h1 class="text-h4 font-weight-medium my-4">Create account</h1>
+    <v-col cols="10" sm="8" md="6" lg="4" xl="3" class="mx-auto my-2">
+      <h1 class="text-h4 font-weight-medium my-4">Get started</h1>
       <v-text-field
         dense
         outlined
         clearable
-        rounded
         color="success"
         prepend-icon="mdi-email"
         v-model="email"
@@ -16,14 +15,14 @@
       <v-text-field
         dense
         outlined
-        rounded
+        clearable
         :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
         @click:append="() => (showPassword = !showPassword)"
         color="success"
         prepend-icon="mdi-lock"
         v-model="password"
         label="Password"
-        type="password"
+        :type="showPassword ? 'text' : 'password'"
       ></v-text-field>
       <div class="d-flex justify-space-between align-center">
         <v-checkbox
@@ -43,7 +42,7 @@
         @click="emailSignUp"
         color="success"
         class="text-none my-4"
-        >Submit</v-btn
+        >Create account</v-btn
       >
       <div class="text-center">or</div>
       <v-btn

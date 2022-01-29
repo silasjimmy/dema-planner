@@ -4,10 +4,14 @@
       <v-col cols="12">
         <h1 class="text-h4 text-center font-weight-medium">Contact us</h1>
       </v-col>
-      <v-col cols="6">
-        <v-img height="400px" class="b"></v-img>
+      <v-col cols="12" md="6">
+        <v-img
+          contain
+          height="400px"
+          src="../assets/images/contact-us.jpg"
+        ></v-img>
       </v-col>
-      <v-col cols="6" class="text-center">
+      <v-col cols="12" md="6" class="text-center">
         <v-text-field
           dense
           outlined
@@ -29,10 +33,7 @@
           prepend-icon="mdi-message"
           label="Message"
         ></v-textarea>
-        <v-btn class="text-none" color="success">
-          <v-icon left>mdi-send</v-icon>
-          Send
-        </v-btn>
+        <v-btn rounded class="text-none" color="success"> Send </v-btn>
       </v-col>
     </v-row>
   </v-container>

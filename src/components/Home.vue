@@ -13,7 +13,9 @@
             if you want to live long. All that matters to us is that you get to
             live longer and happier everyday.
           </p>
-          <v-btn rounded color="success" class="text-none">Learn more</v-btn>
+          <v-btn rounded link to="/about-us" color="success" class="text-none"
+            >Learn more</v-btn
+          >
         </div>
       </v-col>
       <v-col cols="12" md="6">
@@ -91,7 +93,9 @@
         </p>
       </v-col>
       <v-col cols="12" class="text-center">
-        <v-btn rounded color="success" class="text-none">Log in</v-btn>
+        <v-btn rounded link to="/sign-in" color="success" class="text-none"
+          >Log in</v-btn
+        >
       </v-col>
     </v-row>
     <v-row class="my-8 px-4">
@@ -127,7 +131,9 @@
         </v-card>
       </v-col>
       <v-col cols="12" class="text-center">
-        <v-btn rounded color="success" class="text-none">Get started</v-btn>
+        <v-btn rounded link to="/sign-up" color="success" class="text-none"
+          >Get started</v-btn
+        >
       </v-col>
     </v-row>
     <v-row class="my-8 px-4">
@@ -204,7 +210,9 @@
         </p>
       </v-col>
       <v-col cols="12" class="text-center">
-        <v-btn rounded color="success" class="text-none">Contact us</v-btn>
+        <v-btn rounded link to="/contact-us" color="success" class="text-none"
+          >Contact us</v-btn
+        >
       </v-col>
     </v-row>
   </v-container>
