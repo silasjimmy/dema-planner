@@ -388,6 +388,24 @@
     </v-navigation-drawer>
 
     <v-main>
+      <v-banner
+        single-line
+        app
+        outlined
+        v-if="signedIn"
+        v-model="internetConnectionBanner"
+        class="rounded-lg"
+        transition="slide-y-transition"
+      >
+        <v-icon slot="icon" color="warning" size="24">
+          mdi-wifi-strength-alert-outline
+        </v-icon>
+        {{ internetConnectionMessage }}
+        <template v-slot:actions="{ dismiss }">
+          <v-btn rounded text color="error" @click="dismiss"> Dismiss </v-btn>
+          <v-btn rounded text color="success"> Retry </v-btn>
+        </template>
+      </v-banner>
       <router-view />
     </v-main>
 
@@ -469,52 +487,64 @@
 </template>
 
 <script>
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import {
+  getAuth,
+  // onAuthStateChanged,
+  signOut,
+} from "firebase/auth";
 import { mapState } from "vuex";
 
 export default {
   name: "App",
   created() {
     // Sets the sign in status, user email and user role in store on app creation
-    this.$store.commit(
-      "setSignedIn",
-      localStorage.getItem("loggedIn") === "true"
-    );
-    this.$store.commit("setUserEmail", localStorage.getItem("userEmail"));
-    this.$store.commit("setUserRole", localStorage.getItem("userRole"));
+    // this.$store.commit(
+    //   "setSignedIn",
+    //   localStorage.getItem("loggedIn") === "true"
+    // );
+    // this.$store.commit("setUserEmail", localStorage.getItem("userEmail"));
+    // this.$store.commit("setUserRole", localStorage.getItem("userRole"));
+
+    localStorage.setItem("loggedIn", "true");
+    localStorage.setItem("userRole", "consumer");
+    this.$store.commit("setSignedIn", true);
+    this.$store.commit("setUserRole", "consumer");
   },
-  mounted() {
-    // Monitor the user sign in activity
-    const auth = getAuth();
+  // mounted() {
+  //   // Monitor the user sign in activity
+  //   const auth = getAuth();
 
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // Store the user email locally
-        localStorage.setItem("userEmail", user.email);
+  //   onAuthStateChanged(auth, (user) => {
+  //     if (user) {
+  //       // Store the user email locally
+  //       localStorage.setItem("userEmail", user.email);
 
-        // Set logged in to true
-        localStorage.setItem("loggedIn", "true");
-      } else {
-        // Remove user email from local storage
-        localStorage.removeItem("userEmail");
+  //       // Set logged in to true
+  //       localStorage.setItem("loggedIn", "true");
+  //     } else {
+  //       // Remove user email from local storage
+  //       localStorage.removeItem("userEmail");
 
-        // Remove user role from local storage
-        localStorage.removeItem("userRole");
+  //       // Remove user role from local storage
+  //       localStorage.removeItem("userRole");
 
-        // Set logged in to false
-        localStorage.setItem("loggedIn", "false");
+  //       // Set logged in to false
+  //       localStorage.setItem("loggedIn", "false");
 
-        // Update app store
-        this.$store.commit("setSignedIn", false);
-      }
-    });
-  },
+  //       // Update app store
+  //       this.$store.commit("setSignedIn", false);
+  //     }
+  //   });
+  // },
   data() {
     return {
       homeSidenav: false,
       leftSidenav: false,
       rightSidenav: false,
       notificationsMenu: false,
+      internetConnectionBanner: false,
+      internetConnectionMessage:
+        "We can't save your edits while you are in offline mode.",
     };
   },
   methods: {

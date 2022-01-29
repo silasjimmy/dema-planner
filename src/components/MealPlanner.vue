@@ -14,7 +14,8 @@
             small
             elevation="1"
             color="success"
-            :disabled="!showMeals"
+            :loading="!showMeals"
+            :disabled="!meals"
             v-bind="attrs"
             v-on="on"
             @click="regenerateMeals"
@@ -25,8 +26,24 @@
         <span>Regenerate all meals</span>
       </v-tooltip>
     </div>
+
+    <!-- Alert for anything that happens in the page -->
+    <v-alert
+      text
+      dense
+      dismissible
+      prominent
+      v-model="alertShow"
+      :icon="alertIcon"
+      :type="alertType"
+      class="rounded-lg"
+      transition="scale-transition"
+    >
+      {{ alertMessage }}
+    </v-alert>
+
     <v-row no-gutters>
-      <v-col cols="12" lg="8" class="mx-auto py-4" v-if="!showMeals">
+      <v-col cols="12" lg="8" class="mx-auto py-4" v-if="!meals">
         <div class="text-center">
           <p class="text--secondary">
             It seems you don't have meals for today. You can do so by clicking
@@ -35,7 +52,8 @@
           </p>
           <v-btn
             rounded
-            @click="showMeals = true"
+            :loading="loadingMeals"
+            @click="generateMeals"
             color="success"
             class="text-none"
           >
@@ -44,8 +62,8 @@
           </v-btn>
         </div>
       </v-col>
-      <v-col cols="12" v-if="showMeals">
-        <div class="meal-cards">
+      <v-col cols="12" v-if="meals">
+        <div class="meal-cards" v-if="showMeals">
           <v-container>
             <v-row>
               <v-col
@@ -258,44 +276,57 @@
             </v-row>
           </v-container>
         </div>
+        <div class="meal-card-loaders" v-if="!showMeals">
+          <v-container>
+            <v-row>
+              <v-col
+                cols="12"
+                sm="6"
+                md="12"
+                lg="6"
+                xl="4"
+                v-for="meal in meals"
+                :key="meal.id"
+              >
+                <v-skeleton-loader
+                  elevation="1"
+                  type="card-heading, list-item-avatar, card-heading"
+                ></v-skeleton-loader>
+              </v-col>
+            </v-row>
+          </v-container>
+        </div>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
+
 export default {
   title: "Meal planner",
   name: "MealPlanner",
   created() {
     this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
-    this.loadMeals();
+    // this.loadMeals();
   },
   data() {
     return {
       datePickerMenu: false,
-      showMeals: false,
-      meals: [
-        {
-          name: "breakfast",
-          id: 1,
-          time: "07:00am",
-          ate: false,
-          revealServings: false,
-          servingsDialog: false,
-          foods: [
-            { name: "chapati", cost: 10, serving: 1 },
-            { name: "cabbage", cost: 20, serving: 1 },
-            { name: "meat stew", cost: 50, serving: 1 },
-          ],
-        },
-      ],
+      showMeals: true,
+      alertIcon: "mdi-cloud-alert",
+      alertType: "error",
+      alertMessage: "Something..",
+      alertShow: false,
+      loadingMeals: false,
       mealsDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
     };
   },
   computed: {
+    ...mapState(["meals"]),
     monthAndYear() {
       return new Date(this.mealsDate).toLocaleDateString("en-US", {
         year: "numeric",
@@ -314,13 +345,27 @@ export default {
     },
   },
   methods: {
-    // ...mapActions(["getMealsAction"]),
+    ...mapActions(["getMealsAction"]),
     loadMeals() {
-      //   this.getMealsAction();
-      console.log("Load meals!");
+      this.getMealsAction();
+    },
+    generateMeals() {
+      this.loadingMeals = true;
+
+      // Create the meals and save them in database
+      setTimeout(() => {
+        this.loadingMeals = false;
+        this.showMeals = true;
+        this.loadMeals();
+      }, 3000);
     },
     regenerateMeals() {
-      console.log("Regenerate all meals");
+      this.showMeals = false;
+
+      // Regenerate meals and save them in database
+      setTimeout(() => {
+        this.showMeals = true;
+      }, 3000);
     },
     saveServings(id) {
       const meal = this.meals.find((obj) => obj.id === id);
