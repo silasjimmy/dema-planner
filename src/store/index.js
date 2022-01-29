@@ -10,6 +10,8 @@ export default new Vuex.Store({
     userRole: '',
     dashboardLinks: '',
     meals: null,
+    availableFoods: null,
+    likedFoods: null,
   },
   mutations: {
     setUserEmail(state, email) {
@@ -53,6 +55,12 @@ export default new Vuex.Store({
     },
     setMeals(state, meals) {
       state.meals = meals
+    },
+    setAvailableFoods(state, foods) {
+      state.availableFoods = foods
+    },
+    setLikedFoods(state, foods) {
+      state.likedFoods = foods
     },
   },
   actions: {
@@ -114,6 +122,45 @@ export default new Vuex.Store({
 
       // Commit the meals to the meals state
       commit('setMeals', meals);
+    },
+    getAvailableFoodsAction({ commit }) {
+      // Get the foods from the database
+      const foods = [
+        {
+          id: 0,
+          name: 'Chapati'
+        },
+        {
+          id: 1,
+          name: 'Rice'
+        },
+        {
+          id: 2,
+          name: 'Beans'
+        },
+        {
+          id: 3,
+          name: 'Pilau'
+        },
+        {
+          id: 4,
+          name: 'Shawarma'
+        },
+        {
+          id: 5,
+          name: 'Mutura'
+        },
+      ]
+
+      // Commit the foods to the available foods state
+      commit('setAvailableFoods', foods);
+    },
+    getLikedFoodsAction({ commit }) {
+      // Get the foods from the database
+      const foods = ['Chapati']
+
+      // Commit the foods to the liked foods state
+      commit('setLikedFoods', foods);
     },
   },
   modules: {
