@@ -70,6 +70,7 @@ export default {
   title: "Available foods",
   name: "AvailableFoods",
   created() {
+    this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
     this.loadFoods();
   },
   data() {
@@ -97,7 +98,4 @@ export default {
 </script>
 
 <style scoped>
-.jost-font-family {
-  font-family: Jost, sans-serif !important;
-}
 </style>

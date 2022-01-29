@@ -62,6 +62,7 @@ export default {
   title: "Nearest eateries",
   name: "NearestEateries",
   created() {
+    this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
     this.loadEateries();
   },
   data() {
@@ -94,7 +95,4 @@ export default {
 </script>
 
 <style scoped>
-.jost-font-family {
-  font-family: Jost, sans-serif !important;
-}
 </style>

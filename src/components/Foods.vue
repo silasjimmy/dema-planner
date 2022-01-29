@@ -129,6 +129,9 @@
 export default {
   title: "Foods",
   name: "Foods",
+  created() {
+    this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
+  },
   data() {
     return {
       headers: [

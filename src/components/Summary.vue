@@ -66,6 +66,9 @@
 export default {
   title: "Summary",
   name: "Summary",
+  created() {
+    this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
+  },
   data() {
     return {
       usageValues: [40, 30, 50, 60, 0, 10, 20, 70, 80, 90, 50, 40],

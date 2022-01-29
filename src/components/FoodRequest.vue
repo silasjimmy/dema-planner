@@ -48,6 +48,9 @@
 export default {
   title: "Food request",
   name: "FoodRequest",
+  created() {
+    this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
+  },
   data() {
     return {
       food: {

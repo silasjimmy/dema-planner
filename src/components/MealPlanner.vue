@@ -264,12 +264,11 @@
 </template>
 
 <script>
-// import { mapActions, mapState } from "vuex";
-
 export default {
   title: "Meal planner",
   name: "MealPlanner",
   created() {
+    this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
     this.loadMeals();
   },
   data() {
@@ -297,7 +296,6 @@ export default {
     };
   },
   computed: {
-    // ...mapState(["meals"]),
     monthAndYear() {
       return new Date(this.mealsDate).toLocaleDateString("en-US", {
         year: "numeric",

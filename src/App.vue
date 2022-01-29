@@ -218,7 +218,7 @@
         <v-list-item-group>
           <v-list-item
             link
-            v-for="link in adminLinks"
+            v-for="link in dashboardLinks"
             :key="link.text"
             :to="link.url"
           >
@@ -470,6 +470,7 @@
 
 <script>
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { mapState } from "vuex";
 
 export default {
   name: "App",
@@ -481,12 +482,6 @@ export default {
     );
     this.$store.commit("setUserEmail", localStorage.getItem("userEmail"));
     this.$store.commit("setUserRole", localStorage.getItem("userRole"));
-
-    console.log(
-      this.$store.state.signedIn,
-      this.$store.state.userEmail,
-      this.$store.state.userRole
-    );
   },
   mounted() {
     // Monitor the user sign in activity
@@ -520,24 +515,6 @@ export default {
       leftSidenav: false,
       rightSidenav: false,
       notificationsMenu: false,
-      adminLinks: [
-        { url: "/summary", icon: "mdi-home", text: "Summary" },
-        { url: "/users", icon: "mdi-account", text: "Users" },
-        { url: "/foods", icon: "mdi-pizza", text: "Foods" },
-      ],
-      consumerLinks: [
-        { url: "/meal-planner", icon: "mdi-hamburger", text: "Meal planner" },
-        { url: "/available-foods", icon: "mdi-pizza", text: "Available foods" },
-        {
-          url: "/nearest-eateries",
-          icon: "mdi-table-chair",
-          text: "Nearest eateries",
-        },
-      ],
-      eateryLinks: [
-        { url: "/menu", icon: "mdi-home", text: "Menu" },
-        { url: "/food-request", icon: "mdi-pizza", text: "Food request" },
-      ],
     };
   },
   methods: {
@@ -559,6 +536,7 @@ export default {
     },
   },
   computed: {
+    ...mapState(["dashboardLinks"]),
     signedIn() {
       return this.$store.state.signedIn;
     },

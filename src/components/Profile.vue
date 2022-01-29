@@ -274,6 +274,9 @@
 export default {
   title: "Profile",
   name: "Profile",
+  created() {
+    this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
+  },
   data() {
     return {
       editProfile: true,
