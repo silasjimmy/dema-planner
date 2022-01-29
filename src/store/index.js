@@ -12,6 +12,7 @@ export default new Vuex.Store({
     meals: null,
     availableFoods: null,
     likedFoods: null,
+    nearestEateries: null,
   },
   mutations: {
     setUserEmail(state, email) {
@@ -61,6 +62,9 @@ export default new Vuex.Store({
     },
     setLikedFoods(state, foods) {
       state.likedFoods = foods
+    },
+    setNearestEateries(state, eateries) {
+      state.nearestEateries = eateries
     },
   },
   actions: {
@@ -161,6 +165,28 @@ export default new Vuex.Store({
 
       // Commit the foods to the liked foods state
       commit('setLikedFoods', foods);
+    },
+    getNearestEateriesAction({ commit }) {
+      // Get the eateries from the database
+      const eateries = [
+        {
+          id: 0,
+          name: "gako village cafe",
+          city: "kilifi",
+          country: "kenya",
+          ratings: 1,
+        },
+        {
+          id: 1,
+          name: "mangroove restaurant",
+          city: "kilifi",
+          country: "kenya",
+          ratings: 4,
+        },
+      ]
+
+      // Commit the eateries to the nearest eateries state
+      commit('setNearestEateries', eateries);
     },
   },
   modules: {

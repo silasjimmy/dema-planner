@@ -1,8 +1,8 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12">
-        <p class="text--secondary my-4">Nearest eateries in your location.</p>
+      <v-col cols="12" lg="8" class="mx-auto">
+        <p class="text--secondary text-center">Eateries around location.</p>
       </v-col>
       <v-col
         v-for="eatery in nearestEateries"
@@ -33,7 +33,13 @@
                 <span class="caption ml-4">{{ eatery.ratings }}</span>
               </v-list-item-subtitle>
             </v-list-item-content>
-            <v-list-item-avatar tile color="grey" width="80px" height="70px">
+            <v-list-item-avatar
+              tile
+              class="rounded-lg"
+              color="grey"
+              width="80px"
+              height="70px"
+            >
               <v-img class="b"></v-img>
             </v-list-item-avatar>
           </v-list-item>
@@ -56,36 +62,25 @@
 </template>
 
 <script>
-// import { mapState, mapActions } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 export default {
   title: "Nearest eateries",
   name: "NearestEateries",
   created() {
     this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
-    this.loadEateries();
+    this.loadNearestEateries();
   },
   data() {
-    return {
-      nearestEateries: [
-        {
-          id: 2,
-          name: "gako village cafe",
-          city: "kilifi",
-          country: "kenya",
-          ratings: 1,
-        },
-      ],
-    };
+    return {};
   },
   computed: {
-    // ...mapState(["nearestEateries"]),
+    ...mapState(["nearestEateries"]),
   },
   methods: {
-    // ...mapActions(["getNearestEateriesAction"]),
-    loadEateries() {
-      //   this.getNearestEateriesAction();
-      console.log("Load eateries!");
+    ...mapActions(["getNearestEateriesAction"]),
+    loadNearestEateries() {
+      this.getNearestEateriesAction();
     },
     eateryLink(id) {
       return `/nearest-eateries/${id}`;
