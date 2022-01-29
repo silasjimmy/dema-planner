@@ -6,6 +6,7 @@ import Users from '@/components/Users.vue';
 import Home from '@/components/Home.vue';
 import SignIn from '@/components/SignIn.vue';
 import SignUp from '@/components/SignUp.vue';
+import AboutUs from '@/components/AboutUs.vue';
 import Foods from '@/components/Foods.vue';
 import CreateProfile from '@/components/CreateProfile.vue';
 import MealPlanner from '@/components/MealPlanner.vue';
@@ -40,6 +41,11 @@ const routes = [
     path: '/sign-up',
     name: 'sign-up',
     component: SignUp
+  },
+  {
+    path: '/about-us',
+    name: 'about-us',
+    component: AboutUs
   },
   {
     path: '/create-profile',
