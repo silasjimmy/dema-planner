@@ -11,9 +11,12 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn plain rounded link class="text-none" to="/home">Home</v-btn>
-      <v-btn plain rounded link class="text-none" to="/sign-in">Log in</v-btn>
-      <v-btn plain rounded link class="text-none" to="/sign-up">Sign up</v-btn>
+      <div class="d-none d-sm-block">
+        <v-btn plain rounded link class="text-none" to="/sign-up"
+          >Create account</v-btn
+        >
+        <v-btn plain rounded link class="text-none" to="/sign-in">Log in</v-btn>
+      </div>
     </v-app-bar>
 
     <!-- Home side navigation -->
@@ -34,7 +37,7 @@
       <v-divider></v-divider>
 
       <!-- Navigation links -->
-      <v-list flat>
+      <v-list rounded>
         <v-list-item-group>
           <v-subheader>Home</v-subheader>
           <v-list-item link to="/home">
@@ -389,16 +392,78 @@
     </v-main>
 
     <v-footer app absolute padless v-if="!signedIn">
-      <v-row justify="center" align="center" no-gutters>
-        <v-btn text rounded class="my-2 text-none"> Home </v-btn>
-        <v-col class="pa-2 d-flex align-center" cols="12">
-          <v-btn link plain class="text-none">Terms & Conditions</v-btn>
-          <v-spacer></v-spacer>
+      <v-card flat tile color="grey lighten-5" width="100vw">
+        <v-card-text class="text-center">
+          <v-btn rounded link class="ma-2 text-none" elevation="0" to="/home"
+            >Home</v-btn
+          >
+          <v-btn
+            rounded
+            link
+            class="ma-2 text-none"
+            elevation="0"
+            to="/about-us"
+            >About us</v-btn
+          >
+          <v-btn rounded link class="ma-2 text-none" elevation="0" to="/sign-up"
+            >Create account</v-btn
+          >
+          <v-btn rounded link class="ma-2 text-none" elevation="0" to="/sign-in"
+            >Log in</v-btn
+          >
+          <v-btn
+            rounded
+            link
+            class="ma-2 text-none"
+            elevation="0"
+            to="/contact-us"
+            >Contact us</v-btn
+          >
+        </v-card-text>
+
+        <v-card-text>
+          <v-row class="text-center">
+            <v-col cols="12" md="6">
+              <h3 class="subtitle-1 text--secondary">Find us in:</h3>
+              <v-btn text rounded class="grey--text text--darken-4 text-none">
+                <v-icon left size="24px">mdi-map-marker</v-icon>
+                P.O Box 000-00000, Demaland, Kenya
+              </v-btn>
+              <v-btn text rounded class="grey--text text--darken-4 text-none">
+                <v-icon left size="24px">mdi-email</v-icon>
+                dema@gmail.com
+              </v-btn>
+              <v-btn text rounded class="grey--text text--darken-4">
+                <v-icon left size="24px">mdi-phone</v-icon>
+                +254 000 000 000
+              </v-btn>
+            </v-col>
+            <v-col cols="12" md="6">
+              <h3 class="subtitle-1 text--secondary">
+                Stay updated on our social platforms
+              </h3>
+              <v-btn class="grey--text mx-2 text--darken-4" icon>
+                <v-icon size="24px">mdi-facebook</v-icon>
+              </v-btn>
+              <v-btn class="grey--text mx-2 text--darken-4" icon>
+                <v-icon size="24px">mdi-linkedin</v-icon>
+              </v-btn>
+              <v-btn class="grey--text mx-2 text--darken-4" icon>
+                <v-icon size="24px">mdi-twitter</v-icon>
+              </v-btn>
+              <v-btn class="grey--text mx-2 text--darken-4" icon>
+                <v-icon size="24px">mdi-instagram</v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-text class="grey--text text--darken-4 text-center">
           <span>{{ new Date().getFullYear() }} — <strong>Dema</strong></span>
-          <v-spacer></v-spacer>
-          <span>All rights reserved.</span>
-        </v-col>
-      </v-row>
+        </v-card-text>
+      </v-card>
     </v-footer>
   </v-app>
 </template>
