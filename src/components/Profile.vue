@@ -2,7 +2,9 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <p class="text--secondary my-2">You can edit and save your profile.</p>
+        <p class="text--secondary my-2">
+          You can edit and save your userProfile.
+        </p>
       </v-col>
       <v-col cols="12">
         <v-card>
@@ -64,7 +66,7 @@
                     color="success"
                     prepend-icon="mdi-account"
                     label="Name"
-                    v-model="profile.name"
+                    v-model="userProfile.name"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6">
@@ -77,7 +79,7 @@
                     color="success"
                     prepend-icon="mdi-email"
                     label="Email"
-                    v-model="profile.email"
+                    v-model="userProfile.email"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6">
@@ -90,7 +92,7 @@
                     color="success"
                     prepend-icon="mdi-calendar"
                     label="Date of birth"
-                    v-model="profile.birthdate"
+                    v-model="userProfile.birthdate"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6">
@@ -115,7 +117,7 @@
                     prepend-icon="mdi-account"
                     color="success"
                     :items="['Male', 'Female']"
-                    v-model="profile.gender"
+                    v-model="userProfile.gender"
                     label="Gender"
                   ></v-select>
                 </v-col>
@@ -129,8 +131,8 @@
                     color="success"
                     prepend-icon="mdi-account"
                     label="Weight"
-                    v-model="profile.weight.amount"
-                    :suffix="profile.weight.units"
+                    v-model="userProfile.weight.amount"
+                    :suffix="userProfile.weight.units"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6">
@@ -143,8 +145,8 @@
                     color="success"
                     prepend-icon="mdi-account"
                     label="Height"
-                    v-model="profile.height.amount"
-                    :suffix="profile.height.units"
+                    v-model="userProfile.height.amount"
+                    :suffix="userProfile.height.units"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6">
@@ -157,7 +159,7 @@
                     item-color="success"
                     color="success"
                     :items="['Not active', 'Lightly active', 'Very active']"
-                    v-model="profile.activityLevel"
+                    v-model="userProfile.activityLevel"
                     label="Activity level"
                   ></v-select>
                 </v-col>
@@ -171,7 +173,7 @@
                     color="success"
                     item-color="success"
                     :items="['Low', 'Medium', 'High']"
-                    v-model="profile.bodyFat"
+                    v-model="userProfile.bodyFat"
                     label="Body fat"
                   ></v-select>
                 </v-col>
@@ -185,7 +187,7 @@
                     item-color="success"
                     color="success"
                     :items="['Anything', 'Vegan', 'Vegeterian']"
-                    v-model="profile.diet"
+                    v-model="userProfile.diet"
                     label="Diet"
                   ></v-select>
                 </v-col>
@@ -203,7 +205,7 @@
                       'Maintain weight',
                       'Build muscle',
                     ]"
-                    v-model="profile.goal"
+                    v-model="userProfile.goal"
                     label="Goal"
                   ></v-select>
                 </v-col>
@@ -217,8 +219,8 @@
                     color="success"
                     prepend-icon="mdi-account"
                     label="Target"
-                    v-model="profile.target.amount"
-                    :suffix="profile.target.units"
+                    v-model="userProfile.target.amount"
+                    :suffix="userProfile.target.units"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6">
@@ -231,8 +233,8 @@
                     color="success"
                     prepend-icon="mdi-account"
                     label="Daily min spending"
-                    v-model="profile.minimumSpending.amount"
-                    :suffix="profile.minimumSpending.currency"
+                    v-model="userProfile.minimumSpending.amount"
+                    :suffix="userProfile.minimumSpending.currency"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6">
@@ -245,7 +247,7 @@
                     color="success"
                     item-color="success"
                     :items="['None', 'Diabetic', 'High blood pressure']"
-                    v-model="profile.healthCondition"
+                    v-model="userProfile.healthCondition"
                     label="Health condition"
                   ></v-select>
                 </v-col>
@@ -271,39 +273,31 @@
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
+
 export default {
   title: "Profile",
   name: "Profile",
   created() {
     this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
+    this.loadProfile();
   },
   data() {
     return {
       editProfile: true,
-      profile: {
-        avatar: "",
-        name: "John Doe",
-        email: "johndoe@domain.com",
-        birthdate: "1999-05-02",
-        gender: "Male",
-        weight: { amount: 50, units: "kg" },
-        height: { amount: 250, units: "cm" },
-        activityLevel: "Lightly active",
-        healthCondition: "Diabetic",
-        bodyFat: "Medium",
-        diet: "Vegan",
-        goal: "Reduce weight",
-        target: { amount: 10, units: "kg" },
-        minimumSpending: { amount: 100, currency: "ksh" },
-      },
     };
   },
   computed: {
+    ...mapState(["userProfile"]),
     age() {
       return 21;
     },
   },
   methods: {
+    ...mapActions(["getUserProfileAction"]),
+    loadProfile() {
+      this.getUserProfileAction();
+    },
     saveProfile() {
       this.editProfile = true;
     },

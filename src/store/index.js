@@ -13,6 +13,7 @@ export default new Vuex.Store({
     availableFoods: null,
     likedFoods: null,
     nearestEateries: null,
+    userProfile: null,
   },
   mutations: {
     setUserEmail(state, email) {
@@ -65,6 +66,9 @@ export default new Vuex.Store({
     },
     setNearestEateries(state, eateries) {
       state.nearestEateries = eateries
+    },
+    setUserProfile(state, profile) {
+      state.userProfile = profile
     },
   },
   actions: {
@@ -187,6 +191,28 @@ export default new Vuex.Store({
 
       // Commit the eateries to the nearest eateries state
       commit('setNearestEateries', eateries);
+    },
+    getUserProfileAction({ commit }) {
+      // Get the profile from the database
+      let profile = {
+        avatar: "",
+        name: "John Doe",
+        email: "johndoe@domain.com",
+        birthdate: "1999-05-02",
+        gender: "Male",
+        weight: { amount: 50, units: "kg" },
+        height: { amount: 250, units: "cm" },
+        activityLevel: "Lightly active",
+        healthCondition: "Diabetic",
+        bodyFat: "Medium",
+        diet: "Vegan",
+        goal: "Reduce weight",
+        target: { amount: 10, units: "kg" },
+        minimumSpending: { amount: 100, currency: "ksh" },
+      }
+
+      // Commit the profile to the user profile state
+      commit('setUserProfile', profile);
     },
   },
   modules: {
