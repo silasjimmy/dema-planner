@@ -1,6 +1,162 @@
 <template>
-  <v-container>
-    <v-row>
+  <v-container fluid>
+    <v-list flat subheader three-line>
+      <v-subheader>General</v-subheader>
+
+      <v-list-item-group v-model="settings" multiple active-class="">
+        <v-list-item>
+          <template v-slot:default="{ active }">
+            <v-list-item-action>
+              <v-checkbox color="success" :input-value="active"></v-checkbox>
+            </v-list-item-action>
+
+            <v-list-item-content>
+              <v-list-item-title>Notifications</v-list-item-title>
+              <v-list-item-subtitle
+                >Notify me about news and updates about
+                Dema</v-list-item-subtitle
+              >
+            </v-list-item-content>
+          </template>
+        </v-list-item>
+
+        <v-list-item>
+          <template v-slot:default="{ active }">
+            <v-list-item-action>
+              <v-checkbox color="success" :input-value="active"></v-checkbox>
+            </v-list-item-action>
+
+            <v-list-item-content>
+              <v-list-item-title>Sound</v-list-item-title>
+              <v-list-item-subtitle
+                >Alert me of any new notifications or
+                messages</v-list-item-subtitle
+              >
+            </v-list-item-content>
+          </template>
+        </v-list-item>
+
+        <v-list-item>
+          <template v-slot:default="{ active }">
+            <v-list-item-action>
+              <v-checkbox color="success" :input-value="active"></v-checkbox>
+            </v-list-item-action>
+
+            <v-list-item-content>
+              <v-list-item-title>Location</v-list-item-title>
+              <v-list-item-subtitle
+                >Auto-update my location wherever i go</v-list-item-subtitle
+              >
+            </v-list-item-content>
+          </template>
+        </v-list-item>
+      </v-list-item-group>
+
+      <v-divider></v-divider>
+
+      <v-subheader>Account</v-subheader>
+
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title>Language</v-list-item-title>
+          <v-list-item-subtitle
+            >Change to your preferred language</v-list-item-subtitle
+          >
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-combobox
+            hide-details
+            dense
+            outlined
+            color="success"
+            class="shrink"
+            item-color="success"
+            :items="languages"
+          ></v-combobox>
+        </v-list-item-action>
+      </v-list-item>
+
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title>Theme</v-list-item-title>
+          <v-list-item-subtitle
+            >Choose your preferred theme</v-list-item-subtitle
+          >
+          <v-btn-toggle v-model="appTheme" tile color="success" group>
+            <v-btn class="text-none" value="light-theme">
+              <v-icon left>mdi-home</v-icon>
+              Light
+            </v-btn>
+            <v-btn class="text-none" value="dark-theme">
+              <v-icon left>mdi-home</v-icon>
+              Dark
+            </v-btn>
+          </v-btn-toggle>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title>Meal times</v-list-item-title>
+          <v-list-item-subtitle>Add or delete meal times</v-list-item-subtitle>
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-btn outlined rounded class="text-none" color="success">
+            <v-icon left>mdi-plus</v-icon>
+            Add meal time
+          </v-btn>
+        </v-list-item-action>
+      </v-list-item>
+
+      <v-divider></v-divider>
+
+      <v-subheader>Advanced</v-subheader>
+
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title>Password</v-list-item-title>
+          <v-list-item-subtitle>s*******</v-list-item-subtitle>
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-btn rounded outlined small color="success" class="text-none">
+            <v-icon left>mdi-lock</v-icon>
+            Change
+          </v-btn>
+        </v-list-item-action>
+      </v-list-item>
+
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title>Location</v-list-item-title>
+          <v-list-item-subtitle>
+            <v-icon class="ml-0 mr-2">mdi-map-marker</v-icon>
+            <span>Kilifi, Kenya</span>
+          </v-list-item-subtitle>
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-btn rounded outlined small color="success" class="text-none">
+            <v-icon left>mdi-map-marker</v-icon>
+            Change
+          </v-btn>
+        </v-list-item-action>
+      </v-list-item>
+
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title>Delete account</v-list-item-title>
+          <v-list-item-subtitle
+            >All your data will be lost</v-list-item-subtitle
+          >
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-btn rounded outlined small color="error" class="text-none">
+            <v-icon left>mdi-delete</v-icon>
+            Delete
+          </v-btn>
+        </v-list-item-action>
+      </v-list-item>
+    </v-list>
+    <!-- <v-row>
       <v-col cols="12">
         <v-card>
           <v-card-text>
@@ -78,7 +234,6 @@
               </v-list-item>
             </v-list>
 
-            <!-- New meal time dialog -->
             <v-dialog width="400" v-model="newMealTimeDialog">
               <v-card>
                 <v-card-title class="d-flex justify-space-between align-center">
@@ -231,7 +386,6 @@
         </v-card>
       </v-col>
 
-      <!-- Delete meal time dialog -->
       <v-dialog persistent v-model="deleteMealTimeDialog" width="auto">
         <v-card>
           <v-card-text class="py-0 text-center">
@@ -259,7 +413,7 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-    </v-row>
+    </v-row> -->
   </v-container>
 </template>
 
@@ -280,6 +434,7 @@ export default {
       newMealTimeDialog: false,
       darkMode: false,
       mealIdToDelete: 0,
+      languages: ["English", "Swahili"],
       newMeal: {
         name: "",
         time: "",
