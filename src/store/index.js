@@ -14,6 +14,7 @@ export default new Vuex.Store({
     likedFoods: null,
     nearestEateries: null,
     userProfile: null,
+    mealTimes: null,
   },
   mutations: {
     setUserEmail(state, email) {
@@ -69,6 +70,9 @@ export default new Vuex.Store({
     },
     setUserProfile(state, profile) {
       state.userProfile = profile
+    },
+    setMealTimes(state, mealTimes) {
+      state.mealTimes = mealTimes
     },
   },
   actions: {
@@ -213,6 +217,18 @@ export default new Vuex.Store({
 
       // Commit the profile to the user profile state
       commit('setUserProfile', profile);
+    },
+    getMealTimesAction({ commit }) {
+      // Get the profile from the database
+      let mealTimes = [
+        { id: 1, name: "breakfast", time: "07:00am" },
+        { id: 2, name: "lunch", time: "01:00pm" },
+        { id: 3, name: "snack", time: "04:00pm" },
+        { id: 4, name: "supper", time: "07:00pm" },
+      ]
+
+      // Commit the profile to the user profile state
+      commit('setMealTimes', mealTimes);
     },
   },
   modules: {
