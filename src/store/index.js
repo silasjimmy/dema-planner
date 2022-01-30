@@ -199,7 +199,7 @@ export default new Vuex.Store({
     getUserProfileAction({ commit }) {
       // Get the profile from the database
       let profile = {
-        avatar: "",
+        avatar: "https://cdn.vuetifyjs.com/images/john.png",
         name: "John Doe",
         email: "johndoe@domain.com",
         birthdate: "1999-05-02",
