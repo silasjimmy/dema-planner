@@ -81,6 +81,7 @@ export default new Vuex.Store({
       const meals = [
         {
           name: "breakfast",
+          image: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
           id: 1,
           time: "07:00am",
           ate: false,
@@ -94,6 +95,7 @@ export default new Vuex.Store({
         },
         {
           name: "lunch",
+          image: 'https://images.unsplash.com/photo-1573225342350-16731dd9bf3d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=762&q=80',
           id: 2,
           time: "01:00pm",
           ate: false,
@@ -107,6 +109,7 @@ export default new Vuex.Store({
         },
         {
           name: "snack",
+          image: 'https://images.unsplash.com/photo-1566496875470-68ada46a38c5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
           id: 4,
           time: "04:00pm",
           ate: false,
@@ -119,6 +122,7 @@ export default new Vuex.Store({
         },
         {
           name: "supper",
+          image: 'https://images.unsplash.com/photo-1598515213692-5f252f75d785?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
           id: 3,
           time: "07:00pm",
           ate: false,
@@ -179,6 +183,7 @@ export default new Vuex.Store({
       const eateries = [
         {
           id: 0,
+          image: 'https://images.unsplash.com/photo-1522336572468-97b06e8ef143?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=876&q=80',
           name: "gako village cafe",
           city: "kilifi",
           country: "kenya",
@@ -186,6 +191,7 @@ export default new Vuex.Store({
         },
         {
           id: 1,
+          image: 'https://images.unsplash.com/photo-1608495368297-de9ff48e6997?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=871&q=80',
           name: "mangroove restaurant",
           city: "kilifi",
           country: "kenya",

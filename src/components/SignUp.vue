@@ -55,6 +55,7 @@
       </div>
       <v-btn
         rounded
+        disabled
         :loading="emailCreateLoad"
         @click="emailSignUp"
         color="success"
@@ -65,6 +66,7 @@
       <v-btn
         outlined
         rounded
+        disabled
         :loading="googleCreateLoad"
         @click="googleSignUp"
         color="grey darken-3"

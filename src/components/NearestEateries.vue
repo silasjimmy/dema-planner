@@ -10,7 +10,7 @@
         cols="12"
         lg="6"
       >
-        <v-card elevation="1">
+        <v-card outlined class="rounded-lg">
           <v-list-item three-line>
             <v-list-item-content>
               <v-list-item-title
@@ -40,7 +40,7 @@
               width="80px"
               height="70px"
             >
-              <v-img class="b"></v-img>
+              <v-img :src="eatery.image"></v-img>
             </v-list-item-avatar>
           </v-list-item>
           <v-card-actions>
@@ -48,10 +48,11 @@
             <v-btn
               link
               plain
+              disabled
               :to="eateryLink(eatery.id)"
               color="black"
               class="text-none"
-              >See details</v-btn
+              >View details</v-btn
             >
             <v-spacer></v-spacer>
           </v-card-actions>

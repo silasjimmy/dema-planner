@@ -91,7 +91,7 @@
         @click="leftSidenav = true"
       ></v-app-bar-nav-icon>
 
-      <v-toolbar-title>Page title</v-toolbar-title>
+      <v-toolbar-title>{{ pageTitle() }}</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
@@ -107,7 +107,7 @@
       >
         <template v-slot:activator="{ on, attrs }">
           <v-badge dot bordered offset-x="15" color="green" offset-y="15">
-            <v-btn v-bind="attrs" v-on="on" icon>
+            <v-btn disabled v-bind="attrs" v-on="on" icon>
               <v-icon>mdi-bell</v-icon>
             </v-btn>
           </v-badge>
@@ -275,116 +275,7 @@
       :permanent="$vuetify.breakpoint.smAndUp"
       v-model="rightSidenav"
     >
-      <!-- Meal information -->
-      <v-list>
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title class="text-h6 font-weight-bold text-center"
-              >Title</v-list-item-title
-            >
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item>
-          <v-list-item-content>
-            <div>
-              <v-img
-                height="150px"
-                width="150px"
-                class="b rounded-circle mx-auto"
-              ></v-img>
-            </div>
-            <div>
-              <v-card-text>
-                <div
-                  class="
-                    font-weight-bold
-                    green--text
-                    d-flex
-                    justify-space-between
-                    align-center
-                    py-1
-                  "
-                >
-                  <span>Proteins</span><span>0g</span>
-                </div>
-                <div
-                  class="
-                    font-weight-bold
-                    orange--text
-                    d-flex
-                    justify-space-between
-                    align-center
-                    py-1
-                  "
-                >
-                  <span>Vitamins</span><span>0g</span>
-                </div>
-                <div
-                  class="
-                    font-weight-bold
-                    blue-grey--text
-                    d-flex
-                    justify-space-between
-                    align-center
-                    py-1
-                  "
-                >
-                  <span>Carbs</span><span>0g</span>
-                </div>
-                <div
-                  class="
-                    font-weight-bold
-                    grey--text
-                    text--darken-3
-                    d-flex
-                    justify-space-between
-                    align-center
-                    mt-3
-                  "
-                >
-                  <span>Calories</span><span>0cal</span>
-                </div>
-              </v-card-text>
-              <v-subheader>Suggested eateries</v-subheader>
-              <v-card-text class="pt-0 pb-1">
-                <div class="d-flex align-center justify-space-between">
-                  <span class="subtitle-2 text--primary">Breakfast</span>
-                  <v-btn
-                    plain
-                    link
-                    class="text-none subtitle-2"
-                    color="black"
-                    to="/#"
-                    >Mr Foxx</v-btn
-                  >
-                </div>
-                <div class="d-flex align-center justify-space-between">
-                  <span class="subtitle-2 text--primary">Lunch</span>
-                  <v-btn
-                    plain
-                    link
-                    class="text-none subtitle-2"
-                    color="black"
-                    to="/#"
-                    >Mr Foxx</v-btn
-                  >
-                </div>
-                <div class="d-flex align-center justify-space-between">
-                  <span class="subtitle-2 text--primary">Dinner</span>
-                  <v-btn
-                    plain
-                    link
-                    class="text-none subtitle-2"
-                    color="black"
-                    to="/#"
-                    >Mr Foxx</v-btn
-                  >
-                </div>
-              </v-card-text>
-            </div>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
+      <meals-info v-if="userRole === 'consumer'"></meals-info>
     </v-navigation-drawer>
 
     <!-- Main section -->
@@ -490,6 +381,7 @@
 <script>
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { mapState } from "vuex";
+import MealsInfo from "./components/MealsInfo.vue";
 
 export default {
   name: "App",
@@ -545,6 +437,9 @@ export default {
     };
   },
   methods: {
+    pageTitle() {
+      return document.title;
+    },
     logout() {
       // localStorage.setItem("loggedIn", "false");
       // this.$store.commit("setSignedIn", false);
@@ -571,6 +466,7 @@ export default {
       return this.$store.state.userRole;
     },
   },
+  components: { MealsInfo },
 };
 </script>
 

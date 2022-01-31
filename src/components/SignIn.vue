@@ -63,6 +63,7 @@
       <v-btn
         outlined
         rounded
+        disabled
         :loading="googleAuthLoad"
         @click="googleSignIn"
         color="grey darken-3"

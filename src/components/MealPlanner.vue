@@ -119,7 +119,7 @@
                 v-for="meal in meals"
                 :key="meal.id"
               >
-                <v-card elevation="1">
+                <v-card outlined class="rounded-lg">
                   <v-card-text class="py-3 px-4">
                     <div class="d-flex justify-space-between align-center">
                       <div class="d-flex flex-column">
@@ -162,10 +162,11 @@
                     </div>
                     <div class="my-3 d-flex align-center">
                       <v-img
-                        class="rounded-lg mr-2 b"
+                        class="rounded-lg mr-2"
                         width="50"
                         max-width="50"
                         height="50"
+                        :src="meal.image"
                       ></v-img>
                       <div
                         class="
@@ -185,6 +186,7 @@
                       <div>
                         <v-checkbox
                           hide-details
+                          dense
                           @change="ateMeal(meal.id)"
                           v-model="meal.ate"
                           label="I ate this meal"
