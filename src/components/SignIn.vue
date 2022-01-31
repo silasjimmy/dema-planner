@@ -2,28 +2,45 @@
   <v-row align="center" class="text-center fill-height">
     <v-col cols="10" sm="8" md="6" lg="4" xl="3" class="mx-auto my-2">
       <h1 class="text-h4 font-weight-medium my-4">Welcome back!</h1>
-      <v-text-field
-        dense
-        outlined
-        clearable
-        color="success"
-        prepend-icon="mdi-email"
-        v-model="email"
-        label="Email address"
-        type="email"
-      ></v-text-field>
-      <v-text-field
-        dense
-        outlined
-        clearable
-        :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-        @click:append="() => (showPassword = !showPassword)"
-        color="success"
-        prepend-icon="mdi-lock"
-        v-model="password"
-        label="Password"
-        :type="showPassword ? 'text' : 'password'"
-      ></v-text-field>
+      <v-form ref="loginForm" lazy-validation>
+        <!-- Log in error alert -->
+        <v-alert
+          outlined
+          dense
+          dismissible
+          transition="scale-transition"
+          v-model="errorAlert"
+          type="error"
+          >{{ errorMessage }}</v-alert
+        >
+        <v-text-field
+          dense
+          outlined
+          clearable
+          single-line
+          :rules="[rules.required]"
+          placeholder="example@domain.com"
+          color="success"
+          prepend-icon="mdi-email"
+          v-model="email"
+          label="Email address"
+          type="email"
+        ></v-text-field>
+        <v-text-field
+          dense
+          outlined
+          clearable
+          single-line
+          :rules="[rules.required]"
+          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+          @click:append="() => (showPassword = !showPassword)"
+          color="success"
+          prepend-icon="mdi-lock"
+          v-model="password"
+          label="Password"
+          :type="showPassword ? 'text' : 'password'"
+        ></v-text-field>
+      </v-form>
       <div class="d-flex justify-space-between align-center">
         <v-checkbox
           hide-details
@@ -46,6 +63,7 @@
       <v-btn
         outlined
         rounded
+        disabled
         :loading="googleAuthLoad"
         @click="googleSignIn"
         color="grey darken-3"
@@ -77,29 +95,38 @@ export default {
       showPassword: false,
       emailAuthLoad: false,
       googleAuthLoad: false,
+      rules: {
+        required: (value) => !!value || "This field is required!",
+      },
+      errorAlert: false,
+      errorMessage: "",
     };
   },
   methods: {
     emailSignIn() {
-      this.emailAuthLoad = true;
+      if (this.$refs.loginForm.validate()) {
+        this.emailAuthLoad = true;
 
-      // localStorage.setItem("loggedIn", "true");
-      // this.redirect();
+        // localStorage.setItem("loggedIn", "true");
+        // this.redirect();
 
-      const auth = getAuth();
-      signInWithEmailAndPassword(auth, this.email, this.password)
-        .then((response) => {
-          // Store the user email locally
-          localStorage.setItem("userEmail", response.user.email);
+        const auth = getAuth();
+        signInWithEmailAndPassword(auth, this.email, this.password)
+          .then((response) => {
+            // Store the user email locally
+            localStorage.setItem("userEmail", response.user.email);
 
-          // Set logged in to true
-          localStorage.setItem("loggedIn", "true");
-        })
-        .then(() => this.redirect())
-        .catch((error) => {
-          this.emailAuthLoad = false;
-          console.log(error.message);
-        });
+            // Set logged in to true
+            localStorage.setItem("loggedIn", "true");
+          })
+          .then(() => this.redirect())
+          .catch((error) => {
+            this.emailAuthLoad = false;
+
+            this.errorAlert = true;
+            this.errorMessage = error.code;
+          });
+      }
     },
     googleSignIn() {
       this.googleAuthLoad = true;
@@ -118,7 +145,9 @@ export default {
         .then(() => this.redirect())
         .catch((error) => {
           this.googleAuthLoad = false;
-          console.log(error.message);
+
+          this.errorAlert = true;
+          this.errorMessage = error.code;
         });
     },
     async redirect() {
@@ -151,13 +180,17 @@ export default {
 
         switch (profileData.role) {
           case "consumer":
-            this.$router.replace({ name: "meal-planner" });
+            this.$router.replace(this.$route.query.redirect || "/meal-planner");
             break;
           case "eatery":
-            this.$router.replace({ name: "menu" });
+            this.$router.replace(this.$route.query.redirect || "/menu");
+            break;
+          case "admin":
+            this.$router.replace(this.$route.query.redirect || "/summary");
             break;
           default:
-            this.$router.replace({ name: "menu" });
+            this.$router.replace({ path: "/home" });
+            break;
         }
       } else {
         // If has no profile, redirect to create profile page

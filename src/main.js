@@ -6,6 +6,7 @@ import vuetify from './plugins/vuetify'
 import titleMixin from './mixins/titleMixin'
 import { firestorePlugin } from 'vuefire'
 import { initializeApp } from "firebase/app";
+import VueGoogleCharts from 'vue-google-charts'
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -22,6 +23,9 @@ initializeApp(firebaseConfig);
 
 // Register vuefire plugin
 Vue.use(firestorePlugin)
+
+// Register Google Charts plugin
+Vue.use(VueGoogleCharts)
 
 // Register title mixin
 Vue.mixin(titleMixin)

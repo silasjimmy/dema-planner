@@ -1,13 +1,194 @@
 <template>
-  <v-container>
-    <v-row>
+  <v-container fluid>
+    <v-list flat subheader>
+      <v-subheader>General</v-subheader>
+
+      <v-list-item-group v-model="settings" multiple active-class="">
+        <v-list-item class="mb-1" two-line>
+          <template v-slot:default="{ active }">
+            <v-list-item-action>
+              <v-checkbox color="success" :input-value="active"></v-checkbox>
+            </v-list-item-action>
+
+            <v-list-item-content>
+              <v-list-item-title>Notifications</v-list-item-title>
+              <v-list-item-subtitle
+                >Notify me about news and updates about
+                Dema</v-list-item-subtitle
+              >
+            </v-list-item-content>
+          </template>
+        </v-list-item>
+
+        <v-list-item class="mb-1" two-line>
+          <template v-slot:default="{ active }">
+            <v-list-item-action>
+              <v-checkbox color="success" :input-value="active"></v-checkbox>
+            </v-list-item-action>
+
+            <v-list-item-content>
+              <v-list-item-title>Sound</v-list-item-title>
+              <v-list-item-subtitle
+                >Alert me of any new notifications or
+                messages</v-list-item-subtitle
+              >
+            </v-list-item-content>
+          </template>
+        </v-list-item>
+
+        <v-list-item class="mb-3" two-line>
+          <template v-slot:default="{ active }">
+            <v-list-item-action>
+              <v-checkbox color="success" :input-value="active"></v-checkbox>
+            </v-list-item-action>
+
+            <v-list-item-content>
+              <v-list-item-title>Location</v-list-item-title>
+              <v-list-item-subtitle
+                >Auto-update my location wherever i go</v-list-item-subtitle
+              >
+            </v-list-item-content>
+          </template>
+        </v-list-item>
+      </v-list-item-group>
+
+      <v-divider></v-divider>
+
+      <v-subheader>Account</v-subheader>
+
+      <v-list-item three-line>
+        <v-list-item-content>
+          <v-list-item-title>Language</v-list-item-title>
+          <v-list-item-subtitle
+            >Change to your preferred language
+          </v-list-item-subtitle>
+          <v-list-item-subtitle class="ml-1">
+            <v-sheet height="auto" class="py-3" width="250px">
+              <v-combobox
+                hide-details
+                dense
+                outlined
+                color="success"
+                v-model="selectedLanguage"
+                item-color="success"
+                :items="languages"
+              ></v-combobox>
+            </v-sheet>
+          </v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item three-line>
+        <v-list-item-content>
+          <v-list-item-title>Theme</v-list-item-title>
+          <v-list-item-subtitle
+            >Choose your preferred theme</v-list-item-subtitle
+          >
+          <v-list-item-subtitle class="ml-1">
+            <v-sheet class="py-3" height="auto">
+              <v-item-group
+                mandatory
+                active-class="white--text"
+                v-model="appTheme"
+              >
+                <v-item value="light-theme" v-slot="{ active, toggle }">
+                  <v-btn
+                    elevation="0"
+                    width="120px"
+                    height="42px"
+                    class="rounded text-none mr-4"
+                    :color="active ? 'grey darken-2' : 'grey lighten-2'"
+                    @click="toggle"
+                  >
+                    <v-icon left>mdi-white-balance-sunny</v-icon>
+                    Light
+                  </v-btn>
+                </v-item>
+                <v-item value="dark-theme" v-slot="{ active, toggle }">
+                  <v-btn
+                    elevation="0"
+                    width="120px"
+                    height="42px"
+                    class="rounded text-none"
+                    @click="toggle"
+                    :color="active ? 'grey darken-2' : 'grey lighten-2'"
+                  >
+                    <v-icon left>mdi-weather-night</v-icon>
+                    Dark
+                  </v-btn>
+                </v-item>
+              </v-item-group>
+            </v-sheet>
+          </v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+
+      <!-- <v-list-item two-line>
+        <v-list-item-content>
+          <v-list-item-title>Meal times</v-list-item-title>
+          <v-list-item-subtitle>Add or delete meal times</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item> -->
+
+      <v-divider></v-divider>
+
+      <v-subheader>Advanced</v-subheader>
+
+      <v-list-item three-line>
+        <v-list-item-content>
+          <v-list-item-title>Password</v-list-item-title>
+          <v-list-item-subtitle>Change your password</v-list-item-subtitle>
+          <v-list-item-subtitle class="py-3 ml-1"
+            >s*******</v-list-item-subtitle
+          >
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-btn icon color="grey">
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
+        </v-list-item-action>
+      </v-list-item>
+
+      <v-list-item three-line>
+        <v-list-item-content>
+          <v-list-item-title>Location</v-list-item-title>
+          <v-list-item-subtitle
+            >Update to your current location</v-list-item-subtitle
+          >
+          <v-list-item-subtitle class="py-3">
+            <v-icon>mdi-map-marker</v-icon>
+            <span class="ml-2 text-capitalize">city, country</span>
+          </v-list-item-subtitle>
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-btn icon color="grey">
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
+        </v-list-item-action>
+      </v-list-item>
+
+      <v-list-item two-line>
+        <v-list-item-content>
+          <v-list-item-title>Delete account</v-list-item-title>
+          <v-list-item-subtitle
+            >Remember all your data will be lost</v-list-item-subtitle
+          >
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-btn icon color="grey">
+            <v-icon>mdi-delete</v-icon>
+          </v-btn>
+        </v-list-item-action>
+      </v-list-item>
+    </v-list>
+    <!-- <v-row>
       <v-col cols="12">
         <v-card>
           <v-card-text>
             <v-list dense class="transparent">
-              <v-list-item-title>Appearance</v-list-item-title>
+              <v-list-item-title>General settings</v-list-item-title>
               <v-list-item-subtitle class="text--secondary"
-                >Change the appearance of the app</v-list-item-subtitle
+                >Appearance</v-list-item-subtitle
               >
               <v-list-item>
                 <v-container>
@@ -26,7 +207,7 @@
           </v-card-text>
           <v-card-text>
             <v-list dense class="transparent">
-              <v-list-item-title>Meals</v-list-item-title>
+              <v-list-item-title>Meal time</v-list-item-title>
               <v-list-item-subtitle
                 class="
                   text--secondary
@@ -35,16 +216,22 @@
                   align-center
                 "
               >
-                <span>Add or delete meals</span>
-                <v-btn icon @click="newMealDialog = true" color="success">
-                  <v-icon>mdi-plus</v-icon>
+                <span>Add or delete time of meals</span>
+                <v-btn
+                  rounded
+                  text
+                  @click="newMealTimeDialog = true"
+                  class="text-none"
+                >
+                  <v-icon left>mdi-plus</v-icon>
+                  New meal time
                 </v-btn>
               </v-list-item-subtitle>
               <v-list-item>
                 <v-container fluid>
                   <v-row>
                     <v-col
-                      v-for="meal in meals"
+                      v-for="meal in mealTimes"
                       :key="meal.name"
                       cols="12"
                       sm="6"
@@ -71,11 +258,12 @@
                 </v-container>
               </v-list-item>
             </v-list>
-            <v-dialog width="400" v-model="newMealDialog">
+
+            <v-dialog width="400" v-model="newMealTimeDialog">
               <v-card>
                 <v-card-title class="d-flex justify-space-between align-center">
                   <h1 class="text-h6">New meal time</h1>
-                  <v-btn icon @click="newMealDialog = !newMealDialog">
+                  <v-btn icon @click="newMealTimeDialog = !newMealTimeDialog">
                     <v-icon>mdi-close</v-icon>
                   </v-btn>
                 </v-card-title>
@@ -114,72 +302,115 @@
             <v-list dense class="transparent">
               <v-list-item-title>Advanced</v-list-item-title>
               <v-list-item-subtitle class="text--secondary"
-                >Tread carefully</v-list-item-subtitle
+                >Current location</v-list-item-subtitle
               >
               <v-list-item>
                 <v-container>
-                  <v-row>
-                    <v-col cols="12">
-                      <div>
-                        <v-icon>mdi-map-marker</v-icon>
-                        <span>Kilifi, Kenya</span>
-                      </div>
-                    </v-col>
-                    <v-col cols="12" class="text-center">
-                      <v-dialog
-                        persistent
-                        width="auto"
-                        v-model="deleteAccountDialog"
+                  <v-dialog
+                    persistent
+                    width="auto"
+                    v-model="deleteAccountDialog"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        text
+                        rounded
+                        v-bind="attrs"
+                        v-on="on"
+                        class="text-capitalize"
                       >
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-btn
-                            rounded
-                            class="text-none"
-                            v-bind="attrs"
-                            v-on="on"
-                            color="error"
-                          >
-                            <v-icon left>mdi-delete</v-icon>
-                            Delete account
-                          </v-btn>
-                        </template>
-                        <v-card>
-                          <v-card-text class="py-0 text-center">
-                            <p class="pt-4 subtitle-1">
-                              Are you sure you want to delete your account?
-                            </p>
-                          </v-card-text>
-                          <v-card-actions class="pt-0">
-                            <v-spacer></v-spacer>
-                            <v-btn
-                              text
-                              @click="
-                                deleteAccountDialog = !deleteAccountDialog
-                              "
-                              class="text-none mr-4"
-                              color="error"
-                              >No</v-btn
-                            >
-                            <v-btn
-                              text
-                              class="text-none ml-4"
-                              color="success"
-                              @click="deleteAccountConfirm"
-                              >Yes</v-btn
-                            >
-                            <v-spacer></v-spacer>
-                          </v-card-actions>
-                        </v-card>
-                      </v-dialog>
-                    </v-col>
-                  </v-row>
+                        <v-icon left>mdi-map-marker</v-icon>
+                        Kilifi, Kenya
+                      </v-btn>
+                    </template>
+
+                    <v-card max-width="50vw">
+                      <v-card-text class="py-0 text-center">
+                        <p class="pt-4 subtitle-1">
+                          Turn location on to update to your current location.
+                        </p>
+                      </v-card-text>
+                      <v-card-actions class="pt-0">
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          text
+                          rounded
+                          @click="deleteAccountDialog = !deleteAccountDialog"
+                          class="text-none mr-4"
+                          color="error"
+                          >No</v-btn
+                        >
+                        <v-btn
+                          text
+                          rounded
+                          class="text-none ml-4"
+                          color="success"
+                          @click="deleteAccountConfirm"
+                          >Yes</v-btn
+                        >
+                        <v-spacer></v-spacer>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                </v-container>
+              </v-list-item>
+
+              <v-list-item>
+                <v-container class="text-center">
+                  <v-dialog
+                    persistent
+                    width="auto"
+                    v-model="deleteAccountDialog"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        rounded
+                        class="text-none"
+                        v-bind="attrs"
+                        v-on="on"
+                        color="error"
+                      >
+                        <v-icon left>mdi-delete</v-icon>
+                        Delete account
+                      </v-btn>
+                    </template>
+
+                    <v-card max-width="50vw">
+                      <v-card-text class="py-0 text-center">
+                        <p class="pt-4 subtitle-1">
+                          Are you sure you want to delete your account? Once you
+                          delete your account all data will be lost.
+                        </p>
+                      </v-card-text>
+                      <v-card-actions class="pt-0">
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          text
+                          rounded
+                          @click="deleteAccountDialog = !deleteAccountDialog"
+                          class="text-none mr-4"
+                          color="error"
+                          >No</v-btn
+                        >
+                        <v-btn
+                          text
+                          rounded
+                          class="text-none ml-4"
+                          color="success"
+                          @click="deleteAccountConfirm"
+                          >Yes</v-btn
+                        >
+                        <v-spacer></v-spacer>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
                 </v-container>
               </v-list-item>
             </v-list>
           </v-card-text>
         </v-card>
       </v-col>
-      <!-- Delete meal time dialog -->
+
       <v-dialog persistent v-model="deleteMealTimeDialog" width="auto">
         <v-card>
           <v-card-text class="py-0 text-center">
@@ -207,34 +438,39 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-    </v-row>
+    </v-row> -->
   </v-container>
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
+
 export default {
   title: "Settings",
   name: "Settings",
+  created() {
+    this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
+    this.getMealTimesAction();
+  },
   data() {
     return {
       deleteAccountDialog: false,
       deleteMealTimeDialog: false,
-      newMealDialog: false,
+      newMealTimeDialog: false,
       darkMode: false,
       mealIdToDelete: 0,
+      settings: [],
+      appTheme: "light-theme",
+      selectedLanguage: ["English"],
+      languages: ["English", "Swahili"],
       newMeal: {
         name: "",
         time: "",
       },
-      meals: [
-        { id: 1, name: "breakfast", time: "07:00am" },
-        { id: 2, name: "lunch", time: "01:00pm" },
-        { id: 3, name: "snack", time: "04:00pm" },
-        { id: 4, name: "supper", time: "07:00pm" },
-      ],
     };
   },
   computed: {
+    ...mapState(["mealTimes"]),
     age() {
       // const a = (new Date() - new Date(this.profile.birthdate)) / 189210000;
       // console.log(a);
@@ -242,6 +478,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions(["getMealTimesAction"]),
     deleteAccountConfirm() {
       console.log("Deleted account!");
       this.deleteAccountDialog = false;
@@ -256,7 +493,10 @@ export default {
     },
     createMealTime() {
       console.log(this.newMeal);
-      this.newMealDialog = false;
+      this.newMealTimeDialog = false;
+    },
+    viewMealTime(id) {
+      console.log(id);
     },
   },
 };

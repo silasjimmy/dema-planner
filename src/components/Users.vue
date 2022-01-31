@@ -127,6 +127,10 @@
 export default {
   name: "Users",
   title: "Users",
+  created() {
+    this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
+    this.initialize();
+  },
   data: () => ({
     dialog: false,
     dialogDelete: false,
@@ -153,13 +157,11 @@ export default {
       email: "",
     },
   }),
-
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "New user" : "Edit user";
     },
   },
-
   watch: {
     dialog(val) {
       val || this.close();
@@ -168,12 +170,6 @@ export default {
       val || this.closeDelete();
     },
   },
-
-  created() {
-    console.log(this.$store.signedIn);
-    this.initialize();
-  },
-
   methods: {
     initialize() {
       this.desserts = [
