@@ -179,13 +179,17 @@ export default {
 
         switch (profileData.role) {
           case "consumer":
-            this.$router.replace({ name: "meal-planner" });
+            this.$router.replace(this.$route.query.redirect || "/meal-planner");
             break;
           case "eatery":
-            this.$router.replace({ name: "menu" });
+            this.$router.replace(this.$route.query.redirect || "/menu");
+            break;
+          case "admin":
+            this.$router.replace(this.$route.query.redirect || "/summary");
             break;
           default:
-            this.$router.replace({ name: "menu" });
+            this.$router.replace({ path: "/home" });
+            break;
         }
       } else {
         // If has no profile, redirect to create profile page

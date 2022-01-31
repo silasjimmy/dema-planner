@@ -387,13 +387,14 @@
       </v-list>
     </v-navigation-drawer>
 
+    <!-- Main section -->
     <v-main>
       <v-banner
         single-line
         app
         outlined
+        v-model="isOnline"
         v-if="signedIn"
-        v-model="internetConnectionBanner"
         class="rounded-lg"
         transition="slide-y-transition"
       >
@@ -403,12 +404,12 @@
         {{ internetConnectionMessage }}
         <template v-slot:actions="{ dismiss }">
           <v-btn rounded text color="error" @click="dismiss"> Dismiss </v-btn>
-          <v-btn rounded text color="success"> Retry </v-btn>
         </template>
       </v-banner>
       <router-view />
     </v-main>
 
+    <!-- Footer -->
     <v-footer app absolute padless v-if="!signedIn">
       <v-card flat tile color="grey lighten-5" width="100vw">
         <v-card-text class="text-center">
@@ -538,9 +539,9 @@ export default {
       leftSidenav: false,
       rightSidenav: false,
       notificationsMenu: false,
-      internetConnectionBanner: false,
+      isOnline: !navigator.onLine,
       internetConnectionMessage:
-        "We can't save your edits while you are in offline mode.",
+        "You are now offline. Any edits you make won't be saved.",
     };
   },
   methods: {

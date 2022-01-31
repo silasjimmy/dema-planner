@@ -3,7 +3,7 @@ export default function checkAuth(to, from, next) {
         const loggedIn = localStorage.getItem('loggedIn')
 
         if (loggedIn === 'true') next()
-        else next({ name: 'sign-in' })
+        else next({ name: 'sign-in', query: { redirect: to.path } })
     }
     else next()
 }

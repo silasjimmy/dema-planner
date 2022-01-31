@@ -99,7 +99,7 @@
       <v-subheader>Primary information</v-subheader>
       <v-list-item>
         <v-list-item-avatar>
-          <v-icon class="grey lighten-1" dark> mdi-folder </v-icon>
+          <v-icon class="grey lighten-1" dark> mdi-noodles </v-icon>
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title>Diet</v-list-item-title>
@@ -177,7 +177,9 @@
       </v-list-item>
       <v-list-item>
         <v-list-item-avatar>
-          <v-icon class="grey lighten-1" dark> mdi-folder </v-icon>
+          <v-icon class="grey lighten-1" dark>
+            mdi-human-male-height-variant
+          </v-icon>
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title>Height</v-list-item-title>
@@ -189,7 +191,7 @@
       </v-list-item>
       <v-list-item>
         <v-list-item-avatar>
-          <v-icon class="grey lighten-1" dark> mdi-folder </v-icon>
+          <v-icon class="grey lighten-1" dark> mdi-weight </v-icon>
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title>Weight</v-list-item-title>
@@ -205,7 +207,7 @@
       <v-subheader>Secondary information</v-subheader>
       <v-list-item>
         <v-list-item-avatar>
-          <v-icon class="grey lighten-1" dark> mdi-folder </v-icon>
+          <v-icon class="grey lighten-1" dark> mdi-human-male </v-icon>
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title>Body fat</v-list-item-title>
@@ -281,7 +283,7 @@
       </v-list-item>
       <v-list-item>
         <v-list-item-avatar>
-          <v-icon class="grey lighten-1" dark> mdi-folder </v-icon>
+          <v-icon class="grey lighten-1" dark> mdi-run </v-icon>
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title>Activity level</v-list-item-title>
@@ -307,7 +309,7 @@
       <v-subheader>Goals</v-subheader>
       <v-list-item>
         <v-list-item-avatar>
-          <v-icon class="grey lighten-1" dark> mdi-folder </v-icon>
+          <v-icon class="grey lighten-1" dark> mdi-weight-lifter </v-icon>
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title>Target</v-list-item-title>
@@ -388,7 +390,7 @@
       </v-list-item>
       <v-list-item>
         <v-list-item-avatar>
-          <v-icon class="grey lighten-1" dark> mdi-folder </v-icon>
+          <v-icon class="grey lighten-1" dark> mdi-cash </v-icon>
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title>Daily minimum spending</v-list-item-title>

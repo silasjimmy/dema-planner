@@ -7,6 +7,50 @@
         </h2>
         <h2 class="text-h2 font-weight-bold">{{ day }}</h2>
       </div>
+      <div class="d-flex align-center">
+        <h2 class="text-h6 mr-2">
+          {{ monthAndYear }}
+        </h2>
+        <v-menu
+          offset-y
+          v-model="datePickerMenu"
+          transition="scale-transition"
+          ref="dateMenu"
+          :return-value.sync="mealsDate"
+          :close-on-content-click="false"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn icon :disabled="!meals" v-bind="attrs" v-on="on">
+              <v-icon>mdi-calendar</v-icon>
+            </v-btn>
+          </template>
+          <v-date-picker
+            v-if="datePickerMenu"
+            v-model="mealsDate"
+            header-color="blue-grey"
+            color="green"
+            show-current="false"
+          >
+            <v-btn
+              text
+              color="red"
+              class="font-weight-bold"
+              @click="datePickerMenu = false"
+            >
+              Cancel
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn
+              text
+              color="orange"
+              class="font-weight-bold"
+              @click="$refs.dateMenu.save(mealsDate)"
+            >
+              Ok
+            </v-btn>
+          </v-date-picker>
+        </v-menu>
+      </div>
       <v-tooltip top color="black">
         <template v-slot:activator="{ on, attrs }">
           <v-btn
@@ -313,13 +357,13 @@ export default {
   },
   data() {
     return {
-      datePickerMenu: false,
       showMeals: true,
       alertIcon: "mdi-cloud-alert",
       alertType: "error",
       alertMessage: "Something..",
       alertShow: false,
       loadingMeals: false,
+      datePickerMenu: false,
       mealsDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
