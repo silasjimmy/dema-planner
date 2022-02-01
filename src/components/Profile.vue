@@ -1,7 +1,8 @@
 <template>
   <v-container fluid>
     <v-card outlined class="rounded-lg">
-      <v-list subheader two-line>
+      <!-- Consumer profile view -->
+      <v-list subheader two-line v-if="$store.state.userRole === 'consumer'">
         <v-subheader>Bio</v-subheader>
         <v-list-item three-line>
           <v-list-item-avatar
@@ -22,7 +23,7 @@
             }}</v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>
-            <v-dialog persistent v-model="bioDialog" width="500">
+            <v-dialog persistent v-model="consumerBioDialog" width="500">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn icon v-bind="attrs" v-on="on">
                   <v-icon>mdi-pencil</v-icon>
@@ -31,7 +32,7 @@
               <v-card>
                 <v-card-title class="d-flex justify-space-between align-center">
                   <span>Edit bio</span>
-                  <v-btn icon @click="bioDialog = false">
+                  <v-btn icon @click="consumerBioDialog = false">
                     <v-icon>mdi-close</v-icon>
                   </v-btn>
                 </v-card-title>
@@ -415,6 +416,86 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
+
+      <!-- Eatery profile view -->
+      <v-img
+        v-if="$store.state.userRole === 'eatery'"
+        class="white--text align-end"
+        height="200px"
+        src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+        gradient="to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7)"
+      >
+        <!-- <v-card-title>Eatery name</v-card-title>
+        <v-card-subtitle>Eatery ratings</v-card-subtitle> -->
+        <v-list-item two-line>
+          <v-list-item-content>
+            <v-list-item-title class="text-h5 white--text"
+              >Eatery name</v-list-item-title
+            >
+            <v-list-item-subtitle class="grey--text text--lighten-2"
+              >Eatery ratings</v-list-item-subtitle
+            >
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-dialog persistent v-model="eateryBioDialog" width="500">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon v-bind="attrs" v-on="on">
+                  <v-icon color="white">mdi-pencil</v-icon>
+                </v-btn>
+              </template>
+              <v-card>
+                <v-card-title class="d-flex justify-space-between align-center">
+                  <span>Edit</span>
+                  <v-btn icon @click="eateryBioDialog = false">
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
+                </v-card-title>
+
+                <v-card-text class="text-center">
+                  <div class="avatar-upload mb-4">
+                    <v-img
+                      width="100px"
+                      height="100px"
+                      class="rounded-circle mx-auto d-flex align-center"
+                      src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+                      gradient="to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)"
+                    >
+                      <label id="avatar-label" for="avatar">
+                        <v-icon class="icon" color="white">mdi-camera</v-icon>
+                      </label>
+                    </v-img>
+
+                    <input id="avatar" type="file" accept="image/*" />
+                  </div>
+                  <v-text-field
+                    outlined
+                    dense
+                    clearable
+                    type="text"
+                    color="success"
+                    prepend-icon="mdi-account"
+                    label="Name"
+                    v-model="userProfile.name"
+                  ></v-text-field>
+                </v-card-text>
+
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    rounded
+                    color="success"
+                    class="text-none"
+                    @click="saveProfile('bio')"
+                  >
+                    Save
+                  </v-btn>
+                  <v-spacer></v-spacer>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-list-item-action>
+        </v-list-item>
+      </v-img>
     </v-card>
   </v-container>
 </template>
@@ -431,8 +512,8 @@ export default {
   },
   data() {
     return {
-      editProfile: true,
-      bioDialog: false,
+      eateryBioDialog: false,
+      consumerBioDialog: false,
       primaryInfoDialog: false,
       secondaryInfoDialog: false,
       goalsDialog: false,
@@ -452,7 +533,7 @@ export default {
     saveProfile(section) {
       switch (section) {
         case "bio":
-          this.bioDialog = false;
+          this.consumerBioDialog = false;
           break;
         case "primaryInfo":
           this.primaryInfoDialog = false;

@@ -1,13 +1,12 @@
 <template>
-  <v-container>
-    <v-card>
+  <v-container fluid>
+    <v-card outlined class="rounded-lg">
+      <v-card-text class="text-center subtitle-1 text--secondary">
+        Send a request for foods not in the database.
+      </v-card-text>
       <v-card-text>
         <v-row>
           <v-col cols="12" lg="8" class="text-center mx-auto">
-            <p class="text--secondary my-2">
-              The food you want to add does not appear in the list? Put a
-              request for the food below.
-            </p>
             <v-text-field
               label="Food name"
               outlined
@@ -19,9 +18,8 @@
             ></v-text-field>
             <v-textarea
               outlined
-              auto-grow
               dense
-              rows="1"
+              rows="4"
               v-model="food.description"
               label="Description"
               color="green"
@@ -34,7 +32,6 @@
               color="success"
               class="text-none"
             >
-              <v-icon left>mdi-send</v-icon>
               Submit
             </v-btn>
           </v-col>

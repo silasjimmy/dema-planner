@@ -41,8 +41,8 @@ export default new Vuex.Store({
           break;
         case 'eatery':
           state.dashboardLinks = [
-            { url: "/menu", icon: "mdi-home", text: "Menu" },
-            { url: "/food-request", icon: "mdi-pizza", text: "Food request" },
+            { url: "/menu", icon: "mdi-book-open-variant", text: "Menu" },
+            { url: "/food-request", icon: "mdi-food-off-outline", text: "Food request" },
           ]
           break;
         case 'admin':
