@@ -8,45 +8,46 @@
           food you are looking for, request the food.
         </p>
       </v-col>
-      <v-col cols="12" lg="10" class="mx-auto">
-        <v-data-table
-          v-model="likedFoods"
-          :headers="headers"
-          :items="availableFoods"
-          :search="searchFood"
-          item-key="name"
-          class="elevation-1"
-          :loading="loadingFoods"
-          loading-text="Loading... Please wait"
-          :items-per-page="itemsPerPage"
-        >
-          <template v-slot:top>
-            <v-toolbar flat>
-              <v-spacer></v-spacer>
-              <v-text-field
-                outlined
-                dense
-                hide-details
-                single-line
-                class="shrink"
-                color="success"
-                v-model="searchFood"
-                append-icon="mdi-magnify"
-                label="Search for food"
-              ></v-text-field>
-            </v-toolbar>
-          </template>
+      <v-col cols="12" class="mx-auto">
+        <v-card outlined class="rounded-lg">
+          <v-data-table
+            v-model="likedFoods"
+            :headers="headers"
+            :items="availableFoods"
+            :search="searchFood"
+            item-key="name"
+            :loading="loadingFoods"
+            loading-text="Loading... Please wait"
+            :items-per-page="itemsPerPage"
+          >
+            <template v-slot:top>
+              <v-toolbar flat class="rounded-lg">
+                <v-spacer></v-spacer>
+                <v-text-field
+                  outlined
+                  dense
+                  hide-details
+                  single-line
+                  class="shrink"
+                  color="success"
+                  v-model="searchFood"
+                  append-icon="mdi-magnify"
+                  label="Search for food"
+                ></v-text-field>
+              </v-toolbar>
+            </template>
 
-          <template v-slot:item.favorite="{ item }">
-            <v-item-group multiple v-model="favoriteFoods">
-              <v-item v-slot="{ active, toggle }" :value="item">
-                <v-icon @click="toggle" :color="active ? 'success' : ''">{{
-                  likeFood(active)
-                }}</v-icon>
-              </v-item>
-            </v-item-group>
-          </template>
-        </v-data-table>
+            <template v-slot:item.favorite="{ item }">
+              <v-item-group multiple v-model="favoriteFoods">
+                <v-item v-slot="{ active, toggle }" :value="item">
+                  <v-icon @click="toggle" :color="active ? 'success' : ''">{{
+                    likeFood(active)
+                  }}</v-icon>
+                </v-item>
+              </v-item-group>
+            </template>
+          </v-data-table>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>

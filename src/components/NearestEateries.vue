@@ -4,12 +4,7 @@
       <v-col cols="12" lg="8" class="mx-auto">
         <p class="text--secondary text-center">Eateries around location.</p>
       </v-col>
-      <v-col
-        v-for="eatery in nearestEateries"
-        :key="eatery.name"
-        cols="12"
-        lg="6"
-      >
+      <v-col v-for="eatery in eateries" :key="eatery.name" cols="12" lg="6">
         <v-card outlined class="rounded-lg">
           <v-list-item three-line>
             <v-list-item-content>
@@ -48,8 +43,7 @@
             <v-btn
               link
               plain
-              disabled
-              :to="eateryLink(eatery.id)"
+              :to="{ name: 'eatery-details', params: { id: eatery.id } }"
               color="black"
               class="text-none"
               >View details</v-btn
@@ -69,23 +63,14 @@ export default {
   title: "Nearest eateries",
   name: "NearestEateries",
   created() {
-    this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
-    this.loadNearestEateries();
-  },
-  data() {
-    return {};
+    // Load all eateries to the store
+    this.getEateriesAction();
   },
   computed: {
-    ...mapState(["nearestEateries"]),
+    ...mapState(["eateries"]),
   },
   methods: {
-    ...mapActions(["getNearestEateriesAction"]),
-    loadNearestEateries() {
-      this.getNearestEateriesAction();
-    },
-    eateryLink(id) {
-      return `/nearest-eateries/${id}`;
-    },
+    ...mapActions(["getEateriesAction"]),
   },
 };
 </script>

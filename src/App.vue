@@ -91,7 +91,7 @@
         @click="leftSidenav = true"
       ></v-app-bar-nav-icon>
 
-      <v-toolbar-title>{{ pageTitle() }}</v-toolbar-title>
+      <v-toolbar-title>{{ pageTitle }}</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
@@ -221,6 +221,7 @@
             v-for="link in dashboardLinks"
             :key="link.text"
             :to="link.url"
+            @click="updatePageTitle"
           >
             <v-list-item-icon>
               <v-icon>{{ link.icon }}</v-icon>
@@ -229,7 +230,7 @@
               <v-list-item-title>{{ link.text }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item link to="/profile">
+          <v-list-item link to="/profile" @click="updatePageTitle">
             <v-list-item-icon>
               <v-icon>mdi-account-details</v-icon>
             </v-list-item-icon>
@@ -237,7 +238,7 @@
               <v-list-item-title>Profile</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item link to="/settings">
+          <v-list-item link to="/settings" @click="updatePageTitle">
             <v-list-item-icon>
               <v-icon>mdi-cog</v-icon>
             </v-list-item-icon>
@@ -379,58 +380,61 @@
 </template>
 
 <script>
-import {
-  getAuth,
-  // onAuthStateChanged,
-  signOut,
-} from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { mapState } from "vuex";
 import MealsInfo from "./components/MealsInfo.vue";
 
 export default {
   name: "App",
   created() {
-    // // Sets the sign in status, user email and user role in store on app creation
-    // this.$store.commit(
-    //   "setSignedIn",
-    //   localStorage.getItem("loggedIn") === "true"
-    // );
-    // this.$store.commit("setUserEmail", localStorage.getItem("userEmail"));
-    // this.$store.commit("setUserRole", localStorage.getItem("userRole"));
+    // Sets the sign in status, user email and user role in store on app creation
+    this.$store.commit(
+      "setSignedIn",
+      localStorage.getItem("loggedIn") === "true"
+    );
+    this.$store.commit("setUserEmail", localStorage.getItem("userEmail"));
+    this.$store.commit("setUserRole", localStorage.getItem("userRole"));
 
-    localStorage.setItem("loggedIn", "true");
-    localStorage.setItem("userRole", "consumer");
-    this.$store.commit("setSignedIn", true);
-    this.$store.commit("setUserRole", "consumer");
+    // Set the dashboard links
+    this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
+
+    // localStorage.setItem("loggedIn", "true");
+    // localStorage.setItem("userRole", "consumer");
+    // this.$store.commit("setSignedIn", true);
+    // this.$store.commit("setUserRole", "consumer");
   },
-  // mounted() {
-  //   // Monitor the user sign in activity
-  //   const auth = getAuth();
+  mounted() {
+    // Set the page title when the user logs in
+    this.pageTitle = document.title;
 
-  //   onAuthStateChanged(auth, (user) => {
-  //     if (user) {
-  //       // Store the user email locally
-  //       localStorage.setItem("userEmail", user.email);
+    // Monitor the user sign in activity
+    const auth = getAuth();
 
-  //       // Set logged in to true
-  //       localStorage.setItem("loggedIn", "true");
-  //     } else {
-  //       // Remove user email from local storage
-  //       localStorage.removeItem("userEmail");
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // Store the user email locally
+        localStorage.setItem("userEmail", user.email);
 
-  //       // Remove user role from local storage
-  //       localStorage.removeItem("userRole");
+        // Set logged in to true
+        localStorage.setItem("loggedIn", "true");
+      } else {
+        // Remove user email from local storage
+        localStorage.removeItem("userEmail");
 
-  //       // Set logged in to false
-  //       localStorage.setItem("loggedIn", "false");
+        // Remove user role from local storage
+        localStorage.removeItem("userRole");
 
-  //       // Update app store
-  //       this.$store.commit("setSignedIn", false);
-  //     }
-  //   });
-  // },
+        // Set logged in to false
+        localStorage.setItem("loggedIn", "false");
+
+        // Update app store
+        this.$store.commit("setSignedIn", false);
+      }
+    });
+  },
   data() {
     return {
+      pageTitle: "",
       homeSidenav: false,
       leftSidenav: false,
       rightSidenav: false,
@@ -441,8 +445,8 @@ export default {
     };
   },
   methods: {
-    pageTitle() {
-      return document.title;
+    updatePageTitle() {
+      this.pageTitle = document.title;
     },
     logout() {
       // localStorage.setItem("loggedIn", "false");
@@ -477,5 +481,11 @@ export default {
 <style>
 .b {
   border: 1px solid black;
+}
+
+.blockquote::before,
+.blockquote::after {
+  content: '"';
+  font-weight: bold;
 }
 </style>

@@ -257,9 +257,4 @@ export default {
 </script>
 
 <style scoped>
-.blockquote::before,
-.blockquote::after {
-  content: '"';
-  font-weight: bold;
-}
 </style>

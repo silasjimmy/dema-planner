@@ -109,6 +109,8 @@ const routes = [
   {
     path: '/nearest-eateries/:id',
     component: EateryDetails,
+    name: 'eatery-details',
+    props: r => ({ id: parseInt(r.params.id) }),
     meta: {
       requiresAuth: true
     }

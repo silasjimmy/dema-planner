@@ -1,186 +1,188 @@
 <template>
   <v-container fluid>
-    <v-list flat subheader>
-      <v-subheader>General</v-subheader>
+    <v-card outlined class="rounded-lg">
+      <v-list flat subheader>
+        <v-subheader>General</v-subheader>
 
-      <v-list-item-group v-model="settings" multiple active-class="">
-        <v-list-item class="mb-1" two-line>
-          <template v-slot:default="{ active }">
-            <v-list-item-action>
-              <v-checkbox color="success" :input-value="active"></v-checkbox>
-            </v-list-item-action>
+        <v-list-item-group v-model="settings" multiple active-class="">
+          <v-list-item class="mb-1" two-line>
+            <template v-slot:default="{ active }">
+              <v-list-item-action>
+                <v-checkbox color="success" :input-value="active"></v-checkbox>
+              </v-list-item-action>
 
-            <v-list-item-content>
-              <v-list-item-title>Notifications</v-list-item-title>
-              <v-list-item-subtitle
-                >Notify me about news and updates about
-                Dema</v-list-item-subtitle
-              >
-            </v-list-item-content>
-          </template>
+              <v-list-item-content>
+                <v-list-item-title>Notifications</v-list-item-title>
+                <v-list-item-subtitle
+                  >Notify me about news and updates about
+                  Dema</v-list-item-subtitle
+                >
+              </v-list-item-content>
+            </template>
+          </v-list-item>
+
+          <v-list-item class="mb-1" two-line>
+            <template v-slot:default="{ active }">
+              <v-list-item-action>
+                <v-checkbox color="success" :input-value="active"></v-checkbox>
+              </v-list-item-action>
+
+              <v-list-item-content>
+                <v-list-item-title>Sound</v-list-item-title>
+                <v-list-item-subtitle
+                  >Alert me of any new notifications or
+                  messages</v-list-item-subtitle
+                >
+              </v-list-item-content>
+            </template>
+          </v-list-item>
+
+          <v-list-item class="mb-3" two-line>
+            <template v-slot:default="{ active }">
+              <v-list-item-action>
+                <v-checkbox color="success" :input-value="active"></v-checkbox>
+              </v-list-item-action>
+
+              <v-list-item-content>
+                <v-list-item-title>Location</v-list-item-title>
+                <v-list-item-subtitle
+                  >Auto-update my location wherever i go</v-list-item-subtitle
+                >
+              </v-list-item-content>
+            </template>
+          </v-list-item>
+        </v-list-item-group>
+
+        <v-divider></v-divider>
+
+        <v-subheader>Account</v-subheader>
+
+        <v-list-item three-line>
+          <v-list-item-content>
+            <v-list-item-title>Language</v-list-item-title>
+            <v-list-item-subtitle
+              >Change to your preferred language
+            </v-list-item-subtitle>
+            <v-list-item-subtitle class="ml-1">
+              <v-sheet height="auto" class="py-3" width="250px">
+                <v-combobox
+                  hide-details
+                  dense
+                  outlined
+                  color="success"
+                  v-model="selectedLanguage"
+                  item-color="success"
+                  :items="languages"
+                ></v-combobox>
+              </v-sheet>
+            </v-list-item-subtitle>
+          </v-list-item-content>
         </v-list-item>
 
-        <v-list-item class="mb-1" two-line>
-          <template v-slot:default="{ active }">
-            <v-list-item-action>
-              <v-checkbox color="success" :input-value="active"></v-checkbox>
-            </v-list-item-action>
-
-            <v-list-item-content>
-              <v-list-item-title>Sound</v-list-item-title>
-              <v-list-item-subtitle
-                >Alert me of any new notifications or
-                messages</v-list-item-subtitle
-              >
-            </v-list-item-content>
-          </template>
+        <v-list-item three-line>
+          <v-list-item-content>
+            <v-list-item-title>Theme</v-list-item-title>
+            <v-list-item-subtitle
+              >Choose your preferred theme</v-list-item-subtitle
+            >
+            <v-list-item-subtitle class="ml-1">
+              <v-sheet class="py-3" height="auto">
+                <v-item-group
+                  mandatory
+                  active-class="white--text"
+                  v-model="appTheme"
+                >
+                  <v-item value="light-theme" v-slot="{ active, toggle }">
+                    <v-btn
+                      elevation="0"
+                      width="120px"
+                      height="42px"
+                      class="rounded text-none mr-4"
+                      :color="active ? 'grey darken-2' : 'grey lighten-2'"
+                      @click="toggle"
+                    >
+                      <v-icon left>mdi-white-balance-sunny</v-icon>
+                      Light
+                    </v-btn>
+                  </v-item>
+                  <v-item value="dark-theme" v-slot="{ active, toggle }">
+                    <v-btn
+                      elevation="0"
+                      width="120px"
+                      height="42px"
+                      class="rounded text-none"
+                      @click="toggle"
+                      :color="active ? 'grey darken-2' : 'grey lighten-2'"
+                    >
+                      <v-icon left>mdi-weather-night</v-icon>
+                      Dark
+                    </v-btn>
+                  </v-item>
+                </v-item-group>
+              </v-sheet>
+            </v-list-item-subtitle>
+          </v-list-item-content>
         </v-list-item>
 
-        <v-list-item class="mb-3" two-line>
-          <template v-slot:default="{ active }">
-            <v-list-item-action>
-              <v-checkbox color="success" :input-value="active"></v-checkbox>
-            </v-list-item-action>
-
-            <v-list-item-content>
-              <v-list-item-title>Location</v-list-item-title>
-              <v-list-item-subtitle
-                >Auto-update my location wherever i go</v-list-item-subtitle
-              >
-            </v-list-item-content>
-          </template>
-        </v-list-item>
-      </v-list-item-group>
-
-      <v-divider></v-divider>
-
-      <v-subheader>Account</v-subheader>
-
-      <v-list-item three-line>
-        <v-list-item-content>
-          <v-list-item-title>Language</v-list-item-title>
-          <v-list-item-subtitle
-            >Change to your preferred language
-          </v-list-item-subtitle>
-          <v-list-item-subtitle class="ml-1">
-            <v-sheet height="auto" class="py-3" width="250px">
-              <v-combobox
-                hide-details
-                dense
-                outlined
-                color="success"
-                v-model="selectedLanguage"
-                item-color="success"
-                :items="languages"
-              ></v-combobox>
-            </v-sheet>
-          </v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-
-      <v-list-item three-line>
-        <v-list-item-content>
-          <v-list-item-title>Theme</v-list-item-title>
-          <v-list-item-subtitle
-            >Choose your preferred theme</v-list-item-subtitle
-          >
-          <v-list-item-subtitle class="ml-1">
-            <v-sheet class="py-3" height="auto">
-              <v-item-group
-                mandatory
-                active-class="white--text"
-                v-model="appTheme"
-              >
-                <v-item value="light-theme" v-slot="{ active, toggle }">
-                  <v-btn
-                    elevation="0"
-                    width="120px"
-                    height="42px"
-                    class="rounded text-none mr-4"
-                    :color="active ? 'grey darken-2' : 'grey lighten-2'"
-                    @click="toggle"
-                  >
-                    <v-icon left>mdi-white-balance-sunny</v-icon>
-                    Light
-                  </v-btn>
-                </v-item>
-                <v-item value="dark-theme" v-slot="{ active, toggle }">
-                  <v-btn
-                    elevation="0"
-                    width="120px"
-                    height="42px"
-                    class="rounded text-none"
-                    @click="toggle"
-                    :color="active ? 'grey darken-2' : 'grey lighten-2'"
-                  >
-                    <v-icon left>mdi-weather-night</v-icon>
-                    Dark
-                  </v-btn>
-                </v-item>
-              </v-item-group>
-            </v-sheet>
-          </v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-
-      <!-- <v-list-item two-line>
+        <!-- <v-list-item two-line>
         <v-list-item-content>
           <v-list-item-title>Meal times</v-list-item-title>
           <v-list-item-subtitle>Add or delete meal times</v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item> -->
 
-      <v-divider></v-divider>
+        <v-divider></v-divider>
 
-      <v-subheader>Advanced</v-subheader>
+        <v-subheader>Advanced</v-subheader>
 
-      <v-list-item three-line>
-        <v-list-item-content>
-          <v-list-item-title>Password</v-list-item-title>
-          <v-list-item-subtitle>Change your password</v-list-item-subtitle>
-          <v-list-item-subtitle class="py-3 ml-1"
-            >s*******</v-list-item-subtitle
-          >
-        </v-list-item-content>
-        <v-list-item-action>
-          <v-btn icon color="grey">
-            <v-icon>mdi-pencil</v-icon>
-          </v-btn>
-        </v-list-item-action>
-      </v-list-item>
+        <v-list-item three-line>
+          <v-list-item-content>
+            <v-list-item-title>Password</v-list-item-title>
+            <v-list-item-subtitle>Change your password</v-list-item-subtitle>
+            <v-list-item-subtitle class="py-3 ml-1"
+              >s*******</v-list-item-subtitle
+            >
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-btn icon color="grey">
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
+          </v-list-item-action>
+        </v-list-item>
 
-      <v-list-item three-line>
-        <v-list-item-content>
-          <v-list-item-title>Location</v-list-item-title>
-          <v-list-item-subtitle
-            >Update to your current location</v-list-item-subtitle
-          >
-          <v-list-item-subtitle class="py-3">
-            <v-icon>mdi-map-marker</v-icon>
-            <span class="ml-2 text-capitalize">city, country</span>
-          </v-list-item-subtitle>
-        </v-list-item-content>
-        <v-list-item-action>
-          <v-btn icon color="grey">
-            <v-icon>mdi-pencil</v-icon>
-          </v-btn>
-        </v-list-item-action>
-      </v-list-item>
+        <v-list-item three-line>
+          <v-list-item-content>
+            <v-list-item-title>Location</v-list-item-title>
+            <v-list-item-subtitle
+              >Update to your current location</v-list-item-subtitle
+            >
+            <v-list-item-subtitle class="py-3">
+              <v-icon>mdi-map-marker</v-icon>
+              <span class="ml-2 text-capitalize">city, country</span>
+            </v-list-item-subtitle>
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-btn icon color="grey">
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
+          </v-list-item-action>
+        </v-list-item>
 
-      <v-list-item two-line>
-        <v-list-item-content>
-          <v-list-item-title>Delete account</v-list-item-title>
-          <v-list-item-subtitle
-            >Remember all your data will be lost</v-list-item-subtitle
-          >
-        </v-list-item-content>
-        <v-list-item-action>
-          <v-btn icon color="grey">
-            <v-icon>mdi-delete</v-icon>
-          </v-btn>
-        </v-list-item-action>
-      </v-list-item>
-    </v-list>
+        <v-list-item two-line>
+          <v-list-item-content>
+            <v-list-item-title>Delete account</v-list-item-title>
+            <v-list-item-subtitle
+              >Remember all your data will be lost</v-list-item-subtitle
+            >
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-btn icon color="grey">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </v-list-item-action>
+        </v-list-item>
+      </v-list>
+    </v-card>
     <!-- <v-row>
       <v-col cols="12">
         <v-card>

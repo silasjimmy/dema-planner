@@ -1,11 +1,11 @@
 <template>
   <div>
-    <p class="text-center mt-16 text--secondary" v-if="!meals">
+    <p class="text-center mt-16 text--secondary" v-if="meals.length === 0">
       No data available.
     </p>
 
     <!-- Meal information -->
-    <v-list v-if="meals">
+    <v-list v-if="meals.length > 0">
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="text-h6 font-weight-bold text-center"

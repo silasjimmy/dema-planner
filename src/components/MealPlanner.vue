@@ -20,7 +20,7 @@
           :close-on-content-click="false"
         >
           <template v-slot:activator="{ on, attrs }">
-            <v-btn icon :disabled="!meals" v-bind="attrs" v-on="on">
+            <v-btn icon :disabled="meals.length === 0" v-bind="attrs" v-on="on">
               <v-icon>mdi-calendar</v-icon>
             </v-btn>
           </template>
@@ -51,7 +51,7 @@
           </v-date-picker>
         </v-menu>
       </div>
-      <v-tooltip top color="black">
+      <v-tooltip left color="black">
         <template v-slot:activator="{ on, attrs }">
           <v-btn
             fab
@@ -59,7 +59,7 @@
             elevation="1"
             color="success"
             :loading="!showMeals"
-            :disabled="!meals"
+            :disabled="meals.length === 0"
             v-bind="attrs"
             v-on="on"
             @click="regenerateMeals"
@@ -87,7 +87,7 @@
     </v-alert>
 
     <v-row no-gutters>
-      <v-col cols="12" lg="8" class="mx-auto py-4" v-if="!meals">
+      <v-col cols="12" lg="8" class="mx-auto py-4" v-if="meals.length === 0">
         <div class="text-center">
           <p class="text--secondary">
             It seems you don't have meals for today. You can do so by clicking
@@ -106,7 +106,7 @@
           </v-btn>
         </div>
       </v-col>
-      <v-col cols="12" v-if="meals">
+      <v-col cols="12" v-if="meals.length > 0">
         <div class="meal-cards" v-if="showMeals">
           <v-container>
             <v-row>
@@ -354,7 +354,7 @@ export default {
   title: "Meal planner",
   name: "MealPlanner",
   created() {
-    this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
+    // this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
     // this.loadMeals();
   },
   data() {

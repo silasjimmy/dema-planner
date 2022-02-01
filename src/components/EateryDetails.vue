@@ -1,30 +1,45 @@
 <template>
-  <v-container fluid class="b">
-    <v-row class="b">
-      <v-btn icon>
+  <v-container fluid>
+    <v-row>
+      <v-btn icon @click="$router.go(-1)">
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
     </v-row>
-    <v-row class="b">
-      <v-col cols="5">
-        <v-img class="b" height="200px"></v-img>
+    <v-row>
+      <v-col cols="12" lg="5">
+        <v-img :src="eatery.image" class="rounded-lg" height="200px"></v-img>
       </v-col>
-      <v-col cols="7" align-self="end">
-        <div class="b">
-          <h1>Eatery name</h1>
-          <h2>Eatery bio</h2>
-          <h3>Eatery rating</h3>
+      <v-col cols="12" lg="7" align-self="end">
+        <div class="text-center text-lg-left">
+          <h1 class="font-weight-medium text-h5 text-capitalize">
+            {{ eatery.name }}
+          </h1>
+          <div class="my-2 d-flex align-center justify-center justify-lg-start">
+            <v-rating
+              :value="eatery.ratings"
+              background-color="grey"
+              color="orange"
+              dense
+              half-increments
+              readonly
+              size="20"
+            ></v-rating>
+            <span class="subtitle-2 ml-4">({{ eatery.ratings }})</span>
+          </div>
+          <p class="blockquote pl-0 py-0">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias modi
+            obcaecati ducimus voluptate.
+          </p>
         </div>
       </v-col>
-      <v-col cols="5">
+      <v-col cols="9" lg="5" class="mx-auto mx-lg-0">
         <v-list two-line class="py-0">
           <v-list-item>
             <v-list-item-icon>
               <v-icon> mdi-map-marker </v-icon>
             </v-list-item-icon>
-
             <v-list-item-content>
-              <v-list-item-title>Address</v-list-item-title>
+              <v-list-item-title>Location</v-list-item-title>
               <v-list-item-subtitle>City, Country</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
@@ -34,8 +49,8 @@
               <v-icon> mdi-email </v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title>name@domain.com</v-list-item-title>
-              <v-list-item-subtitle>Email address</v-list-item-subtitle>
+              <v-list-item-title>Email address</v-list-item-title>
+              <v-list-item-subtitle>name@domain.com</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
 
@@ -44,35 +59,37 @@
               <v-icon> mdi-phone </v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title>+0 000 000 000</v-list-item-title>
-              <v-list-item-subtitle>Phone number</v-list-item-subtitle>
+              <v-list-item-title>Phone number</v-list-item-title>
+              <v-list-item-subtitle>+0 000 000 000</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
 
           <v-list-item>
             <v-list-item-icon>
-              <v-icon>mdi-home</v-icon>
+              <v-icon>mdi-web</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title>www.domainname.com</v-list-item-title>
-              <v-list-item-subtitle>Website</v-list-item-subtitle>
+              <v-list-item-title>Website</v-list-item-title>
+              <v-list-item-subtitle>www.domainname.com</v-list-item-subtitle>
             </v-list-item-content>
-            <v-list-item-icon>
-              <v-icon>mdi-message-text</v-icon>
-            </v-list-item-icon>
+            <v-list-item-action>
+              <v-btn icon>
+                <v-icon>mdi-open-in-new</v-icon>
+              </v-btn>
+            </v-list-item-action>
           </v-list-item>
 
           <v-divider></v-divider>
 
           <v-list-item>
-            <v-btn block>
+            <v-btn block color="success">
               <v-icon left>mdi-message-text</v-icon>
               Send a message
             </v-btn>
           </v-list-item>
         </v-list>
       </v-col>
-      <v-col cols="7">
+      <v-col cols="12" lg="7">
         <div class="b">
           <h1>Menu</h1>
         </div>
@@ -86,9 +103,35 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from "vuex";
+
 export default {
   name: "EateryDetails",
-  title: "Details",
+  title: "Eatery details",
+  created() {
+    // Load the eateries to the store first if list is empty
+    if (this.$store.state.eateries.length === 0) this.getEateriesAction();
+
+    // Retrieve the eatery with the specified id
+    this.eatery = this.getEateryById(this.id);
+  },
+  data() {
+    return {
+      eatery: "",
+    };
+  },
+  computed: {
+    ...mapGetters(["getEateryById"]),
+  },
+  methods: {
+    ...mapActions(["getEateriesAction"]),
+  },
+  props: {
+    id: {
+      type: Number,
+      default: 0,
+    },
+  },
 };
 </script>
 

@@ -9,10 +9,10 @@ export default new Vuex.Store({
     signedIn: '',
     userRole: '',
     dashboardLinks: '',
-    meals: null,
-    availableFoods: null,
+    meals: [],
+    availableFoods: [],
     likedFoods: null,
-    nearestEateries: null,
+    eateries: [],
     userProfile: null,
     mealTimes: null,
   },
@@ -65,8 +65,8 @@ export default new Vuex.Store({
     setLikedFoods(state, foods) {
       state.likedFoods = foods
     },
-    setNearestEateries(state, eateries) {
-      state.nearestEateries = eateries
+    setEateries(state, eateries) {
+      state.eateries = eateries
     },
     setUserProfile(state, profile) {
       state.userProfile = profile
@@ -178,7 +178,7 @@ export default new Vuex.Store({
       // Commit the foods to the liked foods state
       commit('setLikedFoods', foods);
     },
-    getNearestEateriesAction({ commit }) {
+    getEateriesAction({ commit }) {
       // Get the eateries from the database
       const eateries = [
         {
@@ -200,7 +200,7 @@ export default new Vuex.Store({
       ]
 
       // Commit the eateries to the nearest eateries state
-      commit('setNearestEateries', eateries);
+      commit('setEateries', eateries);
     },
     getUserProfileAction({ commit }) {
       // Get the profile from the database
@@ -237,6 +237,7 @@ export default new Vuex.Store({
       commit('setMealTimes', mealTimes);
     },
   },
-  modules: {
-  }
+  getters: {
+    getEateryById: state => id => state.eateries.find(e => e.id === id)
+  },
 })
