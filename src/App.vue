@@ -107,11 +107,12 @@
       >
         <template v-slot:activator="{ on, attrs }">
           <v-badge dot bordered offset-x="15" color="green" offset-y="15">
-            <v-btn disabled v-bind="attrs" v-on="on" icon>
+            <v-btn v-bind="attrs" v-on="on" icon>
               <v-icon>mdi-bell</v-icon>
             </v-btn>
           </v-badge>
         </template>
+
         <v-tabs hide-slider grow color="green">
           <v-tab class="text-none font-weight-medium">Notifications</v-tab>
           <v-tab class="text-none font-weight-medium">Messages</v-tab>
@@ -135,7 +136,7 @@
                   link
                   plain
                   to="/notifications"
-                  class="text-none my0"
+                  class="text-none"
                   @click="bellMenu = false"
                   >View all</v-btn
                 >
@@ -380,58 +381,62 @@
 </template>
 
 <script>
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import {
+  getAuth,
+  // onAuthStateChanged,
+  signOut,
+} from "firebase/auth";
 import { mapState } from "vuex";
 import MealsInfo from "./components/MealsInfo.vue";
 
 export default {
   name: "App",
   created() {
-    // Sets the sign in status, user email and user role in store on app creation
-    this.$store.commit(
-      "setSignedIn",
-      localStorage.getItem("loggedIn") === "true"
-    );
-    this.$store.commit("setUserEmail", localStorage.getItem("userEmail"));
-    this.$store.commit("setUserRole", localStorage.getItem("userRole"));
+    // // Sets the sign in status, user email and user role in store on app creation
+    // this.$store.commit(
+    //   "setSignedIn",
+    //   localStorage.getItem("loggedIn") === "true"
+    // );
+    // this.$store.commit("setUserEmail", localStorage.getItem("userEmail"));
+    // this.$store.commit("setUserRole", localStorage.getItem("userRole"));
 
     // Set the dashboard links
     this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
 
-    // localStorage.setItem("loggedIn", "true");
-    // localStorage.setItem("userRole", "consumer");
-    // this.$store.commit("setSignedIn", true);
-    // this.$store.commit("setUserRole", "consumer");
+    localStorage.setItem("loggedIn", "true");
+    localStorage.setItem("userRole", "consumer");
+    this.$store.commit("setSignedIn", true);
+    this.$store.commit("setUserRole", "consumer");
   },
-  mounted() {
-    // Set the page title when the user logs in
-    this.pageTitle = document.title;
+  // mounted() {
+  //   // Set the page title when the user logs in
+  //   this.pageTitle = document.title;
 
-    // Monitor the user sign in activity
-    const auth = getAuth();
+  //   // Monitor the user sign in activity
+  //   const auth = getAuth();
 
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // Store the user email locally
-        localStorage.setItem("userEmail", user.email);
+  //   onAuthStateChanged(auth, (user) => {
+  //     if (user) {
+  //       // Store the user email locally
+  //       localStorage.setItem("userEmail", user.email);
 
-        // Set logged in to true
-        localStorage.setItem("loggedIn", "true");
-      } else {
-        // Remove user email from local storage
-        localStorage.removeItem("userEmail");
+  //       // Set logged in to true
+  //       localStorage.setItem("loggedIn", "true");
+  //     } else {
+  //       // Remove user email from local storage
+  //       localStorage.removeItem("userEmail");
 
-        // Remove user role from local storage
-        localStorage.removeItem("userRole");
+  //       // Remove user role from local storage
+  //       localStorage.removeItem("userRole");
 
-        // Set logged in to false
-        localStorage.setItem("loggedIn", "false");
+  //       // Set logged in to false
+  //       localStorage.setItem("loggedIn", "false");
 
-        // Update app store
-        this.$store.commit("setSignedIn", false);
-      }
-    });
-  },
+  //       // Update app store
+  //       this.$store.commit("setSignedIn", false);
+  //     }
+  //   });
+  // },
   data() {
     return {
       pageTitle: "",
