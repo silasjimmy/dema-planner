@@ -21,6 +21,7 @@ import Profile from '@/components/Profile.vue';
 import Settings from '@/components/Settings.vue';
 import PageNotFound from '@/components/PageNotFound.vue';
 import Notifications from '@/components/Notifications.vue';
+import Messages from '@/components/Messages.vue';
 
 Vue.use(VueRouter)
 
@@ -176,6 +177,14 @@ const routes = [
     path: '/notifications',
     name: 'notifications',
     component: Notifications,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/messages',
+    name: 'messages',
+    component: Messages,
     meta: {
       requiresAuth: true
     }
