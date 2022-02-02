@@ -22,6 +22,7 @@ import Settings from '@/components/Settings.vue';
 import PageNotFound from '@/components/PageNotFound.vue';
 import Notifications from '@/components/Notifications.vue';
 import Messages from '@/components/Messages.vue';
+import Chat from '@/components/Chat.vue';
 
 Vue.use(VueRouter)
 
@@ -185,6 +186,14 @@ const routes = [
     path: '/messages',
     name: 'messages',
     component: Messages,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/messages/:id',
+    name: 'message-chat',
+    component: Chat,
     meta: {
       requiresAuth: true
     }

@@ -3,28 +3,24 @@
     <v-card outlined class="rounded-lg">
       <v-card-text>
         <v-subheader>
-          <v-divider></v-divider>
+          <v-spacer></v-spacer>
           <span class="mx-4">Today</span>
-          <v-divider></v-divider>
+          <v-spacer></v-spacer>
         </v-subheader>
-        <v-list-item link class="mb-1">
+        <v-list-item
+          link
+          v-for="n in notifications"
+          :key="n.id"
+          :to="n.link"
+          class="py-1"
+        >
           <v-list-item-content>
             <v-list-item-title>
-              Hey there! Are you still interested in trying out this meal?
+              {{ n.message }}
             </v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
-            <span class="text--secondary caption">10:40am</span>
-          </v-list-item-action>
-        </v-list-item>
-        <v-list-item link>
-          <v-list-item-content>
-            <v-list-item-title>
-              Something happed in an eatery. Check out the details
-            </v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <span class="text--secondary caption">08:32am</span>
+            <span class="text--secondary caption">{{ n.time }}</span>
           </v-list-item-action>
         </v-list-item>
       </v-card-text>
@@ -36,6 +32,19 @@
 export default {
   title: "Notifications",
   name: "Notifications",
+  data() {
+    return {
+      notifications: [
+        { message: "Hey there!", time: "07:00am", id: 1, link: "" },
+        {
+          message: "The nitty gritty details of it",
+          time: "06:12am",
+          id: 2,
+          link: "",
+        },
+      ],
+    };
+  },
 };
 </script>
 
