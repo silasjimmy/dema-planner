@@ -1,131 +1,139 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12">
-        <v-card>
-          <v-card-title>
-            <v-text-field
-              hide-details
-              outlined
-              dense
-              class="shrink"
-              v-model="searchFood"
-              append-icon="mdi-magnify"
-              label="Search..."
-              color="green"
-            ></v-text-field>
+  <v-container fluid>
+    <v-card outlined class="rounded-lg">
+      <v-card-title>
+        <!-- Search food field -->
+        <v-text-field
+          hide-details
+          outlined
+          dense
+          single-line
+          class="shrink"
+          v-model="searchFood"
+          append-icon="mdi-magnify"
+          label="Search..."
+          color="green"
+        ></v-text-field>
 
-            <v-spacer></v-spacer>
+        <v-spacer></v-spacer>
 
-            <!-- Food add/edit dialog -->
-            <v-dialog v-model="foodFormDialog" max-width="500px">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn icon v-bind="attrs" v-on="on">
-                  <v-icon>mdi-plus</v-icon>
-                </v-btn>
-              </template>
-              <v-card>
-                <v-card-title class="d-flex justify-space-between align-center">
-                  <span class="text-h6">{{ formTitle }}</span>
-                  <v-btn icon @click="closeFoodFormDialog">
-                    <v-icon>mdi-close</v-icon>
-                  </v-btn>
-                </v-card-title>
+        <!-- Food add/edit dialog -->
+        <v-dialog v-model="foodFormDialog" max-width="500px">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn text rounded class="text-none" v-bind="attrs" v-on="on">
+              <v-icon left>mdi-plus</v-icon>
+              Add food
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title class="d-flex justify-space-between align-center">
+              <span class="text-h6">{{ formTitle }}</span>
+              <v-btn icon @click="closeFoodFormDialog">
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </v-card-title>
 
-                <v-card-text>
-                  <v-container>
-                    <v-row>
-                      <v-col cols="12">
-                        <v-text-field
-                          label="Name"
-                          v-model="editedFood.name"
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-card-text>
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-col cols="12">
+                    <v-text-field
+                      label="Name"
+                      v-model="editedFood.name"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
 
-                <v-card-text class="text-center">
-                  <v-btn color="green" class="white--text" @click="saveFood">
-                    save
-                  </v-btn>
-                </v-card-text>
-              </v-card>
-            </v-dialog>
+            <v-card-text class="text-center">
+              <v-btn color="green" class="white--text" @click="saveFood">
+                save
+              </v-btn>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
 
-            <!-- Food delete dialog -->
-            <v-dialog persistent width="auto" v-model="foodDeleteDialog">
-              <v-card>
-                <v-card-text class="py-0 text-center">
-                  <p class="pt-4 subtitle-1">
-                    Are you sure you want to delete this food?
-                  </p>
-                </v-card-text>
-                <v-card-actions class="pt-0">
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    text
-                    rounded
-                    @click="closeFoodDeleteDialog"
-                    class="text-none mr-4"
-                    color="error"
-                    >No</v-btn
-                  >
-                  <v-btn
-                    text
-                    rounded
-                    class="text-none ml-4"
-                    color="success"
-                    @click="deleteFoodConfirm"
-                    >Yes</v-btn
-                  >
-                  <v-spacer></v-spacer>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-          </v-card-title>
-          <v-data-table
-            fixed-header
-            class="elevation-4 text-center"
-            show-expand
-            single-expand
-            :expanded.sync="expanded"
-            item-key="name"
-            :headers="headers"
-            :items="foods"
-            :items-per-page="5"
-            :search="searchFood"
-            sort-by="name"
-            color="success"
-          >
-            <template v-slot:item.nutrient="{ item }">
-              <span :class="setNutrientColor(item.nutrient)">{{
-                item.nutrient
-              }}</span>
-            </template>
-            <template v-slot:item.calories="{ item }">
-              <v-chip dark small :color="setCaloriesColor(item.nutrient)">
-                {{ item.calories }}
-              </v-chip>
-            </template>
-            <template v-slot:item.actions="{ item }">
-              <v-icon small @click="editFood(item)"> mdi-pencil </v-icon>
-              <v-icon small class="mx-3" @click="deleteFood(item)">
-                mdi-delete
-              </v-icon>
-              <v-icon small @click="viewFoodInfoDialog = true">mdi-pin</v-icon>
-            </template>
-            <template v-slot:expanded-item="{ item }">
-              <span>More information about {{ item.name }}</span>
-            </template>
-          </v-data-table>
-        </v-card>
-      </v-col>
-    </v-row>
+        <!-- Food delete dialog -->
+        <question-prompt
+          :question="'Are you sure you want to delete this food?'"
+          :dialog="foodDeleteDialog"
+          @cancel="closeFoodDeleteDialog"
+          @confirm="deleteFoodConfirm"
+        ></question-prompt>
+        <!-- <v-dialog persistent width="auto" v-model="foodDeleteDialog">
+          <v-card>
+            <v-card-text class="py-0 text-center">
+              <p class="pt-4 subtitle-1">
+                Are you sure you want to delete this food?
+              </p>
+            </v-card-text>
+            <v-card-actions class="pt-0">
+              <v-spacer></v-spacer>
+              <v-btn
+                text
+                rounded
+                @click="closeFoodDeleteDialog"
+                class="text-none mx-2"
+                color="error"
+                >No</v-btn
+              >
+              <v-btn
+                text
+                rounded
+                class="text-none mx-2"
+                color="success"
+                @click="deleteFoodConfirm"
+                >Yes</v-btn
+              >
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog> -->
+      </v-card-title>
+
+      <v-data-table
+        fixed-header
+        item-key="name"
+        :headers="headers"
+        :items="foods"
+        :items-per-page="5"
+        :search="searchFood"
+        sort-by="name"
+        color="success"
+      >
+        <template v-slot:item.nutrient="{ item }">
+          <span :class="setNutrientColor(item.nutrient)">{{
+            item.nutrient
+          }}</span>
+        </template>
+        <template v-slot:item.calories="{ item }">
+          <v-chip dark small :color="setCaloriesColor(item.nutrient)">
+            {{ item.calories }}
+          </v-chip>
+        </template>
+        <template v-slot:item.actions="{ item }">
+          <v-btn icon @click="editFood(item)">
+            <v-icon small> mdi-pencil </v-icon>
+          </v-btn>
+          <v-btn icon @click="deleteFood(item)">
+            <v-icon small> mdi-delete </v-icon>
+          </v-btn>
+          <v-btn icon @click="viewFoodInfoDialog = true">
+            <v-icon small>mdi-database-eye</v-icon>
+          </v-btn>
+        </template>
+        <template v-slot:expanded-item="{ item }">
+          <span>More information about {{ item.name }}</span>
+        </template>
+      </v-data-table>
+    </v-card>
   </v-container>
 </template>
 
 <script>
+import QuestionPrompt from "./QuestionPrompt.vue";
+
 export default {
   title: "Foods",
   name: "Foods",
@@ -135,11 +143,9 @@ export default {
   data() {
     return {
       headers: [
-        { text: "Name", value: "name" },
-        { text: "Nutrient", value: "nutrient" },
-        { text: "Calories (cal)", value: "calories" },
-        { text: "Actions", value: "actions", sortable: false },
-        { text: "View more", value: "data-table-expand" },
+        { text: "Name", value: "name", align: "center" },
+        { text: "Nutrient", value: "nutrient", align: "center" },
+        { text: "Actions", value: "actions", align: "center", sortable: false },
       ],
       foods: [
         { name: "Chapati", nutrient: "Carbohydrate", calories: 10 },
@@ -160,7 +166,6 @@ export default {
       alertOn: false,
       alertType: "success",
       alertMsg: "",
-      expanded: [],
     };
   },
   computed: {
@@ -220,6 +225,7 @@ export default {
       });
     },
   },
+  components: { QuestionPrompt },
 };
 </script>
 

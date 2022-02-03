@@ -404,9 +404,9 @@ export default {
     this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
 
     localStorage.setItem("loggedIn", "true");
-    localStorage.setItem("userRole", "consumer");
+    localStorage.setItem("userRole", "admin");
     this.$store.commit("setSignedIn", true);
-    this.$store.commit("setUserRole", "consumer");
+    this.$store.commit("setUserRole", "admin");
   },
   // mounted() {
   //   // Set the page title when the user logs in
