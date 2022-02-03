@@ -15,6 +15,7 @@ export default new Vuex.Store({
     eateries: [],
     userProfile: null,
     mealTimes: null,
+    foods: [],
   },
   mutations: {
     setUserEmail(state, email) {
@@ -73,6 +74,9 @@ export default new Vuex.Store({
     },
     setMealTimes(state, mealTimes) {
       state.mealTimes = mealTimes
+    },
+    setFoods(state, foods) {
+      state.foods = foods
     },
   },
   actions: {
@@ -235,6 +239,31 @@ export default new Vuex.Store({
 
       // Commit the profile to the user profile state
       commit('setMealTimes', mealTimes);
+    },
+    getFoodsAction({ commit }) {
+      const foods = [
+        {
+          id: 0,
+          avatar:
+            "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=699&q=80",
+          name: "Burger",
+          nutrient: {
+            name: "carbohydrates",
+            amount: 144,
+            units: "g",
+          },
+          group: "starch",
+          form: "solid",
+          calories: {
+            amount: 100,
+            units: "cal",
+          },
+          ingredients: [{ name: "onions", amount: 2, units: "slices" }],
+          regions: ["kenya"],
+          instructions: [{ step: 1, text: "Do something first" }],
+        },
+      ]
+      commit('setFoods', foods);
     },
   },
   getters: {

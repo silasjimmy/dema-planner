@@ -96,7 +96,7 @@
             </v-dialog>
           </v-toolbar>
         </template>
-        <template v-slot:item.online="{ item }">
+        <template v-slot:[`item.online`]="{ item }">
           <v-avatar size="20" color="success" v-if="item.online">
             <v-icon small class="white--text">mdi-plus</v-icon>
           </v-avatar>
@@ -104,7 +104,7 @@
             <v-icon small class="white--text">mdi-minus</v-icon>
           </v-avatar>
         </template>
-        <template v-slot:item.actions="{ item }">
+        <template v-slot:[`item.actions`]="{ item }">
           <v-icon small class="mr-2" @click="editItem(item)">
             mdi-pencil
           </v-icon>
@@ -119,12 +119,16 @@
 </template>
 
 <script>
+import getAuth from "firebase/auth";
+
 export default {
   name: "Users",
   title: "Users",
   created() {
-    this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
+    // this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
     this.initialize();
+    // Start listing users from the beginning, 1000 at a time.
+    // this.getAllUsers();
   },
   data() {
     return {
@@ -175,7 +179,30 @@ export default {
         },
       ];
     },
+    getAllUsers() {
+      // console.log("Get All users!");
 
+      // List batch of users, 1000 at a time.
+      getAuth()
+        .listUsers(1000)
+        .then((r) => {
+          console.log(r);
+        });
+      // getAuth()
+      //   .listUsers(1000, nextPageToken)
+      //   .then((listUsersResult) => {
+      //     listUsersResult.users.forEach((userRecord) => {
+      //       console.log("user", userRecord.toJSON());
+      //     });
+      //     if (listUsersResult.pageToken) {
+      //       // List next batch of users.
+      //       this.getAllUsers(listUsersResult.pageToken);
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     console.log("Error listing users:", error);
+      //   });
+    },
     editItem(item) {
       this.editedIndex = this.users.indexOf(item);
       this.editedItem = Object.assign({}, item);

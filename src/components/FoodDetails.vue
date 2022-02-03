@@ -1,15 +1,15 @@
 <template>
   <v-dialog persistent scrollable :width="width" v-model="dialog">
     <v-card>
-      <v-toolbar elevation="0">
-        <v-toolbar-title>Food details</v-toolbar-title>
+      <v-card-title>
+        <span>Food details</span>
 
         <v-spacer></v-spacer>
 
         <v-btn icon @click="close">
           <v-icon>mdi-close</v-icon>
         </v-btn>
-      </v-toolbar>
+      </v-card-title>
 
       <v-divider></v-divider>
 
@@ -72,14 +72,14 @@
             </v-col>
             <v-col cols="12">
               <v-list subheader one-line>
-                <v-subheader>Recipe</v-subheader>
-                <v-list-item v-for="r in food.recipe" :key="r.step">
+                <v-subheader>Instructions</v-subheader>
+                <v-list-item v-for="i in food.instructions" :key="i.step">
                   <v-list-item-icon>
-                    <v-icon>{{ `mdi-numeric-${r.step}` }}</v-icon>
+                    <v-icon>{{ `mdi-numeric-${i.step}` }}</v-icon>
                   </v-list-item-icon>
                   <v-list-item-content>
                     <p class="my-0">
-                      {{ r.text }}
+                      {{ i.text }}
                     </p>
                   </v-list-item-content>
                 </v-list-item>
@@ -88,17 +88,6 @@
           </v-row>
         </v-container>
       </v-card-text>
-
-      <v-divider></v-divider>
-
-      <v-card-actions class="justify-center">
-        <v-btn rounded @click="edit" class="text-none mx-2" color="success">
-          Edit
-        </v-btn>
-        <v-btn rounded class="text-none mx-2" color="error" @click="deleteFood"
-          >Delete</v-btn
-        >
-      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
@@ -107,12 +96,6 @@
 export default {
   name: "FoodDetails",
   methods: {
-    edit() {
-      this.$emit("edit");
-    },
-    deleteFood() {
-      this.$emit("deleteFood");
-    },
     close() {
       this.$emit("close");
     },
