@@ -11,9 +11,12 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn plain rounded link class="text-none" to="/home">Home</v-btn>
-      <v-btn plain rounded link class="text-none" to="/sign-in">Log in</v-btn>
-      <v-btn plain rounded link class="text-none" to="/sign-up">Sign up</v-btn>
+      <div class="d-none d-sm-block">
+        <v-btn plain rounded link class="text-none" to="/sign-up"
+          >Create account</v-btn
+        >
+        <v-btn plain rounded link class="text-none" to="/sign-in">Log in</v-btn>
+      </div>
     </v-app-bar>
 
     <!-- Home side navigation -->
@@ -34,7 +37,7 @@
       <v-divider></v-divider>
 
       <!-- Navigation links -->
-      <v-list flat>
+      <v-list rounded>
         <v-list-item-group>
           <v-subheader>Home</v-subheader>
           <v-list-item link to="/home">
@@ -88,7 +91,7 @@
         @click="leftSidenav = true"
       ></v-app-bar-nav-icon>
 
-      <v-toolbar-title>Page title</v-toolbar-title>
+      <v-toolbar-title>{{ pageTitle }}</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
@@ -104,7 +107,7 @@
       >
         <template v-slot:activator="{ on, attrs }">
           <v-badge dot bordered offset-x="15" color="green" offset-y="15">
-            <v-btn v-bind="attrs" v-on="on" icon>
+            <v-btn disabled v-bind="attrs" v-on="on" icon>
               <v-icon>mdi-bell</v-icon>
             </v-btn>
           </v-badge>
@@ -213,120 +216,36 @@
       <!-- Navigation links -->
       <v-list rounded>
         <v-list-item-group>
-          <div v-if="userRole === 'eatery'">
-            <v-list-item link @click="pageTitle = 'Menu'" to="/menu">
-              <v-list-item-icon>
-                <v-icon>mdi-menu</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>Menu</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item
-              link
-              @click="pageTitle = 'Food request'"
-              to="/food-request"
-            >
-              <v-list-item-icon>
-                <v-icon>mdi-pizza</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>Food request</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item
-              link
-              @click="pageTitle = 'Settings'"
-              to="/eatery-settings"
-            >
-              <v-list-item-icon>
-                <v-icon>mdi-account</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>Settings</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </div>
-          <div v-if="userRole === 'admin'">
-            <v-list-item link @click="pageTitle = 'Summary'" to="/summary">
-              <v-list-item-icon>
-                <v-icon>mdi-home</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>Summary</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item link @click="pageTitle = 'Users'" to="/users">
-              <v-list-item-icon>
-                <v-icon>mdi-account</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>Users</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item link @click="pageTitle = 'Foods'" to="/foods">
-              <v-list-item-icon>
-                <v-icon>mdi-pizza</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>Foods</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item
-              link
-              @click="pageTitle = 'Settings'"
-              to="/admin-settings"
-            >
-              <v-list-item-icon>
-                <v-icon>mdi-account</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>Settings</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </div>
-          <div v-if="userRole === 'consumer'">
-            <v-list-item link to="/meal-planner">
-              <v-list-item-icon>
-                <v-icon>mdi-hamburger</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>Meal planner</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item link to="/available-foods">
-              <v-list-item-icon>
-                <v-icon>mdi-pizza</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>Available foods</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item link to="/nearest-eateries">
-              <v-list-item-icon>
-                <v-icon>mdi-table-chair</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>Nearest eateries</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item link to="/profile">
-              <v-list-item-icon>
-                <v-icon>mdi-account-details</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>Profile</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item link to="/settings">
-              <v-list-item-icon>
-                <v-icon>mdi-cog</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>Settings</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </div>
+          <v-list-item
+            link
+            v-for="link in dashboardLinks"
+            :key="link.text"
+            :to="link.url"
+            @click="updatePageTitle"
+          >
+            <v-list-item-icon>
+              <v-icon>{{ link.icon }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>{{ link.text }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item link to="/profile" @click="updatePageTitle">
+            <v-list-item-icon>
+              <v-icon>mdi-account-details</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Profile</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item link to="/settings" @click="updatePageTitle">
+            <v-list-item-icon>
+              <v-icon>mdi-cog</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Settings</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
         </v-list-item-group>
       </v-list>
 
@@ -357,139 +276,113 @@
       :permanent="$vuetify.breakpoint.smAndUp"
       v-model="rightSidenav"
     >
-      <!-- Meal information -->
-      <v-list>
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title class="text-h6 font-weight-bold text-center"
-              >Title</v-list-item-title
-            >
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item>
-          <v-list-item-content>
-            <div>
-              <v-img
-                height="150px"
-                width="150px"
-                class="b rounded-circle mx-auto"
-              ></v-img>
-            </div>
-            <div>
-              <v-card-text>
-                <div
-                  class="
-                    font-weight-bold
-                    green--text
-                    d-flex
-                    justify-space-between
-                    align-center
-                    py-1
-                  "
-                >
-                  <span>Proteins</span><span>0g</span>
-                </div>
-                <div
-                  class="
-                    font-weight-bold
-                    orange--text
-                    d-flex
-                    justify-space-between
-                    align-center
-                    py-1
-                  "
-                >
-                  <span>Vitamins</span><span>0g</span>
-                </div>
-                <div
-                  class="
-                    font-weight-bold
-                    blue-grey--text
-                    d-flex
-                    justify-space-between
-                    align-center
-                    py-1
-                  "
-                >
-                  <span>Carbs</span><span>0g</span>
-                </div>
-                <div
-                  class="
-                    font-weight-bold
-                    grey--text
-                    text--darken-3
-                    d-flex
-                    justify-space-between
-                    align-center
-                    mt-3
-                  "
-                >
-                  <span>Calories</span><span>0cal</span>
-                </div>
-              </v-card-text>
-              <v-subheader>Suggested eateries</v-subheader>
-              <v-card-text class="pt-0 pb-1">
-                <div class="d-flex align-center justify-space-between">
-                  <span class="subtitle-2 text--primary">Breakfast</span>
-                  <v-btn
-                    plain
-                    link
-                    class="text-none subtitle-2"
-                    color="black"
-                    to="/#"
-                    >Mr Foxx</v-btn
-                  >
-                </div>
-                <div class="d-flex align-center justify-space-between">
-                  <span class="subtitle-2 text--primary">Lunch</span>
-                  <v-btn
-                    plain
-                    link
-                    class="text-none subtitle-2"
-                    color="black"
-                    to="/#"
-                    >Mr Foxx</v-btn
-                  >
-                </div>
-                <div class="d-flex align-center justify-space-between">
-                  <span class="subtitle-2 text--primary">Dinner</span>
-                  <v-btn
-                    plain
-                    link
-                    class="text-none subtitle-2"
-                    color="black"
-                    to="/#"
-                    >Mr Foxx</v-btn
-                  >
-                </div>
-              </v-card-text>
-            </div>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
+      <meals-info v-if="userRole === 'consumer'"></meals-info>
     </v-navigation-drawer>
 
+    <!-- Main section -->
     <v-main>
+      <v-banner
+        single-line
+        app
+        outlined
+        v-model="isOnline"
+        v-if="signedIn"
+        class="rounded-lg"
+        transition="slide-y-transition"
+      >
+        <v-icon slot="icon" color="warning" size="24">
+          mdi-wifi-strength-alert-outline
+        </v-icon>
+        {{ internetConnectionMessage }}
+        <template v-slot:actions="{ dismiss }">
+          <v-btn rounded text color="error" @click="dismiss"> Dismiss </v-btn>
+        </template>
+      </v-banner>
       <router-view />
     </v-main>
 
-    <!-- <v-footer app absolute padless>
-      <v-row justify="center" align="center" no-gutters>
-        <v-btn text rounded class="my-2 text-none"> Home </v-btn>
-        <v-col class="pa-2 d-flex align-center" cols="12">
-          <v-btn link plain class="text-none">Terms & Conditions</v-btn>
-          <v-spacer></v-spacer>
+    <!-- Footer -->
+    <v-footer app absolute padless v-if="!signedIn">
+      <v-card flat tile color="grey lighten-5" width="100vw">
+        <v-card-text class="text-center">
+          <v-btn rounded link class="ma-2 text-none" elevation="0" to="/home"
+            >Home</v-btn
+          >
+          <v-btn
+            rounded
+            link
+            class="ma-2 text-none"
+            elevation="0"
+            to="/about-us"
+            >About us</v-btn
+          >
+          <v-btn rounded link class="ma-2 text-none" elevation="0" to="/sign-up"
+            >Create account</v-btn
+          >
+          <v-btn rounded link class="ma-2 text-none" elevation="0" to="/sign-in"
+            >Log in</v-btn
+          >
+          <v-btn
+            rounded
+            link
+            class="ma-2 text-none"
+            elevation="0"
+            to="/contact-us"
+            >Contact us</v-btn
+          >
+        </v-card-text>
+
+        <v-card-text>
+          <v-row class="text-center">
+            <v-col cols="12" md="6">
+              <h3 class="subtitle-1 text--secondary">Find us in:</h3>
+              <v-btn text rounded class="grey--text text--darken-4 text-none">
+                <v-icon left size="24px">mdi-map-marker</v-icon>
+                P.O Box 000-00000, Demaland, Kenya
+              </v-btn>
+              <v-btn text rounded class="grey--text text--darken-4 text-none">
+                <v-icon left size="24px">mdi-email</v-icon>
+                dema@gmail.com
+              </v-btn>
+              <v-btn text rounded class="grey--text text--darken-4">
+                <v-icon left size="24px">mdi-phone</v-icon>
+                +254 000 000 000
+              </v-btn>
+            </v-col>
+            <v-col cols="12" md="6">
+              <h3 class="subtitle-1 text--secondary">
+                Stay updated on our social platforms
+              </h3>
+              <v-btn class="grey--text mx-2 text--darken-4" icon>
+                <v-icon size="24px">mdi-facebook</v-icon>
+              </v-btn>
+              <v-btn class="grey--text mx-2 text--darken-4" icon>
+                <v-icon size="24px">mdi-linkedin</v-icon>
+              </v-btn>
+              <v-btn class="grey--text mx-2 text--darken-4" icon>
+                <v-icon size="24px">mdi-twitter</v-icon>
+              </v-btn>
+              <v-btn class="grey--text mx-2 text--darken-4" icon>
+                <v-icon size="24px">mdi-instagram</v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-text class="grey--text text--darken-4 text-center">
           <span>{{ new Date().getFullYear() }} — <strong>Dema</strong></span>
-          <v-spacer></v-spacer>
-          <span>All rights reserved.</span>
-        </v-col>
-      </v-row>
-    </v-footer> -->
+        </v-card-text>
+      </v-card>
+    </v-footer>
   </v-app>
 </template>
 
 <script>
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { mapState } from "vuex";
+import MealsInfo from "./components/MealsInfo.vue";
 
 export default {
   name: "App",
@@ -502,13 +395,18 @@ export default {
     this.$store.commit("setUserEmail", localStorage.getItem("userEmail"));
     this.$store.commit("setUserRole", localStorage.getItem("userRole"));
 
-    console.log(
-      this.$store.state.signedIn,
-      this.$store.state.userEmail,
-      this.$store.state.userRole
-    );
+    // Set the dashboard links
+    this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
+
+    // localStorage.setItem("loggedIn", "true");
+    // localStorage.setItem("userRole", "consumer");
+    // this.$store.commit("setSignedIn", true);
+    // this.$store.commit("setUserRole", "consumer");
   },
   mounted() {
+    // Set the page title when the user logs in
+    this.pageTitle = document.title;
+
     // Monitor the user sign in activity
     const auth = getAuth();
 
@@ -536,13 +434,20 @@ export default {
   },
   data() {
     return {
+      pageTitle: "",
       homeSidenav: false,
       leftSidenav: false,
       rightSidenav: false,
       notificationsMenu: false,
+      isOnline: !navigator.onLine,
+      internetConnectionMessage:
+        "You are now offline. Any edits you make won't be saved.",
     };
   },
   methods: {
+    updatePageTitle() {
+      this.pageTitle = document.title;
+    },
     logout() {
       // localStorage.setItem("loggedIn", "false");
       // this.$store.commit("setSignedIn", false);
@@ -561,6 +466,7 @@ export default {
     },
   },
   computed: {
+    ...mapState(["dashboardLinks"]),
     signedIn() {
       return this.$store.state.signedIn;
     },
@@ -568,11 +474,18 @@ export default {
       return this.$store.state.userRole;
     },
   },
+  components: { MealsInfo },
 };
 </script>
 
 <style>
 .b {
   border: 1px solid black;
+}
+
+.blockquote::before,
+.blockquote::after {
+  content: '"';
+  font-weight: bold;
 }
 </style>

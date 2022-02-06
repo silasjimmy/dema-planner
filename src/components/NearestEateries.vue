@@ -1,16 +1,11 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12">
-        <p class="text--secondary my-4">Nearest eateries in your location.</p>
+      <v-col cols="12" lg="8" class="mx-auto">
+        <p class="text--secondary text-center">Eateries around location.</p>
       </v-col>
-      <v-col
-        v-for="eatery in nearestEateries"
-        :key="eatery.name"
-        cols="12"
-        lg="6"
-      >
-        <v-card elevation="1">
+      <v-col v-for="eatery in eateries" :key="eatery.name" cols="12" lg="6">
+        <v-card outlined class="rounded-lg">
           <v-list-item three-line>
             <v-list-item-content>
               <v-list-item-title
@@ -33,8 +28,14 @@
                 <span class="caption ml-4">{{ eatery.ratings }}</span>
               </v-list-item-subtitle>
             </v-list-item-content>
-            <v-list-item-avatar tile color="grey" width="80px" height="70px">
-              <v-img class="b"></v-img>
+            <v-list-item-avatar
+              tile
+              class="rounded-lg"
+              color="grey"
+              width="80px"
+              height="70px"
+            >
+              <v-img :src="eatery.image"></v-img>
             </v-list-item-avatar>
           </v-list-item>
           <v-card-actions>
@@ -42,10 +43,10 @@
             <v-btn
               link
               plain
-              :to="eateryLink(eatery.id)"
+              :to="{ name: 'eatery-details', params: { id: eatery.id } }"
               color="black"
               class="text-none"
-              >See details</v-btn
+              >View details</v-btn
             >
             <v-spacer></v-spacer>
           </v-card-actions>
@@ -56,45 +57,23 @@
 </template>
 
 <script>
-// import { mapState, mapActions } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 export default {
   title: "Nearest eateries",
   name: "NearestEateries",
   created() {
-    this.loadEateries();
-  },
-  data() {
-    return {
-      nearestEateries: [
-        {
-          id: 2,
-          name: "gako village cafe",
-          city: "kilifi",
-          country: "kenya",
-          ratings: 1,
-        },
-      ],
-    };
+    // Load all eateries to the store
+    this.getEateriesAction();
   },
   computed: {
-    // ...mapState(["nearestEateries"]),
+    ...mapState(["eateries"]),
   },
   methods: {
-    // ...mapActions(["getNearestEateriesAction"]),
-    loadEateries() {
-      //   this.getNearestEateriesAction();
-      console.log("Load eateries!");
-    },
-    eateryLink(id) {
-      return `/nearest-eateries/${id}`;
-    },
+    ...mapActions(["getEateriesAction"]),
   },
 };
 </script>
 
 <style scoped>
-.jost-font-family {
-  font-family: Jost, sans-serif !important;
-}
 </style>

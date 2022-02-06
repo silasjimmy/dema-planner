@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="6" class="mx-auto">
+      <v-col cols="12">
         <v-data-table
           show-expand
           fixed-header
@@ -22,15 +22,15 @@
               <v-dialog v-model="dialog" max-width="500px">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
-                    fab
-                    small
-                    color="success"
+                    text
+                    rounded
                     elevation="0"
-                    class="mb-2"
+                    class="text-none"
                     v-bind="attrs"
                     v-on="on"
                   >
-                    <v-icon>mdi-plus</v-icon>
+                    <v-icon left>mdi-plus</v-icon>
+                    Add user
                   </v-btn>
                 </template>
 
@@ -127,6 +127,10 @@
 export default {
   name: "Users",
   title: "Users",
+  created() {
+    this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
+    this.initialize();
+  },
   data: () => ({
     dialog: false,
     dialogDelete: false,
@@ -153,13 +157,11 @@ export default {
       email: "",
     },
   }),
-
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "New user" : "Edit user";
     },
   },
-
   watch: {
     dialog(val) {
       val || this.close();
@@ -168,12 +170,6 @@ export default {
       val || this.closeDelete();
     },
   },
-
-  created() {
-    console.log(this.$store.signedIn);
-    this.initialize();
-  },
-
   methods: {
     initialize() {
       this.desserts = [
