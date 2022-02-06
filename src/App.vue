@@ -339,11 +339,11 @@
               <h3 class="subtitle-1 text--secondary">Find us in:</h3>
               <v-btn text rounded class="grey--text text--darken-4 text-none">
                 <v-icon left size="24px">mdi-map-marker</v-icon>
-                P.O Box 000-00000, Demaland, Kenya
+                P.O Box 000-00000, City, Country
               </v-btn>
               <v-btn text rounded class="grey--text text--darken-4 text-none">
                 <v-icon left size="24px">mdi-email</v-icon>
-                dema@gmail.com
+                dema@domain.com
               </v-btn>
               <v-btn text rounded class="grey--text text--darken-4">
                 <v-icon left size="24px">mdi-phone</v-icon>
@@ -381,62 +381,53 @@
 </template>
 
 <script>
-import {
-  getAuth,
-  // onAuthStateChanged,
-  signOut,
-} from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { mapState } from "vuex";
 import MealsInfo from "./components/MealsInfo.vue";
 
 export default {
   name: "App",
   created() {
-    // // Sets the sign in status, user email and user role in store on app creation
-    // this.$store.commit(
-    //   "setSignedIn",
-    //   localStorage.getItem("loggedIn") === "true"
-    // );
-    // this.$store.commit("setUserEmail", localStorage.getItem("userEmail"));
-    // this.$store.commit("setUserRole", localStorage.getItem("userRole"));
+    // Sets the sign in status, user email and user role in store on app creation
+    this.$store.commit(
+      "setSignedIn",
+      localStorage.getItem("loggedIn") === "true"
+    );
+    this.$store.commit("setUserEmail", localStorage.getItem("userEmail"));
+    this.$store.commit("setUserRole", localStorage.getItem("userRole"));
 
     // Set the dashboard links
     this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
-
-    localStorage.setItem("loggedIn", "true");
-    localStorage.setItem("userRole", "admin");
-    this.$store.commit("setSignedIn", true);
-    this.$store.commit("setUserRole", "admin");
   },
-  // mounted() {
-  //   // Set the page title when the user logs in
-  //   this.pageTitle = document.title;
+  mounted() {
+    // Set the page title when the user logs in
+    this.pageTitle = document.title;
 
-  //   // Monitor the user sign in activity
-  //   const auth = getAuth();
+    // Monitor the user sign in activity
+    const auth = getAuth();
 
-  //   onAuthStateChanged(auth, (user) => {
-  //     if (user) {
-  //       // Store the user email locally
-  //       localStorage.setItem("userEmail", user.email);
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // Store the user email locally
+        localStorage.setItem("userEmail", user.email);
 
-  //       // Set logged in to true
-  //       localStorage.setItem("loggedIn", "true");
-  //     } else {
-  //       // Remove user email from local storage
-  //       localStorage.removeItem("userEmail");
+        // Set logged in to true
+        localStorage.setItem("loggedIn", "true");
+      } else {
+        // Remove user email from local storage
+        localStorage.removeItem("userEmail");
 
-  //       // Remove user role from local storage
-  //       localStorage.removeItem("userRole");
+        // Remove user role from local storage
+        localStorage.removeItem("userRole");
 
-  //       // Set logged in to false
-  //       localStorage.setItem("loggedIn", "false");
+        // Set logged in to false
+        localStorage.setItem("loggedIn", "false");
 
-  //       // Update app store
-  //       this.$store.commit("setSignedIn", false);
-  //     }
-  //   });
-  // },
+        // Update app store
+        this.$store.commit("setSignedIn", false);
+      }
+    });
+  },
   data() {
     return {
       pageTitle: "",

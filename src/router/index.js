@@ -2,27 +2,27 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import checkAuth from './routeGuards'
 
-import Users from '@/components/Users.vue';
-import Home from '@/components/Home.vue';
-import SignIn from '@/components/SignIn.vue';
-import SignUp from '@/components/SignUp.vue';
-import AboutUs from '@/components/AboutUs.vue';
-import ContactUs from '@/components/ContactUs.vue';
-import Foods from '@/components/Foods.vue';
-import CreateProfile from '@/components/CreateProfile.vue';
-import MealPlanner from '@/components/MealPlanner.vue';
-import AvailableFoods from '@/components/AvailableFoods.vue';
-import NearestEateries from '@/components/NearestEateries.vue';
-import EateryDetails from '@/components/EateryDetails.vue';
-import Menu from '@/components/Menu.vue';
-import FoodRequest from '@/components/FoodRequest.vue';
-import Summary from '@/components/Summary.vue';
-import Profile from '@/components/Profile.vue';
-import Settings from '@/components/Settings.vue';
-import PageNotFound from '@/components/PageNotFound.vue';
-import Notifications from '@/components/Notifications.vue';
-import Messages from '@/components/Messages.vue';
-import Chat from '@/components/Chat.vue';
+import Users from '@/views/Users.vue';
+import Home from '@/views/Home.vue';
+import SignIn from '@/views/SignIn.vue';
+import SignUp from '@/views/SignUp.vue';
+import AboutUs from '@/views/AboutUs.vue';
+import ContactUs from '@/views/ContactUs.vue';
+import Foods from '@/views/Foods.vue';
+import CreateProfile from '@/views/CreateProfile.vue';
+import MealPlanner from '@/views/MealPlanner.vue';
+import AvailableFoods from '@/views/AvailableFoods.vue';
+import NearestEateries from '@/views/NearestEateries.vue';
+import EateryDetails from '@/views/EateryDetails.vue';
+import Menu from '@/views/Menu.vue';
+import FoodRequest from '@/views/FoodRequest.vue';
+import Summary from '@/views/Summary.vue';
+import Profile from '@/views/Profile.vue';
+import Settings from '@/views/Settings.vue';
+import PageNotFound from '@/views/PageNotFound.vue';
+import Notifications from '@/views/Notifications.vue';
+import Messages from '@/views/Messages.vue';
+import Chat from '@/views/Chat.vue';
 
 Vue.use(VueRouter)
 

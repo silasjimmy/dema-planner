@@ -119,7 +119,7 @@
 </template>
 
 <script>
-import getAuth from "firebase/auth";
+// import getAuth from "firebase/auth";
 
 export default {
   name: "Users",
@@ -181,13 +181,12 @@ export default {
     },
     getAllUsers() {
       // console.log("Get All users!");
-
-      // List batch of users, 1000 at a time.
-      getAuth()
-        .listUsers(1000)
-        .then((r) => {
-          console.log(r);
-        });
+      // // List batch of users, 1000 at a time.
+      // getAuth()
+      //   .listUsers(1000)
+      //   .then((r) => {
+      //     console.log(r);
+      //   });
       // getAuth()
       //   .listUsers(1000, nextPageToken)
       //   .then((listUsersResult) => {

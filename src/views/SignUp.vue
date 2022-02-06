@@ -41,21 +41,8 @@
           :type="showPassword ? 'text' : 'password'"
         ></v-text-field>
       </v-form>
-      <div class="d-flex justify-space-between align-center">
-        <v-checkbox
-          hide-details
-          dense
-          class="my-0"
-          label="Remember me"
-          color="success"
-        ></v-checkbox>
-        <v-btn plain link rounded class="text-none"
-          >I don't have an account</v-btn
-        >
-      </div>
       <v-btn
         rounded
-        disabled
         :loading="emailCreateLoad"
         @click="emailSignUp"
         color="success"
@@ -66,7 +53,6 @@
       <v-btn
         outlined
         rounded
-        disabled
         :loading="googleCreateLoad"
         @click="googleSignUp"
         color="grey darken-3"

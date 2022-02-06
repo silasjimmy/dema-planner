@@ -238,9 +238,9 @@
 </template>
 
 <script>
-import AvatarField from "./AvatarField.vue";
-import FoodDetails from "./FoodDetails.vue";
-import QuestionPrompt from "./QuestionPrompt.vue";
+import AvatarField from "../components/AvatarField.vue";
+import FoodDetails from "../components/FoodDetails.vue";
+import QuestionPrompt from "../components/QuestionPrompt.vue";
 import { mapState, mapActions } from "vuex";
 
 export default {

@@ -41,16 +41,6 @@
           :type="showPassword ? 'text' : 'password'"
         ></v-text-field>
       </v-form>
-      <div class="d-flex justify-space-between align-center">
-        <v-checkbox
-          hide-details
-          dense
-          class="my-0"
-          label="Remember me"
-          color="success"
-        ></v-checkbox>
-        <v-btn plain link rounded class="text-none">Forgot password?</v-btn>
-      </div>
       <v-btn
         rounded
         :loading="emailAuthLoad"
@@ -63,7 +53,6 @@
       <v-btn
         outlined
         rounded
-        disabled
         :loading="googleAuthLoad"
         @click="googleSignIn"
         color="grey darken-3"

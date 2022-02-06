@@ -8,7 +8,7 @@
       </v-card-text>
 
       <v-data-table
-        items-per-page="5"
+        :items-per-page="5"
         :headers="headers"
         :items="foods"
         :search="searchFood"
@@ -118,7 +118,7 @@
           </v-toolbar>
         </template>
 
-        <template v-slot:item.actions="{ item }">
+        <template v-slot:[`item.actions`]="{ item }">
           <v-icon small class="mr-3" @click="editFood(item)">
             mdi-pencil
           </v-icon>
