@@ -76,7 +76,7 @@ import {
   signInWithPopup,
   fetchSignInMethodsForEmail,
 } from "firebase/auth";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
 import { roleRedirect } from "../utils";
 
 export default {
@@ -125,8 +125,15 @@ export default {
 
       signInWithPopup(auth, provider)
         .then((response) => {
-          localStorage.setItem("email", response.user.email);
-          this.$store.commit("setUserEmail", response.user.email);
+          const db = getFirestore();
+
+          // Create user profile
+          setDoc(doc(db, "profiles", response.user.email), {
+            avatarUrl: response.user.photoURL,
+          }).then(() => {
+            localStorage.setItem("email", response.user.email);
+            this.$store.commit("setUserEmail", response.user.email);
+          });
         })
         .then(() => {
           fetchSignInMethodsForEmail(auth, this.$store.state.userEmail).then(
@@ -134,7 +141,7 @@ export default {
               if (methods.length > 0) {
                 // Retrieve the profile
                 const db = getFirestore();
-                getDoc(doc(db, "users", this.$store.state.userEmail)).then(
+                getDoc(doc(db, "profiles", this.$store.state.userEmail)).then(
                   (profile) => {
                     if (profile.exists()) {
                       this.googleCreateLoad = false;

@@ -3,7 +3,6 @@
     <v-card outlined class="rounded-lg">
       <!-- Consumer profile view -->
       <v-list subheader two-line v-if="$store.state.userRole === 'consumer'">
-        <v-subheader>Bio</v-subheader>
         <v-list-item three-line>
           <v-list-item-avatar
             tile
@@ -17,89 +16,15 @@
             <v-list-item-title class="text-h5">{{
               userProfile.name
             }}</v-list-item-title>
-            <v-list-item-subtitle>{{ age }} years old</v-list-item-subtitle>
+            <v-list-item-subtitle>{{ age() }} years old</v-list-item-subtitle>
             <v-list-item-subtitle>{{
               userProfile.gender
             }}</v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>
-            <v-dialog persistent v-model="consumerBioDialog" width="500">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn icon v-bind="attrs" v-on="on">
-                  <v-icon>mdi-pencil</v-icon>
-                </v-btn>
-              </template>
-              <v-card>
-                <v-card-title class="d-flex justify-space-between align-center">
-                  <span>Edit bio</span>
-                  <v-btn icon @click="consumerBioDialog = false">
-                    <v-icon>mdi-close</v-icon>
-                  </v-btn>
-                </v-card-title>
-
-                <v-card-text class="text-center">
-                  <div class="avatar-upload mb-4">
-                    <v-img
-                      width="80px"
-                      height="80px"
-                      class="rounded-circle mx-auto d-flex align-center"
-                      src="https://cdn.vuetifyjs.com/images/john.png"
-                      gradient="to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)"
-                    >
-                      <label id="avatar-label" for="avatar">
-                        <v-icon class="icon" color="white">mdi-camera</v-icon>
-                      </label>
-                    </v-img>
-
-                    <input id="avatar" type="file" accept="image/*" />
-                  </div>
-                  <v-text-field
-                    outlined
-                    dense
-                    clearable
-                    type="text"
-                    color="success"
-                    prepend-icon="mdi-account"
-                    label="Name"
-                    v-model="userProfile.name"
-                  ></v-text-field>
-                  <v-text-field
-                    outlined
-                    dense
-                    clearable
-                    type="date"
-                    color="success"
-                    prepend-icon="mdi-calendar"
-                    label="Date of birth"
-                    v-model="userProfile.birthdate"
-                  ></v-text-field>
-                  <v-select
-                    outlined
-                    clearable
-                    dense
-                    hide-details
-                    prepend-icon="mdi-account"
-                    color="success"
-                    :items="['Male', 'Female']"
-                    v-model="userProfile.gender"
-                    label="Gender"
-                  ></v-select>
-                </v-card-text>
-
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    rounded
-                    color="success"
-                    class="text-none"
-                    @click="saveProfile('bio')"
-                  >
-                    Save
-                  </v-btn>
-                  <v-spacer></v-spacer>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
+            <v-btn icon @click="editConsumerProfileDialog = true">
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
           </v-list-item-action>
         </v-list-item>
         <!-- 
@@ -425,84 +350,160 @@
         src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
         gradient="to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7)"
       >
-        <!-- <v-card-title>Eatery name</v-card-title>
-        <v-card-subtitle>Eatery ratings</v-card-subtitle> -->
         <v-list-item two-line>
           <v-list-item-content>
-            <v-list-item-title class="text-h5 white--text"
-              >Eatery name</v-list-item-title
-            >
+            <v-list-item-title class="text-h5 white--text">{{
+              userProfile.name
+            }}</v-list-item-title>
             <v-list-item-subtitle class="grey--text text--lighten-2"
               >Eatery ratings</v-list-item-subtitle
             >
           </v-list-item-content>
           <v-list-item-action>
-            <v-dialog persistent v-model="eateryBioDialog" width="500">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn icon v-bind="attrs" v-on="on">
-                  <v-icon color="white">mdi-pencil</v-icon>
-                </v-btn>
-              </template>
-              <v-card>
-                <v-card-title class="d-flex justify-space-between align-center">
-                  <span>Edit</span>
-                  <v-btn icon @click="eateryBioDialog = false">
-                    <v-icon>mdi-close</v-icon>
-                  </v-btn>
-                </v-card-title>
-
-                <v-card-text class="text-center">
-                  <div class="avatar-upload mb-4">
-                    <v-img
-                      width="100px"
-                      height="100px"
-                      class="rounded-circle mx-auto d-flex align-center"
-                      src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-                      gradient="to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)"
-                    >
-                      <label id="avatar-label" for="avatar">
-                        <v-icon class="icon" color="white">mdi-camera</v-icon>
-                      </label>
-                    </v-img>
-
-                    <input id="avatar" type="file" accept="image/*" />
-                  </div>
-                  <v-text-field
-                    outlined
-                    dense
-                    clearable
-                    type="text"
-                    color="success"
-                    prepend-icon="mdi-account"
-                    label="Name"
-                    v-model="userProfile.name"
-                  ></v-text-field>
-                </v-card-text>
-
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    rounded
-                    color="success"
-                    class="text-none"
-                    @click="saveProfile('bio')"
-                  >
-                    Save
-                  </v-btn>
-                  <v-spacer></v-spacer>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
+            <v-btn icon @click="editEateryProfileDialog = true">
+              <v-icon color="white">mdi-pencil</v-icon>
+            </v-btn>
           </v-list-item-action>
         </v-list-item>
       </v-img>
     </v-card>
+
+    <!-- Consumer edit profile form -->
+    <v-dialog persistent v-model="editConsumerProfileDialog" width="500">
+      <v-card>
+        <v-card-title>
+          <span>Edit profile</span>
+          <v-spacer></v-spacer>
+          <v-btn icon @click="editConsumerProfileDialog = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
+
+        <v-card-text class="text-center">
+          <div class="avatar-upload mb-4">
+            <v-img
+              width="80px"
+              height="80px"
+              class="rounded-circle mx-auto d-flex align-center"
+              src="https://cdn.vuetifyjs.com/images/john.png"
+              gradient="to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)"
+            >
+              <label id="avatar-label" for="avatar">
+                <v-icon class="icon" color="white">mdi-camera</v-icon>
+              </label>
+            </v-img>
+
+            <input id="avatar" type="file" accept="image/*" />
+          </div>
+          <v-text-field
+            outlined
+            dense
+            clearable
+            type="text"
+            color="success"
+            prepend-icon="mdi-account"
+            label="Name"
+            v-model="userProfile.name"
+          ></v-text-field>
+          <v-text-field
+            outlined
+            dense
+            clearable
+            type="date"
+            color="success"
+            prepend-icon="mdi-calendar"
+            label="Date of birth"
+            v-model="userProfile.birthdate"
+          ></v-text-field>
+          <v-select
+            outlined
+            clearable
+            dense
+            hide-details
+            prepend-icon="mdi-account"
+            color="success"
+            :items="['Male', 'Female']"
+            v-model="userProfile.gender"
+            label="Gender"
+          ></v-select>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            rounded
+            color="success"
+            class="text-none"
+            @click="saveProfile('bio')"
+          >
+            Save
+          </v-btn>
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- Eatery edit profile form -->
+    <v-dialog persistent v-model="editEateryProfileDialog" width="500">
+      <v-card>
+        <v-card-title class="d-flex justify-space-between align-center">
+          <span>Edit profile</span>
+          <v-btn icon @click="editEateryProfileDialog = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
+
+        <v-card-text class="text-center">
+          <div class="avatar-upload mb-4">
+            <v-img
+              width="100px"
+              height="100px"
+              class="rounded-circle mx-auto d-flex align-center"
+              src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+              gradient="to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)"
+            >
+              <label id="avatar-label" for="avatar">
+                <v-icon class="icon" color="white">mdi-camera</v-icon>
+              </label>
+            </v-img>
+
+            <input id="avatar" type="file" accept="image/*" />
+          </div>
+          <v-text-field
+            outlined
+            dense
+            clearable
+            type="text"
+            color="success"
+            prepend-icon="mdi-account"
+            label="Name"
+            v-model="userProfile.name"
+          ></v-text-field>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            rounded
+            color="success"
+            class="text-none"
+            @click="editEateryProfileDialog = false"
+          >
+            Save
+          </v-btn>
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
 import { mapState, mapActions } from "vuex";
-import { intervalToDuration } from "date-fns";
+import {
+  differenceInYears,
+  // format,
+} from "date-fns";
 
 export default {
   title: "Profile",
@@ -512,43 +513,29 @@ export default {
   },
   data() {
     return {
-      eateryBioDialog: false,
-      consumerBioDialog: false,
-      primaryInfoDialog: false,
-      secondaryInfoDialog: false,
-      goalsDialog: false,
+      editConsumerProfileDialog: false,
+      editEateryProfileDialog: false,
+      // eateryBioDialog: false,
+      // consumerBioDialog: false,
+      // primaryInfoDialog: false,
+      // secondaryInfoDialog: false,
+      // goalsDialog: false,
     };
   },
   computed: {
     ...mapState(["userProfile"]),
-    age() {
-      let ageDifference = intervalToDuration({
-        start: new Date(this.userProfile.dateOfBirth),
-        end: new Date(),
-      });
-      return ageDifference.years;
-    },
   },
   methods: {
     ...mapActions(["getUserProfileAction"]),
-    saveProfile(section) {
-      switch (section) {
-        case "bio":
-          this.consumerBioDialog = false;
-          break;
-        case "primaryInfo":
-          this.primaryInfoDialog = false;
-          break;
-        case "secondaryInfo":
-          this.secondaryInfoDialog = false;
-          break;
-        case "goals":
-          this.goalsDialog = false;
-          break;
-        default:
-          break;
-      }
+    age() {
+      return differenceInYears(
+        new Date(),
+        new Date(this.userProfile.dateOfBirth)
+      );
+    },
+    saveProfile() {
       console.log(this.userProfile);
+      this.editConsumerProfileDialog = false;
     },
   },
 };

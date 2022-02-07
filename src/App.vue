@@ -399,12 +399,12 @@ export default {
     // Set the dashboard links
     this.$store.commit("setDashboardLinks", localStorage.getItem("role"));
 
-    console.log(
-      this.$store.state.loggedIn,
-      this.$store.state.userEmail,
-      this.$store.state.userRole,
-      this.$store.state.dashboardLinks
-    );
+    // console.log(
+    //   this.$store.state.loggedIn,
+    //   this.$store.state.userEmail,
+    //   this.$store.state.userRole,
+    //   this.$store.state.dashboardLinks
+    // );
   },
   mounted() {
     // Monitor the user sign in activity

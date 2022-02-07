@@ -431,7 +431,7 @@
                         >
                         </v-checkbox>
                         <v-checkbox
-                          v-model="consumerProfile.receiveNews"
+                          v-model="consumerSettings.receiveNews"
                           color="success"
                           label="Send me any news or updates about Dema"
                           hide-details
@@ -904,7 +904,7 @@
                         >
                         </v-checkbox>
                         <v-checkbox
-                          v-model="eateryProfile.receiveNews"
+                          v-model="eaterySettings.receiveNews"
                           color="success"
                           label="Send me any news or updates about Dema"
                           hide-details
@@ -972,7 +972,9 @@ export default {
   title: "Create profile",
   async created() {
     const db = getFirestore();
-    const profile = await getDoc(doc(db, "users", this.$store.state.userEmail));
+    const profile = await getDoc(
+      doc(db, "profiles", this.$store.state.userEmail)
+    );
 
     if (profile.exists()) {
       const profileData = profile.data();
@@ -1021,7 +1023,6 @@ export default {
         // objective: "Maintain weight",
         // weightGoal: "",
         // dailySpending: { amount: null, units: "ksh" },
-        receiveNews: true,
       },
       eateryProfile: {
         role: "eatery",
@@ -1030,6 +1031,11 @@ export default {
         website: "",
         phoneNumber: "",
         bio: "",
+      },
+      consumerSettings: {
+        receiveNews: true,
+      },
+      eaterySettings: {
         receiveNews: true,
       },
       rules: {
@@ -1106,36 +1112,48 @@ export default {
     },
     createProfile(user) {
       let profile = undefined;
+      let settings = undefined;
+
       const db = getFirestore();
 
       switch (user) {
         case "consumer":
           this.consumerLoading = true;
           profile = Object.assign({}, this.consumerProfile);
+          settings = Object.assign({}, this.consumerSettings);
           break;
         case "eatery":
           this.eateryLoading = true;
           profile = Object.assign({}, this.eateryProfile);
+          settings = Object.assign({}, this.eaterySettings);
           break;
       }
 
-      setDoc(doc(db, "users", this.$store.state.userEmail), profile)
+      setDoc(doc(db, "profiles", this.$store.state.userEmail), profile, {
+        merge: true,
+      })
         .then(() => {
-          // Stop button loading
-          if (user === "consumer") this.consumerLoading = false;
-          else this.eateryLoading = false;
+          // Store user settings to database
+          setDoc(
+            doc(db, "settings", this.$store.state.userEmail),
+            settings
+          ).then(() => {
+            // Stop button loading
+            if (user === "consumer") this.consumerLoading = false;
+            else this.eateryLoading = false;
 
-          // Set the dashboard links
-          this.$store.commit("setDashboardLinks", profile.role);
+            // Set the dashboard links
+            this.$store.commit("setDashboardLinks", profile.role);
 
-          // Update local and store data and sync
-          localStorage.setItem("role", profile.role);
-          this.$store.commit("setUserRole", profile.role);
-          this.$store.commit("setUserProfile", profile);
-          this.$store.commit("setLoggedIn", true);
+            // Update local and store data and sync
+            localStorage.setItem("role", profile.role);
+            this.$store.commit("setUserRole", profile.role);
+            this.$store.commit("setUserProfile", profile);
+            this.$store.commit("setLoggedIn", true);
 
-          // Redirect to dashboard
-          this.$router.replace({ name: roleRedirect(profile.role) });
+            // Redirect to dashboard
+            this.$router.replace({ name: roleRedirect(profile.role) });
+          });
         })
         .catch((error) => {
           this.errorAlert = true;

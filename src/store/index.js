@@ -10,13 +10,13 @@ export default new Vuex.Store({
     loggedIn: null,
     userEmail: null,
     userRole: null,
-
     dashboardLinks: '',
+    userProfile: {},
+
     meals: [],
     availableFoods: [],
     likedFoods: null,
     eateries: [],
-    userProfile: undefined,
     mealTimes: null,
     foods: [],
   },
@@ -210,15 +210,11 @@ export default new Vuex.Store({
       // Commit the eateries to the nearest eateries state
       commit('setEateries', eateries);
     },
-    async getUserProfileAction({ commit, state }) {
-      if (!state.userEmail) {
-        const db = getFirestore();
+    async getUserProfileAction({ commit }) {
+      const db = getFirestore();
+      const profile = await getDoc(doc(db, "profiles", localStorage.getItem('email')));
 
-        const profile = await getDoc(doc(db, "users", state.userEmail));
-
-        if (profile.exists()) commit('setUserProfile', profile.data())
-      }
-
+      commit('setUserProfile', profile.data())
     },
     getMealTimesAction({ commit }) {
       // Get the profile from the database
