@@ -11,7 +11,7 @@
             class="rounded-circle"
             color="grey"
           >
-            <v-img :src="userProfile.avatar"></v-img>
+            <v-img src="https://cdn.vuetifyjs.com/images/john.png"></v-img>
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title class="text-h5">{{
@@ -102,7 +102,7 @@
             </v-dialog>
           </v-list-item-action>
         </v-list-item>
-
+        <!-- 
         <v-divider inset class="my-3"></v-divider>
 
         <v-subheader>Primary information</v-subheader>
@@ -414,7 +414,7 @@
               {{ userProfile.minimumSpending.amount }}</v-list-item-subtitle
             >
           </v-list-item-content>
-        </v-list-item>
+        </v-list-item> -->
       </v-list>
 
       <!-- Eatery profile view -->
@@ -502,13 +502,13 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
+import { intervalToDuration } from "date-fns";
 
 export default {
   title: "Profile",
   name: "Profile",
   created() {
-    this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
-    this.loadProfile();
+    this.getUserProfileAction();
   },
   data() {
     return {
@@ -522,14 +522,15 @@ export default {
   computed: {
     ...mapState(["userProfile"]),
     age() {
-      return 21;
+      let ageDifference = intervalToDuration({
+        start: new Date(this.userProfile.dateOfBirth),
+        end: new Date(),
+      });
+      return ageDifference.years;
     },
   },
   methods: {
     ...mapActions(["getUserProfileAction"]),
-    loadProfile() {
-      this.getUserProfileAction();
-    },
     saveProfile(section) {
       switch (section) {
         case "bio":

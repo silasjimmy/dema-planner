@@ -17,6 +17,7 @@
           dense
           outlined
           clearable
+          rounded
           single-line
           :rules="[rules.required]"
           placeholder="example@domain.com"
@@ -30,6 +31,7 @@
           dense
           outlined
           clearable
+          rounded
           single-line
           :rules="[rules.required]"
           :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
@@ -66,17 +68,18 @@
 </template>
 
 <script>
-import { getFirestore, doc, getDoc } from "firebase/firestore";
 import {
   getAuth,
   signInWithEmailAndPassword,
-  signInWithPopup,
   GoogleAuthProvider,
+  signInWithPopup,
 } from "firebase/auth";
+import { roleRedirect } from "../utils";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 
 export default {
   name: "SignIn",
-  title: "Sign in",
+  title: "Log in",
   data() {
     return {
       email: "",
@@ -95,23 +98,16 @@ export default {
     emailSignIn() {
       if (this.$refs.loginForm.validate()) {
         this.emailAuthLoad = true;
-
-        // localStorage.setItem("loggedIn", "true");
-        // this.redirect();
-
         const auth = getAuth();
+
         signInWithEmailAndPassword(auth, this.email, this.password)
           .then((response) => {
-            // Store the user email locally
-            localStorage.setItem("userEmail", response.user.email);
-
-            // Set logged in to true
-            localStorage.setItem("loggedIn", "true");
+            this.$store.commit("setUserEmail", response.user.email);
+            localStorage.setItem("email", response.user.email);
           })
           .then(() => this.redirect())
           .catch((error) => {
             this.emailAuthLoad = false;
-
             this.errorAlert = true;
             this.errorMessage = error.code;
           });
@@ -125,64 +121,46 @@ export default {
 
       signInWithPopup(auth, provider)
         .then((response) => {
-          // Store the user email locally
-          localStorage.setItem("userEmail", response.user.email);
-
-          // Set logged in to true
-          localStorage.setItem("loggedIn", "true");
+          this.$store.commit("setUserEmail", response.user.email);
+          localStorage.setItem("email", response.user.email);
         })
         .then(() => this.redirect())
         .catch((error) => {
           this.googleAuthLoad = false;
-
           this.errorAlert = true;
           this.errorMessage = error.code;
         });
     },
     async redirect() {
       const db = getFirestore();
-
-      // Check if user has a profile
       const profile = await getDoc(
-        doc(db, "profiles", localStorage.getItem("userEmail"))
+        doc(db, "users", this.$store.state.userEmail)
       );
 
-      this.emailAuthLoad = false;
-      this.googleAuthLoad = false;
-
-      // localStorage.setItem("userRole", "admin");
-      // this.$store.commit("setUserRole", "admin");
-      // this.$router.replace({ name: "summary" });
-
       if (profile.exists()) {
-        // Update signed in state in store
-        this.$store.commit("setSignedIn", true);
+        this.emailAuthLoad = false;
+        this.googleAuthLoad = false;
 
-        // If has profile, redirect based on role
         const profileData = profile.data();
 
-        // Set user role
-        localStorage.setItem("userRole", profileData.role);
+        // Update user logged in state and role
+        localStorage.setItem("loggedIn", "true");
+        localStorage.setItem("role", profileData.role);
 
-        // Update user role state in store
+        this.$store.commit("setLoggedIn", true);
         this.$store.commit("setUserRole", profileData.role);
 
-        switch (profileData.role) {
-          case "consumer":
-            this.$router.replace(this.$route.query.redirect || "/meal-planner");
-            break;
-          case "eatery":
-            this.$router.replace(this.$route.query.redirect || "/menu");
-            break;
-          case "admin":
-            this.$router.replace(this.$route.query.redirect || "/summary");
-            break;
-          default:
-            this.$router.replace({ path: "/home" });
-            break;
-        }
+        // Set the user profile
+        this.$store.commit("setUserProfile", profileData);
+
+        // Set the dashboard links
+        this.$store.commit("setDashboardLinks", localStorage.getItem("role"));
+
+        // Redirect to requested page or default dashboard page
+        this.$router.replace(
+          this.$route.query.redirect || `/${roleRedirect(profileData.role)}`
+        );
       } else {
-        // If has no profile, redirect to create profile page
         this.$router.replace({ name: "create-profile" });
       }
     },

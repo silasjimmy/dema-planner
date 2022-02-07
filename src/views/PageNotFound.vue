@@ -23,9 +23,9 @@
               continue.
             </v-col>
             <v-col class="shrink">
-              <v-btn rounded color="success" class="text-none">
+              <v-btn rounded @click="goBack" color="success" class="text-none">
                 <v-icon left>mdi-arrow-left</v-icon>
-                Go back
+                Return
               </v-btn>
             </v-col>
           </v-row>
@@ -36,9 +36,18 @@
 </template>
 
 <script>
+import { roleRedirect } from "../utils";
+
 export default {
   name: "PageNotFound",
   title: "Page not found",
+  methods: {
+    goBack() {
+      this.$router.replace({
+        name: roleRedirect(localStorage.getItem("role")),
+      });
+    },
+  },
 };
 </script>
 

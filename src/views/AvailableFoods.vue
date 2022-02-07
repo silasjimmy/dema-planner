@@ -37,7 +37,7 @@
               </v-toolbar>
             </template>
 
-            <template v-slot:item.favorite="{ item }">
+            <template v-slot:[`item.favorite`]="{ item }">
               <v-item-group multiple v-model="favoriteFoods">
                 <v-item v-slot="{ active, toggle }" :value="item">
                   <v-icon @click="toggle" :color="active ? 'success' : ''">{{
@@ -60,7 +60,6 @@ export default {
   title: "Available foods",
   name: "AvailableFoods",
   created() {
-    this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
     this.loadFoods();
   },
   data() {

@@ -33,57 +33,51 @@ const routes = [
   },
   {
     path: '/home',
-    name: 'Home',
+    name: 'home',
     component: Home,
+    meta: {
+      preventLandingView: true,
+    }
   },
   {
     path: '/sign-in',
     name: 'sign-in',
-    component: SignIn
+    component: SignIn,
+    meta: {
+      preventLandingView: true,
+    }
   },
   {
     path: '/sign-up',
     name: 'sign-up',
-    component: SignUp
+    component: SignUp,
+    meta: {
+      preventLandingView: true,
+    }
   },
   {
     path: '/about-us',
     name: 'about-us',
-    component: AboutUs
+    component: AboutUs,
+    meta: {
+      preventLandingView: true,
+    }
   },
   {
     path: '/contact-us',
     name: 'contact-us',
-    component: ContactUs
+    component: ContactUs,
+    meta: {
+      preventLandingView: true,
+    }
   },
   {
     path: '/create-profile',
     name: 'create-profile',
     component: CreateProfile,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
     },
-    beforeEnter: (to, from, next) => {
-      // User should have an account with no profile to access this page
-
-      // 1. Check if the user is logged in
-      // 1.1 If not redirect to log in page
-      // 2 If logged in, check if his/her profile exists
-      // 2.1 If it does not exists, persist
-      // 3. If profile exists, redirect according to role
-      const role = localStorage.getItem('userRole')
-      if (role !== null) {
-        switch (role) {
-          case 'value':
-
-            break;
-
-          default:
-            break;
-        }
-      }
-      console.log(to, from, next);
-    }
   },
   {
     path: '/meal-planner',
@@ -199,8 +193,7 @@ const routes = [
     }
   },
   {
-    path: '/page-not-found',
-    name: 'page-not-found',
+    path: '/:pathMatch(.*)*',
     component: PageNotFound,
   },
 ]

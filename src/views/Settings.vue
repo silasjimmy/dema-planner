@@ -451,7 +451,6 @@ export default {
   title: "Settings",
   name: "Settings",
   created() {
-    this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
     this.getMealTimesAction();
   },
   data() {

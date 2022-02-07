@@ -3,29 +3,32 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+import { doc, getDoc, getFirestore } from "firebase/firestore";
+
 export default new Vuex.Store({
   state: {
-    userEmail: '',
-    signedIn: '',
-    userRole: '',
+    loggedIn: null,
+    userEmail: null,
+    userRole: null,
+
     dashboardLinks: '',
     meals: [],
     availableFoods: [],
     likedFoods: null,
     eateries: [],
-    userProfile: null,
+    userProfile: undefined,
     mealTimes: null,
     foods: [],
   },
   mutations: {
+    setLoggedIn(state, status) {
+      state.loggedIn = status
+    },
     setUserEmail(state, email) {
       state.userEmail = email
     },
     setUserRole(state, role) {
       state.userRole = role
-    },
-    setSignedIn(state, status) {
-      state.signedIn = status
     },
     setDashboardLinks(state, role) {
       switch (role) {
@@ -57,6 +60,10 @@ export default new Vuex.Store({
           state.dashboardLinks = []
       }
     },
+    setUserProfile(state, profile) {
+      state.userProfile = profile
+    },
+
     setMeals(state, meals) {
       state.meals = meals
     },
@@ -68,9 +75,6 @@ export default new Vuex.Store({
     },
     setEateries(state, eateries) {
       state.eateries = eateries
-    },
-    setUserProfile(state, profile) {
-      state.userProfile = profile
     },
     setMealTimes(state, mealTimes) {
       state.mealTimes = mealTimes
@@ -206,27 +210,15 @@ export default new Vuex.Store({
       // Commit the eateries to the nearest eateries state
       commit('setEateries', eateries);
     },
-    getUserProfileAction({ commit }) {
-      // Get the profile from the database
-      let profile = {
-        avatar: "https://cdn.vuetifyjs.com/images/john.png",
-        name: "John Doe",
-        email: "johndoe@domain.com",
-        birthdate: "1999-05-02",
-        gender: "Male",
-        weight: { amount: 50, units: "kg" },
-        height: { amount: 250, units: "cm" },
-        activityLevel: "Lightly active",
-        healthCondition: "Diabetic",
-        bodyFat: "Medium",
-        diet: "Vegan",
-        goal: "Reduce weight",
-        target: { amount: 10, units: "kg" },
-        minimumSpending: { amount: 100, currency: "ksh" },
+    async getUserProfileAction({ commit, state }) {
+      if (!state.userEmail) {
+        const db = getFirestore();
+
+        const profile = await getDoc(doc(db, "users", state.userEmail));
+
+        if (profile.exists()) commit('setUserProfile', profile.data())
       }
 
-      // Commit the profile to the user profile state
-      commit('setUserProfile', profile);
     },
     getMealTimesAction({ commit }) {
       // Get the profile from the database

@@ -133,9 +133,7 @@
 export default {
   title: "Menu",
   name: "Menu",
-  created() {
-    this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
-  },
+  created() {},
   data() {
     return {
       headers: [

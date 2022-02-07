@@ -13,11 +13,13 @@
           type="error"
           >{{ errorMessage }}</v-alert
         >
+
         <v-text-field
           dense
           outlined
           clearable
           single-line
+          rounded
           :rules="[rules.required]"
           placeholder="example@domain.com"
           color="success"
@@ -30,6 +32,7 @@
           dense
           outlined
           clearable
+          rounded
           single-line
           :rules="[rules.required]"
           :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
@@ -71,11 +74,14 @@ import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
+  fetchSignInMethodsForEmail,
 } from "firebase/auth";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { roleRedirect } from "../utils";
 
 export default {
   name: "SignUp",
-  title: "Sign up",
+  title: "Create account",
   data() {
     return {
       email: "",
@@ -94,22 +100,18 @@ export default {
     emailSignUp() {
       if (this.$refs.signUpForm.validate()) {
         this.emailCreateLoad = true;
-
         const auth = getAuth();
+
         createUserWithEmailAndPassword(auth, this.email, this.password)
           .then((response) => {
-            // Store the user email locally
-            localStorage.setItem("userEmail", response.user.email);
-
-            // Set logged in to true
-            localStorage.setItem("loggedIn", "true");
+            localStorage.setItem("email", response.user.email);
+            this.$store.commit("setUserEmail", response.user.email);
 
             // Direct to create profile page
             this.$router.replace({ name: "create-profile" });
           })
           .catch((error) => {
             this.emailCreateLoad = false;
-
             this.errorAlert = true;
             this.errorMessage = error.code;
           });
@@ -123,18 +125,56 @@ export default {
 
       signInWithPopup(auth, provider)
         .then((response) => {
-          // Store the user email locally
-          localStorage.setItem("userEmail", response.user.email);
+          localStorage.setItem("email", response.user.email);
+          this.$store.commit("setUserEmail", response.user.email);
+        })
+        .then(() => {
+          fetchSignInMethodsForEmail(auth, this.$store.state.userEmail).then(
+            (methods) => {
+              if (methods.length > 0) {
+                // Retrieve the profile
+                const db = getFirestore();
+                getDoc(doc(db, "users", this.$store.state.userEmail)).then(
+                  (profile) => {
+                    if (profile.exists()) {
+                      this.googleCreateLoad = false;
 
-          // Set logged in to true
-          localStorage.setItem("loggedIn", "true");
+                      const profileData = profile.data();
 
-          // Direct to create profile page
-          this.$router.replace({ name: "create-profile" });
+                      // Update user logged in state and role
+                      localStorage.setItem("loggedIn", "true");
+                      localStorage.setItem("role", profileData.role);
+
+                      this.$store.commit("setLoggedIn", true);
+                      this.$store.commit("setUserRole", profileData.role);
+
+                      // Set the user profile
+                      this.$store.commit("setUserProfile", profileData);
+
+                      // Set the dashboard links
+                      this.$store.commit(
+                        "setDashboardLinks",
+                        localStorage.getItem("role")
+                      );
+
+                      // Redirect to requested page or default dashboard page
+                      this.$router.replace({
+                        name: roleRedirect(profileData.role),
+                      });
+                    } else {
+                      this.$router.replace({ name: "create-profile" });
+                    }
+                  }
+                );
+              } else {
+                // Redirect to create profile page
+                this.$router.replace({ name: "create-profile" });
+              }
+            }
+          );
         })
         .catch((error) => {
           this.googleCreateLoad = false;
-
           this.errorAlert = true;
           this.errorMessage = error.code;
         });

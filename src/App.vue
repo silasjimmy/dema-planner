@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <!-- Home app bar -->
-    <v-app-bar app elevate-on-scroll color="white" v-if="!signedIn">
+    <v-app-bar app elevate-on-scroll color="white" v-if="!loggedIn">
       <v-app-bar-nav-icon
         class="d-flex d-sm-none"
         @click="homeSidenav = true"
@@ -20,7 +20,7 @@
     </v-app-bar>
 
     <!-- Home side navigation -->
-    <v-navigation-drawer temporary app v-model="homeSidenav" v-if="!signedIn">
+    <v-navigation-drawer temporary app v-model="homeSidenav" v-if="!loggedIn">
       <template v-slot:prepend>
         <v-list-item two-line>
           <v-list-item-avatar>
@@ -85,7 +85,7 @@
     </v-navigation-drawer>
 
     <!-- Dashboard app bar -->
-    <v-app-bar app elevate-on-scroll color="white" v-if="signedIn">
+    <v-app-bar app elevate-on-scroll color="white" v-if="loggedIn">
       <v-app-bar-nav-icon
         class="d-md-none"
         @click="leftSidenav = true"
@@ -189,7 +189,7 @@
       fixed
       app
       color="white"
-      v-if="signedIn"
+      v-if="loggedIn"
       :permanent="$vuetify.breakpoint.mdAndUp"
       v-model="leftSidenav"
       class="b"
@@ -273,7 +273,7 @@
       app
       right
       color="white"
-      v-if="signedIn"
+      v-if="loggedIn"
       :permanent="$vuetify.breakpoint.smAndUp"
       v-model="rightSidenav"
     >
@@ -287,7 +287,7 @@
         app
         outlined
         v-model="isOnline"
-        v-if="signedIn"
+        v-if="loggedIn"
         class="rounded-lg"
         transition="slide-y-transition"
       >
@@ -303,7 +303,7 @@
     </v-main>
 
     <!-- Footer -->
-    <v-footer app absolute padless v-if="!signedIn">
+    <v-footer app absolute padless v-if="!loggedIn">
       <v-card flat tile color="grey lighten-5" width="100vw">
         <v-card-text class="text-center">
           <v-btn rounded link class="ma-2 text-none" elevation="0" to="/home"
@@ -388,43 +388,38 @@ import MealsInfo from "./components/MealsInfo.vue";
 export default {
   name: "App",
   created() {
-    // Sets the sign in status, user email and user role in store on app creation
+    // Sync local data with store data
     this.$store.commit(
-      "setSignedIn",
+      "setLoggedIn",
       localStorage.getItem("loggedIn") === "true"
     );
-    this.$store.commit("setUserEmail", localStorage.getItem("userEmail"));
-    this.$store.commit("setUserRole", localStorage.getItem("userRole"));
+    this.$store.commit("setUserEmail", localStorage.getItem("email"));
+    this.$store.commit("setUserRole", localStorage.getItem("role"));
 
     // Set the dashboard links
-    this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
+    this.$store.commit("setDashboardLinks", localStorage.getItem("role"));
+
+    console.log(
+      this.$store.state.loggedIn,
+      this.$store.state.userEmail,
+      this.$store.state.userRole,
+      this.$store.state.dashboardLinks
+    );
   },
   mounted() {
-    // Set the page title when the user logs in
-    this.pageTitle = document.title;
-
     // Monitor the user sign in activity
     const auth = getAuth();
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        // Store the user email locally
-        localStorage.setItem("userEmail", user.email);
-
-        // Set logged in to true
+        // Sync local data while the user is still signed in
         localStorage.setItem("loggedIn", "true");
+        localStorage.setItem("email", user.email);
       } else {
-        // Remove user email from local storage
-        localStorage.removeItem("userEmail");
-
-        // Remove user role from local storage
-        localStorage.removeItem("userRole");
-
-        // Set logged in to false
-        localStorage.setItem("loggedIn", "false");
-
-        // Update app store
-        this.$store.commit("setSignedIn", false);
+        // Remove local data when user signs out
+        localStorage.removeItem("loggedIn");
+        localStorage.removeItem("email");
+        localStorage.removeItem("role");
       }
     });
   },
@@ -445,15 +440,13 @@ export default {
       this.pageTitle = document.title;
     },
     logout() {
-      // localStorage.setItem("loggedIn", "false");
-      // this.$store.commit("setSignedIn", false);
-      // this.$router.replace({ name: "sign-in" });
-
       const auth = getAuth();
 
       signOut(auth)
         .then(() => {
-          // Direct to sign in page
+          this.$store.commit("setLoggedIn", false);
+
+          // Direct to sign in
           this.$router.replace({ name: "sign-in" });
         })
         .catch((error) => {
@@ -463,8 +456,8 @@ export default {
   },
   computed: {
     ...mapState(["dashboardLinks"]),
-    signedIn() {
-      return this.$store.state.signedIn;
+    loggedIn() {
+      return this.$store.state.loggedIn;
     },
     userRole() {
       return this.$store.state.userRole;

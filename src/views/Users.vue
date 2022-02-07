@@ -125,7 +125,6 @@ export default {
   name: "Users",
   title: "Users",
   created() {
-    // this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
     this.initialize();
     // Start listing users from the beginning, 1000 at a time.
     // this.getAllUsers();
