@@ -21,6 +21,7 @@ export default new Vuex.Store({
     dashboardLinks: '',
     userProfile: {},
     allFoods: [],
+    allUsers: [],
 
     meals: [],
     availableFoods: [],
@@ -85,6 +86,9 @@ export default new Vuex.Store({
     deleteFood(state, food) {
       state.allFoods.splice(food, 1);
     },
+    setAllUsers(state, users) {
+      state.allUsers = users
+    },
 
     setMeals(state, meals) {
       state.meals = meals
@@ -148,6 +152,19 @@ export default new Vuex.Store({
 
       // Delete from store
       commit('deleteFood', food)
+    },
+    async getAllUsersAction({ commit }) {
+      // Create firestore database instance
+      const db = getFirestore();
+
+      // Fetch the foods from the database
+      const snapShot = await getDocs(collection(db, 'profiles'))
+
+      // Map the foods to an array
+      const users = snapShot.docs.map(doc => doc.data())
+
+      // Add the foods to the store
+      commit('setAllUsers', users);
     },
 
     getMealsAction({ commit }) {

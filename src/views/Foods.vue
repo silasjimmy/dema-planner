@@ -1,28 +1,6 @@
 <template>
   <v-container fluid>
     <v-card outlined class="rounded-lg">
-      <v-card-title>
-        <!-- Search food field -->
-        <v-text-field
-          hide-details
-          outlined
-          dense
-          single-line
-          class="shrink"
-          v-model="searchFood"
-          append-icon="mdi-magnify"
-          label="Search for food..."
-          color="green"
-        ></v-text-field>
-
-        <v-spacer></v-spacer>
-
-        <!-- Add food button -->
-        <v-btn rounded color="success" @click="addNewFood" class="text-none">
-          Add food
-        </v-btn>
-      </v-card-title>
-
       <!-- Food data table -->
       <v-data-table
         divider
@@ -35,6 +13,35 @@
         :search="searchFood"
         sort-by="name"
       >
+        <template v-slot:top>
+          <v-toolbar flat class="rounded-lg">
+            <!-- Search food field -->
+            <v-text-field
+              hide-details
+              outlined
+              dense
+              single-line
+              class="shrink"
+              v-model="searchFood"
+              append-icon="mdi-magnify"
+              label="Search for food..."
+              color="green"
+            ></v-text-field>
+
+            <v-spacer></v-spacer>
+
+            <!-- Add food button -->
+            <v-btn
+              rounded
+              color="success"
+              @click="addNewFood"
+              class="text-none"
+            >
+              Add food
+            </v-btn>
+          </v-toolbar>
+        </template>
+
         <template v-slot:[`item.nutrient`]="{ item }">
           <span class="text-capitalize">{{ item.nutrient.name }}</span>
         </template>
