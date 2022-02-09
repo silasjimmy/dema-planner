@@ -6,6 +6,7 @@
           {{ question }}
         </p>
       </v-card-text>
+
       <v-card-actions class="pt-0">
         <v-spacer></v-spacer>
         <v-btn text rounded @click="cancel" class="text-none mx-2" color="error"
@@ -21,6 +22,11 @@
         >
         <v-spacer></v-spacer>
       </v-card-actions>
+
+      <!-- Card overlay -->
+      <v-overlay absolute v-model="overlay">
+        <v-progress-circular indeterminate size="64"></v-progress-circular>
+      </v-overlay>
     </v-card>
   </v-dialog>
 </template>
@@ -44,6 +50,10 @@ export default {
     question: {
       type: String,
       default: "",
+    },
+    overlay: {
+      type: Boolean,
+      default: false,
     },
   },
 };

@@ -13,20 +13,22 @@
 
       <v-divider></v-divider>
 
-      <v-card-text class="pa-0" style="height: 60vh">
+      <v-card-text class="pa-0" style="max-height: 70vh">
         <v-container>
           <v-row>
             <v-col cols="3">
               <v-img
-                :src="food.avatar"
+                :src="food.imageUrl"
                 class="rounded-lg"
                 height="120px"
               ></v-img>
             </v-col>
             <v-col cols="9" align-self="end">
               <div>
-                <h1 class="text-h5">{{ food.name }}</h1>
-                <h2 class="subtitle-1">Available in many locations</h2>
+                <h1 class="text-h5 text--primary">{{ food.name }}</h1>
+                <h2 class="subtitle-1">
+                  Available in {{ food.regions.join(", ") }}
+                </h2>
               </div>
             </v-col>
             <v-col cols="6">
@@ -34,8 +36,17 @@
                 <v-subheader>Details</v-subheader>
                 <v-list-item>
                   <v-list-item-content>
-                    <v-list-item-title>Group</v-list-item-title>
-                    <v-list-item-subtitle>{{
+                    <v-list-item-title>Nutrient</v-list-item-title>
+                    <v-list-item-subtitle class="text-capitalize"
+                      >{{ food.nutrient.name }} - {{ food.nutrient.amount
+                      }}{{ food.nutrient.units }}</v-list-item-subtitle
+                    >
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item>
+                  <v-list-item-content>
+                    <v-list-item-title>Food group</v-list-item-title>
+                    <v-list-item-subtitle class="text-capitalize">{{
                       food.group
                     }}</v-list-item-subtitle>
                   </v-list-item-content>
@@ -52,7 +63,9 @@
                 <v-list-item>
                   <v-list-item-content>
                     <v-list-item-title>Form</v-list-item-title>
-                    <v-list-item-subtitle>{{ food.form }}</v-list-item-subtitle>
+                    <v-list-item-subtitle class="text-capitalize">{{
+                      food.form
+                    }}</v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
               </v-list>
@@ -62,9 +75,11 @@
                 <v-subheader>Ingredients</v-subheader>
                 <v-list-item v-for="i in food.ingredients" :key="i.name">
                   <v-list-item-content>
-                    <v-list-item-title>{{ i.name }}</v-list-item-title>
+                    <v-list-item-title class="text-capitalize">{{
+                      i.name
+                    }}</v-list-item-title>
                     <v-list-item-subtitle
-                      >{{ i.amount }} {{ i.units }}</v-list-item-subtitle
+                      >{{ i.amount }} {{ i.unit }}</v-list-item-subtitle
                     >
                   </v-list-item-content>
                 </v-list-item>
@@ -79,7 +94,7 @@
                   </v-list-item-icon>
                   <v-list-item-content>
                     <p class="my-0">
-                      {{ i.text }}
+                      {{ i.description }}
                     </p>
                   </v-list-item-content>
                 </v-list-item>
@@ -107,7 +122,7 @@ export default {
     },
     width: {
       type: String,
-      default: "50vw",
+      default: "60vw",
     },
     food: {
       type: Object,

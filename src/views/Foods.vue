@@ -11,208 +11,26 @@
           class="shrink"
           v-model="searchFood"
           append-icon="mdi-magnify"
-          label="Enter food name"
+          label="Search for food..."
           color="green"
         ></v-text-field>
 
         <v-spacer></v-spacer>
 
         <!-- Add food button -->
-        <v-btn rounded color="success" @click="addFood" class="text-none">
+        <v-btn rounded color="success" @click="addNewFood" class="text-none">
           Add food
         </v-btn>
-
-        <!-- Food add/edit dialog -->
-        <v-dialog persistent scrollable v-model="foodFormDialog" width="50vw">
-          <v-card>
-            <v-card-title>
-              <span class="text-h6">{{ formTitle }}</span>
-              <v-spacer></v-spacer>
-              <v-btn icon @click="foodFormDialog = false">
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
-            </v-card-title>
-
-            <v-divider></v-divider>
-
-            <v-card-text style="height: 60vh">
-              <v-form>
-                <avatar-field class="my-4"></avatar-field>
-                <v-container class="pa-0">
-                  <v-row>
-                    <v-col cols="6">
-                      <v-text-field
-                        outlined
-                        dense
-                        hide-details
-                        color="success"
-                        label="Name"
-                        type="text"
-                        v-model="selectedFood.name"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="6">
-                      <v-select
-                        dense
-                        outlined
-                        hide-details
-                        color="success"
-                        label="Food group"
-                        type="text"
-                        item-color="success"
-                        v-model="selectedFood.group"
-                        :items="foodValues.groups"
-                      ></v-select>
-                    </v-col>
-                    <v-col cols="6">
-                      <v-select
-                        dense
-                        outlined
-                        hide-details
-                        color="success"
-                        label="Nutrient"
-                        type="text"
-                        item-color="success"
-                        v-model="selectedFood.nutrient.name"
-                        :items="foodValues.nutrients"
-                      ></v-select>
-                    </v-col>
-                    <v-col cols="6">
-                      <v-text-field
-                        outlined
-                        dense
-                        hide-details
-                        hide-spin-buttons
-                        color="success"
-                        type="number"
-                        label="Nutrient amount"
-                        :suffix="selectedFood.nutrient.units"
-                        v-model="selectedFood.nutrient.amount"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="6">
-                      <v-select
-                        dense
-                        outlined
-                        hide-details
-                        color="success"
-                        label="Food form"
-                        type="text"
-                        item-color="success"
-                        v-model="selectedFood.form"
-                        :items="foodValues.forms"
-                      ></v-select>
-                    </v-col>
-                    <v-col cols="6">
-                      <v-text-field
-                        outlined
-                        dense
-                        hide-details
-                        hide-spin-buttons
-                        color="success"
-                        type="number"
-                        label="Calories"
-                        :suffix="selectedFood.calories.units"
-                        v-model="selectedFood.calories.amount"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="6">
-                      <v-combobox
-                        outlined
-                        dense
-                        multiple
-                        hide-details
-                        hide-selected
-                        color="success"
-                        label="Regions"
-                        item-color="success"
-                        :items="foodValues.regions"
-                        v-model="selectedFood.regions"
-                      ></v-combobox>
-                    </v-col>
-                    <v-col cols="6">
-                      <v-combobox
-                        multiple
-                        small-chips
-                        outlined
-                        dense
-                        clearable
-                        hide-details
-                        placeholder="Example: 1.cup.milk"
-                        color="success"
-                        v-model="selectedFood.ingredients"
-                        label="Ingredients"
-                      >
-                        <template v-slot:no-data>
-                          <p class="my-0 pa-2">
-                            Type <b>amount.unit.item</b> and press
-                            <kbd>enter</kbd> to add.
-                          </p>
-                        </template>
-                      </v-combobox>
-                    </v-col>
-                    <v-col cols="12">
-                      <v-combobox
-                        multiple
-                        small-chips
-                        outlined
-                        dense
-                        clearable
-                        hide-details
-                        placeholder="Example: 1.Add sugar to the water and stir"
-                        color="success"
-                        v-model="selectedFood.instructions"
-                        label="Instructions"
-                      >
-                        <template v-slot:no-data>
-                          <p class="my-0 pa-2 text-center">
-                            Type <b>step.description</b> and press
-                            <kbd>enter</kbd> to add.
-                          </p>
-                        </template>
-                      </v-combobox>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-form>
-            </v-card-text>
-
-            <v-divider></v-divider>
-
-            <v-card-actions class="justify-center">
-              <v-btn
-                rounded
-                color="success"
-                class="text-none"
-                @click="saveFood"
-              >
-                Save
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-
-        <!-- Food delete dialog -->
-        <question-prompt
-          :question="'Are you sure you want to delete this food?'"
-          :dialog="deleteFoodPrompt"
-          @cancel="deleteFoodCancel"
-          @confirm="deleteFoodConfirm"
-        ></question-prompt>
-
-        <!-- Food details dialog -->
-        <food-details
-          :food="selectedFood"
-          :dialog="foodDetailsDialog"
-          @close="foodDetailsDialog = false"
-        ></food-details>
       </v-card-title>
 
+      <!-- Food data table -->
       <v-data-table
         divider
+        :loading="allFoods.length === 0"
+        loading-text="Fetching the foods... Please wait"
         item-key="name"
         :headers="headers"
-        :items="foods"
+        :items="allFoods"
         :items-per-page="5"
         :search="searchFood"
         sort-by="name"
@@ -233,12 +51,63 @@
           </v-btn>
         </template>
       </v-data-table>
+
+      <!-- Add food form dialog -->
+      <food-form
+        :dialog="foodFormDialog"
+        :food="selectedFood"
+        :foodAction="foodAction"
+        :loading="loadingFood"
+        @addIngredient="addIngredient"
+        @addInstruction="addInstruction"
+        @deleteIngredient="deleteIngredient"
+        @deleteInstruction="deleteInstruction"
+        @setUnits="setUnits"
+        @save="saveFood"
+        @close="closeFoodForm"
+      ></food-form>
+
+      <!-- Food delete dialog -->
+      <question-prompt
+        :question="'Are you sure you want to delete this food?'"
+        :dialog="deleteFoodPrompt"
+        :overlay="promptOverlay"
+        @cancel="deleteFoodCancel"
+        @confirm="deleteFoodConfirm"
+      ></question-prompt>
+
+      <!-- Food details dialog -->
+      <food-details
+        :food="selectedFood"
+        :dialog="foodDetailsDialog"
+        @close="foodDetailsDialog = false"
+      ></food-details>
     </v-card>
+
+    <!-- Action toast -->
+    <v-snackbar
+      :transition="
+        actionToast ? 'scroll-x-reverse-transition' : 'scroll-x-transition'
+      "
+      :timeout="3000"
+      v-model="actionToast"
+    >
+      <div class="d-flex align-center">
+        <v-icon color="success">mdi-check-circle</v-icon>
+        <span class="ml-2">{{ actionMessage }}</span>
+      </div>
+
+      <template v-slot:action="{ attrs }">
+        <v-btn color="success" text v-bind="attrs" @click="actionToast = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-container>
 </template>
 
 <script>
-import AvatarField from "../components/AvatarField.vue";
+import FoodForm from "@/components/FoodForm.vue";
 import FoodDetails from "../components/FoodDetails.vue";
 import QuestionPrompt from "../components/QuestionPrompt.vue";
 import { mapState, mapActions } from "vuex";
@@ -247,18 +116,22 @@ export default {
   title: "Foods",
   name: "Foods",
   created() {
-    this.getFoodsAction();
+    this.getAllFoodsAction();
   },
   data() {
     return {
+      foodFormDialog: false,
+      foodAction: "new",
+      promptOverlay: false,
       searchFood: "",
       deleteFoodPrompt: false,
-      foodFormDialog: false,
-      editFoodIndex: -1,
       foodDetailsDialog: false,
+      loadingFood: false,
+      actionToast: false,
+      actionMessage: "",
       selectedFood: {
         id: "",
-        avatar: "",
+        imageUrl: "",
         name: "",
         nutrient: {
           name: "",
@@ -271,13 +144,24 @@ export default {
           amount: "",
           units: "cal",
         },
-        ingredients: [],
+        ingredients: [
+          {
+            amount: "",
+            unit: "",
+            name: "",
+          },
+        ],
         regions: [],
-        instructions: [],
+        instructions: [
+          {
+            step: "",
+            description: "",
+          },
+        ],
       },
       defaultFood: {
         id: "",
-        avatar: "",
+        imageUrl: "",
         name: "",
         nutrient: {
           name: "",
@@ -290,85 +174,141 @@ export default {
           amount: "",
           units: "cal",
         },
-        ingredients: [],
+        ingredients: [
+          {
+            amount: "",
+            unit: "",
+            name: "",
+          },
+        ],
         regions: [],
-        instructions: [],
+        instructions: [
+          {
+            step: "",
+            description: "",
+          },
+        ],
       },
       headers: [
         { text: "Name", value: "name", align: "center" },
         { text: "Nutrient", value: "nutrient", align: "center" },
         { text: "Actions", value: "actions", align: "center", sortable: false },
       ],
-      foodValues: {
-        nutrients: [
-          { text: "Proteins", value: "proteins" },
-          { text: "Carbohydrates", value: "carbohydrates" },
-          { text: "Vitamins", value: "vitamins" },
-        ],
-        groups: [
-          { text: "Starch", value: "starch" },
-          { text: "Animal proteins", value: "animal proteins" },
-          { text: "Vegetables", value: "vegetables" },
-        ],
-        forms: [
-          { text: "Solid", value: "solid" },
-          { text: "Liquid", value: "liquid" },
-          { text: "Plasma", value: "plasma" },
-        ],
-        regions: [
-          { text: "Kenya", value: "kenya" },
-          { text: "Uganda", value: "uganda" },
-          { text: "Tanzania", value: "tanzania" },
-        ],
-      },
     };
   },
   methods: {
-    ...mapActions(["getFoodsAction"]),
-    addFood() {
-      this.editFoodIndex = -1;
-      this.selectedFood = Object.assign({}, this.defaultFood);
+    ...mapActions([
+      "getAllFoodsAction",
+      "addFoodAction",
+      "updateFoodAction",
+      "deleteFoodAction",
+    ]),
+    addNewFood() {
+      this.selectedFood = JSON.parse(JSON.stringify(this.defaultFood));
+      this.foodAction = "new";
+      this.foodFormDialog = true;
+    },
+    addIngredient() {
+      this.selectedFood.ingredients.push({
+        amount: "",
+        unit: "",
+        name: "",
+      });
+    },
+    addInstruction() {
+      this.selectedFood.instructions.push({
+        step: "",
+        description: "",
+      });
+    },
+    closeFoodForm() {
+      this.foodFormDialog = false;
+    },
+    deleteIngredient(i) {
+      this.selectedFood.ingredients.splice(i, 1);
+    },
+    deleteInstruction(i) {
+      this.selectedFood.instructions.splice(i, 1);
+    },
+    setUnits(unit, value) {
+      switch (unit) {
+        case "nutrients":
+          this.selectedFood.nutrient.units = value;
+          break;
+        case "calories":
+          this.selectedFood.calories.units = value;
+          break;
+      }
+    },
+    editFood(food) {
+      this.selectedFood = Object.assign({}, food);
+      this.foodAction = "edit";
       this.foodFormDialog = true;
     },
     vieFoodDetails(food) {
-      this.editFoodIndex = this.foods.indexOf(food);
       this.selectedFood = Object.assign({}, food);
       this.foodDetailsDialog = true;
     },
-    editFood(food) {
-      this.editFoodIndex = this.foods.indexOf(food);
-      this.selectedFood = Object.assign({}, food);
-      this.foodFormDialog = true;
-    },
-    saveFood() {
-      console.log("Save food!");
-      this.foodFormDialog = false;
+    async saveFood(validated) {
+      if (validated) {
+        this.loadingFood = true;
+
+        try {
+          if (this.foodAction === "new") {
+            // Set the food id
+            this.selectedFood.id = this.allFoods.length;
+
+            // Add new food
+            this.addFoodAction(this.selectedFood);
+            this.actionMessage = "Food added successfully!";
+          } else {
+            // Edit food
+            await this.updateFoodAction(this.selectedFood);
+            this.actionMessage = "Food updated successfully!";
+          }
+        } catch (error) {
+          this.actionMessage = error;
+        } finally {
+          // Stop button loading
+          this.loadingFood = false;
+          // Close food form dialog
+          this.foodFormDialog = false;
+
+          // Display toast
+          this.actionToast = true;
+        }
+      }
     },
     deleteFood(food) {
-      this.editFoodIndex = this.foods.indexOf(food);
       this.selectedFood = Object.assign({}, food);
       this.deleteFoodPrompt = true;
     },
-    deleteFoodConfirm() {
-      this.foods.splice(this.selectedFood, 1);
-      this.selectedFood = Object.assign({}, this.defaultFood);
-      this.deleteFoodPrompt = false;
+    async deleteFoodConfirm() {
+      this.promptOverlay = true;
+
+      try {
+        await this.deleteFoodAction(this.selectedFood);
+        this.actionMessage = "Food deleted successfully!";
+      } catch (error) {
+        this.actionMessage = error;
+      } finally {
+        this.promptOverlay = false;
+        this.deleteFoodPrompt = false;
+        this.actionToast = true;
+      }
     },
     deleteFoodCancel() {
-      this.selectedFood = Object.assign({}, this.defaultFood);
+      this.selectedFood = JSON.parse(JSON.stringify(this.defaultFood));
       this.deleteFoodPrompt = false;
     },
   },
   computed: {
-    ...mapState(["foods"]),
-    formTitle() {
-      return this.editFoodIndex === -1 ? "New food" : "Edit food";
-    },
+    ...mapState(["allFoods"]),
   },
   components: {
     QuestionPrompt,
     FoodDetails,
-    AvatarField,
+    FoodForm,
   },
 };
 </script>

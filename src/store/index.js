@@ -3,7 +3,15 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-import { doc, getDoc, getFirestore } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  deleteDoc,
+  getFirestore,
+  collection,
+  getDocs
+} from "firebase/firestore";
 
 export default new Vuex.Store({
   state: {
@@ -12,13 +20,13 @@ export default new Vuex.Store({
     userRole: null,
     dashboardLinks: '',
     userProfile: {},
+    allFoods: [],
 
     meals: [],
     availableFoods: [],
     likedFoods: null,
     eateries: [],
     mealTimes: null,
-    foods: [],
   },
   mutations: {
     setLoggedIn(state, status) {
@@ -63,6 +71,20 @@ export default new Vuex.Store({
     setUserProfile(state, profile) {
       state.userProfile = profile
     },
+    setAllFoods(state, foods) {
+      state.allFoods = foods
+    },
+    addFood(state, food) {
+      state.allFoods.push(food)
+    },
+    updateFood(state, food) {
+      const index = state.allFoods.findIndex(f => f.id === food.id);
+      state.allFoods.splice(index, 1, food);
+      state.allFoods = [...state.allFoods];
+    },
+    deleteFood(state, food) {
+      state.allFoods.splice(food, 1);
+    },
 
     setMeals(state, meals) {
       state.meals = meals
@@ -79,11 +101,55 @@ export default new Vuex.Store({
     setMealTimes(state, mealTimes) {
       state.mealTimes = mealTimes
     },
-    setFoods(state, foods) {
-      state.foods = foods
-    },
   },
   actions: {
+    async getUserProfileAction({ commit }) {
+      const db = getFirestore();
+      const profile = await getDoc(doc(db, "profiles", localStorage.getItem('email')));
+
+      commit('setUserProfile', profile.data())
+    },
+    async getAllFoodsAction({ commit }) {
+      // Create firestore database instance
+      const db = getFirestore();
+
+      // Fetch the foods from the database
+      const snapShot = await getDocs(collection(db, 'foods'))
+
+      // Map the foods to an array
+      const foods = snapShot.docs.map(doc => doc.data())
+
+      // Add the foods to the store
+      commit('setAllFoods', foods);
+    },
+    async addFoodAction({ commit }, food) {
+      const db = getFirestore()
+
+      // Upload the food to the database
+      await setDoc(doc(db, 'foods', `food${food.id}`), food)
+
+      // Add to store
+      commit('addFood', food)
+    },
+    async updateFoodAction({ commit }, food) {
+      const db = getFirestore()
+
+      // Upload the food to the database
+      await setDoc(doc(db, 'foods', `food${food.id}`), food, { merge: true })
+
+      // Update in store
+      commit('updateFood', food)
+    },
+    async deleteFoodAction({ commit }, food) {
+      const db = getFirestore()
+
+      // Delete from database
+      await deleteDoc(doc(db, "foods", `food${food.id}`));
+
+      // Delete from store
+      commit('deleteFood', food)
+    },
+
     getMealsAction({ commit }) {
       // Get the meals from the database
       const meals = [
@@ -210,12 +276,6 @@ export default new Vuex.Store({
       // Commit the eateries to the nearest eateries state
       commit('setEateries', eateries);
     },
-    async getUserProfileAction({ commit }) {
-      const db = getFirestore();
-      const profile = await getDoc(doc(db, "profiles", localStorage.getItem('email')));
-
-      commit('setUserProfile', profile.data())
-    },
     getMealTimesAction({ commit }) {
       // Get the profile from the database
       let mealTimes = [
@@ -227,31 +287,6 @@ export default new Vuex.Store({
 
       // Commit the profile to the user profile state
       commit('setMealTimes', mealTimes);
-    },
-    getFoodsAction({ commit }) {
-      const foods = [
-        {
-          id: 0,
-          avatar:
-            "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=699&q=80",
-          name: "Burger",
-          nutrient: {
-            name: "carbohydrates",
-            amount: 144,
-            units: "g",
-          },
-          group: "starch",
-          form: "solid",
-          calories: {
-            amount: 100,
-            units: "cal",
-          },
-          ingredients: [{ name: "onions", amount: 2, units: "slices" }],
-          regions: ["kenya"],
-          instructions: [{ step: 1, text: "Do something first" }],
-        },
-      ]
-      commit('setFoods', foods);
     },
   },
   getters: {
