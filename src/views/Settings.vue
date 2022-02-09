@@ -4,23 +4,24 @@
       <v-list flat subheader>
         <v-subheader>General</v-subheader>
 
-        <v-list-item-group v-model="settings" multiple active-class="">
-          <v-list-item class="mb-1" two-line>
-            <template v-slot:default="{ active }">
-              <v-list-item-action>
-                <v-checkbox color="success" :input-value="active"></v-checkbox>
-              </v-list-item-action>
+        <!-- Dema notifications -->
+        <v-list-item two-line>
+          <v-list-item-action>
+            <v-checkbox
+              color="success"
+              v-model="userSettings.receiveNews"
+            ></v-checkbox>
+          </v-list-item-action>
 
-              <v-list-item-content>
-                <v-list-item-title>Notifications</v-list-item-title>
-                <v-list-item-subtitle
-                  >Notify me about news and updates about
-                  Dema</v-list-item-subtitle
-                >
-              </v-list-item-content>
-            </template>
-          </v-list-item>
+          <v-list-item-content>
+            <v-list-item-title>Notifications</v-list-item-title>
+            <v-list-item-subtitle
+              >Notify me on news and updates about Dema</v-list-item-subtitle
+            >
+          </v-list-item-content>
+        </v-list-item>
 
+        <!-- <v-list-item-group v-model="settings" multiple active-class="">
           <v-list-item class="mb-1" two-line>
             <template v-slot:default="{ active }">
               <v-list-item-action>
@@ -51,11 +52,11 @@
               </v-list-item-content>
             </template>
           </v-list-item>
-        </v-list-item-group>
+        </v-list-item-group> -->
 
-        <v-divider></v-divider>
+        <!-- <v-divider></v-divider> -->
 
-        <v-subheader>Account</v-subheader>
+        <!-- <v-subheader>Account</v-subheader>
 
         <v-list-item three-line>
           <v-list-item-content>
@@ -124,12 +125,12 @@
           </v-list-item-content>
         </v-list-item>
 
-        <!-- <v-list-item two-line>
+        <v-list-item two-line>
         <v-list-item-content>
           <v-list-item-title>Meal times</v-list-item-title>
           <v-list-item-subtitle>Add or delete meal times</v-list-item-subtitle>
         </v-list-item-content>
-      </v-list-item> -->
+      </v-list-item>
 
         <v-divider></v-divider>
 
@@ -180,7 +181,7 @@
               <v-icon>mdi-delete</v-icon>
             </v-btn>
           </v-list-item-action>
-        </v-list-item>
+        </v-list-item> -->
       </v-list>
     </v-card>
     <!-- <v-row>
@@ -450,55 +451,50 @@ import { mapState, mapActions } from "vuex";
 export default {
   title: "Settings",
   name: "Settings",
-  created() {
-    this.getMealTimesAction();
+  async created() {
+    await this.getUserSettingsAction();
   },
-  data() {
-    return {
-      deleteAccountDialog: false,
-      deleteMealTimeDialog: false,
-      newMealTimeDialog: false,
-      darkMode: false,
-      mealIdToDelete: 0,
-      settings: [],
-      appTheme: "light-theme",
-      selectedLanguage: ["English"],
-      languages: ["English", "Swahili"],
-      newMeal: {
-        name: "",
-        time: "",
-      },
-    };
-  },
+  // data() {
+  //   return {
+  //     deleteAccountDialog: false,
+  //     deleteMealTimeDialog: false,
+  //     newMealTimeDialog: false,
+  //     darkMode: false,
+  //     mealIdToDelete: 0,
+  //     settings: [],
+  //     appTheme: "light-theme",
+  //     selectedLanguage: ["English"],
+  //     languages: ["English", "Swahili"],
+  //     newMeal: {
+  //       name: "",
+  //       time: "",
+  //     },
+  //   };
+  // },
   computed: {
-    ...mapState(["mealTimes"]),
-    age() {
-      // const a = (new Date() - new Date(this.profile.birthdate)) / 189210000;
-      // console.log(a);
-      return 22;
-    },
+    ...mapState(["userSettings"]),
   },
   methods: {
-    ...mapActions(["getMealTimesAction"]),
-    deleteAccountConfirm() {
-      console.log("Deleted account!");
-      this.deleteAccountDialog = false;
-    },
-    deleteMeal(id) {
-      this.mealIdToDelete = id;
-      this.deleteMealTimeDialog = true;
-    },
-    deleteMealTimeConfirm(id) {
-      console.log(`Deleted meal id: ${id}`);
-      this.deleteMealTimeDialog = false;
-    },
-    createMealTime() {
-      console.log(this.newMeal);
-      this.newMealTimeDialog = false;
-    },
-    viewMealTime(id) {
-      console.log(id);
-    },
+    ...mapActions(["getUserSettingsAction"]),
+    // deleteAccountConfirm() {
+    //   console.log("Deleted account!");
+    //   this.deleteAccountDialog = false;
+    // },
+    // deleteMeal(id) {
+    //   this.mealIdToDelete = id;
+    //   this.deleteMealTimeDialog = true;
+    // },
+    // deleteMealTimeConfirm(id) {
+    //   console.log(`Deleted meal id: ${id}`);
+    //   this.deleteMealTimeDialog = false;
+    // },
+    // createMealTime() {
+    //   console.log(this.newMeal);
+    //   this.newMealTimeDialog = false;
+    // },
+    // viewMealTime(id) {
+    //   console.log(id);
+    // },
   },
 };
 </script>

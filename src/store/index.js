@@ -18,13 +18,14 @@ export default new Vuex.Store({
     loggedIn: null,
     userEmail: null,
     userRole: null,
-    dashboardLinks: '',
+    dashboardLinks: [],
     userProfile: {},
     allFoods: [],
     allUsers: [],
+    availableFoods: [],
+    userSettings: {},
 
     meals: [],
-    availableFoods: [],
     likedFoods: null,
     eateries: [],
     mealTimes: null,
@@ -89,12 +90,15 @@ export default new Vuex.Store({
     setAllUsers(state, users) {
       state.allUsers = users
     },
+    setAvailableFoods(state, foods) {
+      state.availableFoods = foods
+    },
+    setUserSettings(state, settings) {
+      state.userSettings = settings
+    },
 
     setMeals(state, meals) {
       state.meals = meals
-    },
-    setAvailableFoods(state, foods) {
-      state.availableFoods = foods
     },
     setLikedFoods(state, foods) {
       state.likedFoods = foods
@@ -166,6 +170,25 @@ export default new Vuex.Store({
       // Add the foods to the store
       commit('setAllUsers', users);
     },
+    getAvailableFoodsAction({ commit }) {
+      // Get the foods from the database
+
+      // Commit the foods to the available foods state
+      commit('setAvailableFoods', []);
+    },
+    getLikedFoodsAction({ commit }) {
+      // Get the foods from the database
+
+      // Commit the foods to the liked foods state
+      commit('setLikedFoods', []);
+    },
+    async getUserSettingsAction({ commit, state }) {
+      const db = getFirestore()
+
+      const settings = await getDoc(doc(db, 'settings', state.userEmail))
+
+      commit('setUserSettings', settings.data())
+    },
 
     getMealsAction({ commit }) {
       // Get the meals from the database
@@ -229,45 +252,6 @@ export default new Vuex.Store({
 
       // Commit the meals to the meals state
       commit('setMeals', meals);
-    },
-    getAvailableFoodsAction({ commit }) {
-      // Get the foods from the database
-      const foods = [
-        {
-          id: 0,
-          name: 'Chapati'
-        },
-        {
-          id: 1,
-          name: 'Rice'
-        },
-        {
-          id: 2,
-          name: 'Beans'
-        },
-        {
-          id: 3,
-          name: 'Pilau'
-        },
-        {
-          id: 4,
-          name: 'Shawarma'
-        },
-        {
-          id: 5,
-          name: 'Mutura'
-        },
-      ]
-
-      // Commit the foods to the available foods state
-      commit('setAvailableFoods', foods);
-    },
-    getLikedFoodsAction({ commit }) {
-      // Get the foods from the database
-      const foods = ['Chapati']
-
-      // Commit the foods to the liked foods state
-      commit('setLikedFoods', foods);
     },
     getEateriesAction({ commit }) {
       // Get the eateries from the database
