@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container>
     <v-row>
       <v-col cols="12">
         <h1 class="text-h4 text-center font-weight-medium my-4">
@@ -18,6 +18,7 @@
           >{{ errorMessage }}</v-alert
         >
 
+        <!-- Profile tabs -->
         <v-tabs fixed-tabs hide-slider color="success">
           <v-tab class="text-none subtitle-1 font-weight-medium"
             >Consumer</v-tab
@@ -473,7 +474,7 @@
                 <v-btn
                   rounded
                   v-if="consumerWindowStep === 2"
-                  @click="createProfile('consumer')"
+                  @click="createConsumerProfile"
                   :disabled="!agreeTermsAndConditions"
                   :loading="consumerLoading"
                   color="success"
@@ -947,7 +948,7 @@
                   rounded
                   :loading="eateryLoading"
                   v-if="eateryWindowStep === 2"
-                  @click="createProfile('eatery')"
+                  @click="createEateryProfile"
                   :disabled="!agreeTermsAndConditions"
                   color="success"
                 >
@@ -964,38 +965,12 @@
 </template>
 
 <script>
-import { getFirestore, setDoc, getDoc, doc } from "firebase/firestore";
+import { getFirestore, setDoc, doc } from "firebase/firestore";
 import { roleRedirect } from "../utils";
 
 export default {
-  name: "createConsumerProfile",
+  name: "CreateProfile",
   title: "Create profile",
-  async created() {
-    const db = getFirestore();
-    const profile = await getDoc(
-      doc(db, "profiles", this.$store.state.userEmail)
-    );
-
-    if (profile.exists()) {
-      const profileData = profile.data();
-
-      // Update user logged in state and role
-      localStorage.setItem("loggedIn", "true");
-      localStorage.setItem("role", profileData.role);
-
-      this.$store.commit("setLoggedIn", true);
-      this.$store.commit("setUserRole", profileData.role);
-
-      // Set the user profile
-      this.$store.commit("setUserProfile", profileData);
-
-      // Set the dashboard links
-      this.$store.commit("setDashboardLinks", localStorage.getItem("role"));
-
-      // Redirect to dashboard page
-      this.$router.replace({ name: roleRedirect(profileData.role) });
-    }
-  },
   data() {
     return {
       consumerWindowStep: 1,
@@ -1013,6 +988,8 @@ export default {
         dateOfBirth: "",
         gender: "",
         location: "Kilifi, Kenya",
+        created: new Date(),
+        email: localStorage.getItem("email"),
         // weight: { amount: null, units: "kg" },
         // height: { amount: null, units: "cm" },
         // activityLevel: "",
@@ -1031,6 +1008,8 @@ export default {
         website: "",
         phoneNumber: "",
         bio: "",
+        created: new Date(),
+        email: localStorage.getItem("email"),
       },
       consumerSettings: {
         receiveNews: true,
@@ -1110,55 +1089,97 @@ export default {
       }
       if (complete) this.eateryWindowStep++;
     },
-    createProfile(user) {
-      let profile = undefined;
-      let settings = undefined;
+    async createConsumerProfile() {
+      try {
+        // Start button loading
+        this.consumerLoading = true;
 
-      const db = getFirestore();
+        const db = getFirestore();
 
-      switch (user) {
-        case "consumer":
-          this.consumerLoading = true;
-          profile = Object.assign({}, this.consumerProfile);
-          settings = Object.assign({}, this.consumerSettings);
-          break;
-        case "eatery":
-          this.eateryLoading = true;
-          profile = Object.assign({}, this.eateryProfile);
-          settings = Object.assign({}, this.eaterySettings);
-          break;
+        // Upload the user profile to the database
+        await setDoc(
+          doc(db, "profiles", this.$store.state.userEmail),
+          this.consumerProfile,
+          {
+            merge: true,
+          }
+        );
+
+        // Upload the user settings to the database
+        await setDoc(
+          doc(db, "settings", this.$store.state.userEmail),
+          this.consumerSettings
+        );
+
+        // Stop button loading
+        this.consumerLoading = false;
+
+        // Set the dashboard links
+        this.$store.commit("setDashboardLinks", this.consumerProfile.role);
+
+        // Update local and store data and sync
+        localStorage.setItem("role", this.consumerProfile.role);
+        this.$store.commit("setUserRole", this.consumerProfile.role);
+        this.$store.commit("setUserProfile", this.consumerProfile);
+        this.$store.commit("setLoggedIn", true);
+
+        // Redirect to dashboard
+        this.$router.replace({ name: roleRedirect(this.consumerProfile.role) });
+      } catch (error) {
+        this.consumerLoading = false;
+        this.errorAlert = true;
+        this.errorMessage = error.message;
       }
+    },
+    async createEateryProfile() {
+      try {
+        // Start loading button
+        this.eateryLoading = true;
 
-      setDoc(doc(db, "profiles", this.$store.state.userEmail), profile, {
-        merge: true,
-      })
-        .then(() => {
-          // Store user settings to database
-          setDoc(
-            doc(db, "settings", this.$store.state.userEmail),
-            settings
-          ).then(() => {
-            // Stop button loading
-            if (user === "consumer") this.consumerLoading = false;
-            else this.eateryLoading = false;
+        const db = getFirestore();
 
-            // Set the dashboard links
-            this.$store.commit("setDashboardLinks", profile.role);
+        // Upload the user profile to the database
+        await setDoc(
+          doc(db, "profiles", this.$store.state.userEmail),
+          this.eateryProfile,
+          {
+            merge: true,
+          }
+        );
 
-            // Update local and store data and sync
-            localStorage.setItem("role", profile.role);
-            this.$store.commit("setUserRole", profile.role);
-            this.$store.commit("setUserProfile", profile);
-            this.$store.commit("setLoggedIn", true);
+        // Upload the user settings to the database
+        await setDoc(
+          doc(db, "settings", this.$store.state.userEmail),
+          this.eaterySettings
+        );
 
-            // Redirect to dashboard
-            this.$router.replace({ name: roleRedirect(profile.role) });
-          });
-        })
-        .catch((error) => {
-          this.errorAlert = true;
-          this.errorMessage = error.message;
+        // Create an empty menu in the database
+        await setDoc(doc(db, "menus", this.$store.state.userEmail), {
+          menu: [],
         });
+
+        // Stop button loading
+        this.eateryLoading = false;
+
+        // Set the dashboard links
+        this.$store.commit("setDashboardLinks", this.eateryProfile.role);
+
+        // Update local and store data and sync
+        localStorage.setItem("role", this.eateryProfile.role);
+        this.$store.commit("setUserRole", this.eateryProfile.role);
+        this.$store.commit("setUserProfile", this.eateryProfile);
+        this.$store.commit("setLoggedIn", true);
+
+        // Redirect to dashboard
+        this.$router.replace({ name: roleRedirect(this.eateryProfile.role) });
+      } catch (error) {
+        // Stop button loading
+        this.consumerLoading = false;
+        this.eateryLoading = false;
+
+        this.errorAlert = true;
+        this.errorMessage = error.message;
+      }
     },
   },
 };

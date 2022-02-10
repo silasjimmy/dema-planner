@@ -74,10 +74,8 @@ import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
-  fetchSignInMethodsForEmail,
 } from "firebase/auth";
-import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
-import { roleRedirect } from "../utils";
+import { roleRedirect, checkUserProfile } from "../utils";
 
 export default {
   name: "SignUp",
@@ -97,98 +95,86 @@ export default {
     };
   },
   methods: {
-    emailSignUp() {
+    /**
+     * Signs up a user using email and password
+     */
+    async emailSignUp() {
       if (this.$refs.signUpForm.validate()) {
-        this.emailCreateLoad = true;
-        const auth = getAuth();
+        try {
+          this.emailCreateLoad = true;
 
-        createUserWithEmailAndPassword(auth, this.email, this.password)
-          .then((response) => {
-            localStorage.setItem("email", response.user.email);
-            this.$store.commit("setUserEmail", response.user.email);
-
-            // Direct to create profile page
-            this.$router.replace({ name: "create-profile" });
-          })
-          .catch((error) => {
-            this.emailCreateLoad = false;
-            this.errorAlert = true;
-            this.errorMessage = error.code;
-          });
-      }
-    },
-    googleSignUp() {
-      this.googleCreateLoad = true;
-
-      const provider = new GoogleAuthProvider();
-      const auth = getAuth();
-
-      signInWithPopup(auth, provider)
-        .then((response) => {
-          const db = getFirestore();
-
-          // Create user profile
-          setDoc(doc(db, "profiles", response.user.email), {
-            avatarUrl: response.user.photoURL,
-          }).then(() => {
-            localStorage.setItem("email", response.user.email);
-            this.$store.commit("setUserEmail", response.user.email);
-          });
-        })
-        .then(() => {
-          fetchSignInMethodsForEmail(auth, this.$store.state.userEmail).then(
-            (methods) => {
-              if (methods.length > 0) {
-                // Retrieve the profile
-                const db = getFirestore();
-                getDoc(doc(db, "profiles", this.$store.state.userEmail)).then(
-                  (profile) => {
-                    if (profile.exists()) {
-                      this.googleCreateLoad = false;
-
-                      const profileData = profile.data();
-
-                      // Update user logged in state and role
-                      localStorage.setItem("loggedIn", "true");
-                      localStorage.setItem("role", profileData.role);
-
-                      this.$store.commit("setLoggedIn", true);
-                      this.$store.commit("setUserRole", profileData.role);
-
-                      // Set the user profile
-                      this.$store.commit("setUserProfile", profileData);
-
-                      // Set the dashboard links
-                      this.$store.commit(
-                        "setDashboardLinks",
-                        localStorage.getItem("role")
-                      );
-
-                      // Redirect to requested page or default dashboard page
-                      this.$router.replace({
-                        name: roleRedirect(profileData.role),
-                      });
-                    } else {
-                      this.$router.replace({ name: "create-profile" });
-                    }
-                  }
-                );
-              } else {
-                // Redirect to create profile page
-                this.$router.replace({ name: "create-profile" });
-              }
-            }
+          // Create the user account
+          const auth = getAuth();
+          const res = await createUserWithEmailAndPassword(
+            auth,
+            this.email,
+            this.password
           );
-        })
-        .catch((error) => {
-          this.googleCreateLoad = false;
+
+          // Store user's email address
+          localStorage.setItem("email", res.user.email);
+          this.$store.commit("setUserEmail", res.user.email);
+
+          // Redirect according to user profile existence
+          this.redirect();
+        } catch (error) {
+          this.emailCreateLoad = false;
           this.errorAlert = true;
           this.errorMessage = error.code;
-        });
+        }
+      }
+    },
+    /**
+     * Signs up a user using Google provider
+     */
+    async googleSignUp() {
+      try {
+        this.googleCreateLoad = true;
+
+        // Create user account
+        const provider = new GoogleAuthProvider();
+        const auth = getAuth();
+        const res = await signInWithPopup(auth, provider);
+
+        // Store user's email address
+        localStorage.setItem("email", res.user.email);
+        this.$store.commit("setUserEmail", res.user.email);
+
+        // Redirect according to user profile existence
+        this.redirect();
+      } catch (error) {
+        this.googleCreateLoad = false;
+        this.errorAlert = true;
+        this.errorMessage = error.code;
+      }
+    },
+    /**
+     * Handles the profile checking after logging in
+     */
+    async redirect() {
+      try {
+        // Check if the user has a profile set up
+        const { ...res } = await checkUserProfile(
+          localStorage.getItem("email")
+        );
+
+        // Stop button loading
+        this.emailCreateLoad = false;
+        this.googleCreateLoad = false;
+
+        // Redirect according to role
+        if (res.hasProfile)
+          this.$router.replace({ name: roleRedirect(res.role) });
+        else this.$router.replace({ name: "create-profile" });
+      } catch (error) {
+        this.emailCreateLoad = false;
+        this.googleCreateLoad = false;
+
+        // Show the error
+        this.errorAlert = true;
+        this.errorMessage = error.code;
+      }
     },
   },
 };
 </script>
-
-<style scoped>
-</style>

@@ -395,8 +395,6 @@ export default {
     );
     this.$store.commit("setUserEmail", localStorage.getItem("email"));
     this.$store.commit("setUserRole", localStorage.getItem("role"));
-
-    // Set the dashboard links
     this.$store.commit("setDashboardLinks", localStorage.getItem("role"));
 
     // console.log(
@@ -412,14 +410,19 @@ export default {
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        // Sync local data while the user is still signed in
+        // Update the local storage data
         localStorage.setItem("loggedIn", "true");
         localStorage.setItem("email", user.email);
       } else {
-        // Remove local data when user signs out
+        // Delete local storage data
         localStorage.removeItem("loggedIn");
         localStorage.removeItem("email");
         localStorage.removeItem("role");
+
+        // Update the store's data
+        this.$store.commit("setLoggedIn", false);
+        this.$store.commit("setUserRole", "");
+        this.$store.commit("setDashboardLinks", "");
       }
     });
   },

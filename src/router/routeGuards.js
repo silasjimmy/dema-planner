@@ -1,6 +1,12 @@
 import { roleRedirect } from '../utils'
 
-export default function checkAuth(to, from, next) {
+/**
+ * Checks if the user is authorized to access the page
+ * @param {object} to Vue Router to object
+ * @param {object} from Vue Router from object
+ * @param {object} next Vue Router next object
+ */
+function checkAuth(to, from, next) {
     // Restrict viewing the landing pages if the user is logged in
     if (to.meta.preventLandingView) {
         if (localStorage.getItem('loggedIn') === 'true') {
@@ -11,8 +17,13 @@ export default function checkAuth(to, from, next) {
 
     // Restrict user from viewing pages which require authentication
     if (to.meta.requiresAuth) {
-        if (localStorage.getItem('loggedIn') === 'true') next()
-        else next({ name: 'sign-in', query: { redirect: to.path } })
+        if (localStorage.getItem('loggedIn') === 'true') {
+            if (to.meta.role === localStorage.getItem('role') || to.meta.role === 'all') next()
+            else next({ name: roleRedirect(localStorage.getItem('role')) })
+        }
+        else next({ name: 'sign-in' })
     }
     else next()
 }
+
+export default checkAuth

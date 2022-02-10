@@ -77,6 +77,7 @@ const routes = [
     component: CreateProfile,
     meta: {
       requiresAuth: true,
+      role: 'all'
     },
   },
   {
@@ -84,7 +85,8 @@ const routes = [
     name: 'meal-planner',
     component: MealPlanner,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'consumer'
     }
   },
   {
@@ -92,7 +94,8 @@ const routes = [
     name: 'available-foods',
     component: AvailableFoods,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'consumer'
     }
   },
   {
@@ -100,7 +103,8 @@ const routes = [
     name: 'nearest-eateries',
     component: NearestEateries,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'consumer'
     }
   },
   {
@@ -109,7 +113,8 @@ const routes = [
     name: 'eatery-details',
     props: r => ({ id: parseInt(r.params.id) }),
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'consumer'
     }
   },
   {
@@ -117,7 +122,8 @@ const routes = [
     name: 'menu',
     component: Menu,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'eatery'
     }
   },
   {
@@ -125,7 +131,8 @@ const routes = [
     name: 'food-request',
     component: FoodRequest,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'eatery'
     }
   },
   {
@@ -133,7 +140,8 @@ const routes = [
     name: 'summary',
     component: Summary,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'admin'
     }
   },
   {
@@ -141,7 +149,8 @@ const routes = [
     name: 'users',
     component: Users,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'admin'
     }
   },
   {
@@ -149,7 +158,8 @@ const routes = [
     name: 'foods',
     component: Foods,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'admin'
     }
   },
   {
@@ -157,7 +167,8 @@ const routes = [
     name: 'profile',
     component: Profile,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'all'
     }
   },
   {
@@ -165,7 +176,8 @@ const routes = [
     name: 'settings',
     component: Settings,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'all'
     }
   },
   {
@@ -173,7 +185,8 @@ const routes = [
     name: 'notifications',
     component: Notifications,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'all'
     }
   },
   {
@@ -181,7 +194,8 @@ const routes = [
     name: 'messages',
     component: Messages,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'all'
     }
   },
   {
@@ -189,7 +203,8 @@ const routes = [
     name: 'message-chat',
     component: Chat,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'all'
     }
   },
   {
