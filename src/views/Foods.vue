@@ -71,7 +71,7 @@
         @deleteInstruction="deleteInstruction"
         @setUnits="setUnits"
         @save="saveFood"
-        @close="closeFoodForm"
+        @close="foodFormDialog = false"
       ></food-form>
 
       <!-- Food delete dialog -->
@@ -92,24 +92,11 @@
     </v-card>
 
     <!-- Action toast -->
-    <v-snackbar
-      :transition="
-        actionToast ? 'scroll-x-reverse-transition' : 'scroll-x-transition'
-      "
-      :timeout="3000"
-      v-model="actionToast"
-    >
-      <div class="d-flex align-center">
-        <v-icon color="success">mdi-check-circle</v-icon>
-        <span class="ml-2">{{ actionMessage }}</span>
-      </div>
-
-      <template v-slot:action="{ attrs }">
-        <v-btn color="success" text v-bind="attrs" @click="actionToast = false">
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
+    <toast
+      :show="showToast"
+      :message="toastMessage"
+      @close="showToast = false"
+    ></toast>
   </v-container>
 </template>
 
@@ -134,8 +121,8 @@ export default {
       deleteFoodPrompt: false,
       foodDetailsDialog: false,
       loadingFood: false,
-      actionToast: false,
-      actionMessage: "",
+      showToast: false,
+      toastMessage: "",
       selectedFood: {
         id: "",
         imageUrl: "",
@@ -228,9 +215,6 @@ export default {
         description: "",
       });
     },
-    closeFoodForm() {
-      this.foodFormDialog = false;
-    },
     deleteIngredient(i) {
       this.selectedFood.ingredients.splice(i, 1);
     },
@@ -267,14 +251,14 @@ export default {
 
             // Add new food
             this.addFoodAction(this.selectedFood);
-            this.actionMessage = "Food added successfully!";
+            this.toastMessage = "Food added successfully!";
           } else {
             // Edit food
             await this.updateFoodAction(this.selectedFood);
-            this.actionMessage = "Food updated successfully!";
+            this.toastMessage = "Food updated successfully!";
           }
         } catch (error) {
-          this.actionMessage = error;
+          this.toastMessage = error;
         } finally {
           // Stop button loading
           this.loadingFood = false;
@@ -282,7 +266,7 @@ export default {
           this.foodFormDialog = false;
 
           // Display toast
-          this.actionToast = true;
+          this.showToast = true;
         }
       }
     },
@@ -295,13 +279,13 @@ export default {
 
       try {
         await this.deleteFoodAction(this.selectedFood);
-        this.actionMessage = "Food deleted successfully!";
+        this.toastMessage = "Food deleted successfully!";
       } catch (error) {
-        this.actionMessage = error;
+        this.toastMessage = error;
       } finally {
         this.promptOverlay = false;
         this.deleteFoodPrompt = false;
-        this.actionToast = true;
+        this.showToast = true;
       }
     },
     deleteFoodCancel() {

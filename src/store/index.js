@@ -24,6 +24,7 @@ export default new Vuex.Store({
     allUsers: [],
     availableFoods: [],
     userSettings: {},
+    menu: [],
 
     meals: [],
     likedFoods: null,
@@ -95,6 +96,20 @@ export default new Vuex.Store({
     },
     setUserSettings(state, settings) {
       state.userSettings = settings
+    },
+    setMenu(state, menu) {
+      state.menu = menu
+    },
+    addMenuFood(state, food) {
+      state.menu.push(food)
+    },
+    updateMenuFood(state, food) {
+      const index = state.menu.findIndex(f => f.id === food.id);
+      state.menu.splice(index, 1, food);
+      state.menu = [...state.menu];
+    },
+    deleteMenuFood(state, food) {
+      state.menu.splice(food, 1);
     },
 
     setMeals(state, meals) {
@@ -188,6 +203,44 @@ export default new Vuex.Store({
       const settings = await getDoc(doc(db, 'settings', state.userEmail))
 
       commit('setUserSettings', settings.data())
+    },
+    async getMenuAction({ commit, state }) {
+      const db = getFirestore()
+
+      // Fetch the menu foods from the database
+      const snapShot = await getDocs(collection(db, 'menus', state.userEmail, 'menu'))
+
+      // Map the foods to an array
+      const menuFoods = snapShot.docs.map(doc => doc.data())
+
+      commit('setMenu', menuFoods)
+    },
+    async addMenuFoodAction({ commit, state }, food) {
+      const db = getFirestore()
+
+      // Upload the food to the database
+      await setDoc(doc(db, 'menus', state.userEmail, 'menu', `food${food.food.id}`), food)
+
+      // Add to store
+      commit('addMenuFood', food)
+    },
+    async updateMenuFoodAction({ commit, state }, food) {
+      const db = getFirestore()
+
+      // Upload the food to the database
+      await setDoc(doc(db, 'menus', state.userEmail, 'menu', `food${food.food.id}`), food, { merge: true })
+
+      // Update in store
+      commit('updateMenuFood', food)
+    },
+    async deleteMenuFoodAction({ commit, state }, food) {
+      const db = getFirestore()
+
+      // Delete from database
+      await deleteDoc(doc(db, "menus", state.userEmail, 'menu', `food${food.food.id}`));
+
+      // Delete from store
+      commit('deleteMenuFood', food)
     },
 
     getMealsAction({ commit }) {
@@ -291,6 +344,9 @@ export default new Vuex.Store({
     },
   },
   getters: {
-    getEateryById: state => id => state.eateries.find(e => e.id === id)
+    getEateryById: state => id => state.eateries.find(e => e.id === id),
+    getFoodByName: (state) => name => {
+      return state.allFoods.find(food => food.name === name)
+    },
   },
 })
