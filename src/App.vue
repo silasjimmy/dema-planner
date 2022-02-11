@@ -192,23 +192,24 @@
       v-if="loggedIn"
       :permanent="$vuetify.breakpoint.mdAndUp"
       v-model="leftSidenav"
-      class="b"
     >
       <!-- Userview -->
       <template v-slot:prepend>
         <v-list>
           <v-list-item>
             <v-list-item-avatar size="80px">
-              <img src="https://cdn.vuetifyjs.com/images/john.png" />
+              <img :src="userProfile.imageUrl" />
             </v-list-item-avatar>
           </v-list-item>
           <v-list-item>
             <v-list-item-content>
               <v-list-item-title
                 class="text-h6 font-weight-medium jost-font-family"
-                >John Doe</v-list-item-title
+                >{{ userProfile.name }}</v-list-item-title
               >
-              <v-list-item-subtitle>johndoe@domain.com</v-list-item-subtitle>
+              <v-list-item-subtitle>{{
+                userProfile.email
+              }}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -382,12 +383,12 @@
 
 <script>
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 import MealsInfo from "./components/MealsInfo.vue";
 
 export default {
   name: "App",
-  created() {
+  async created() {
     // Sync local data with store data
     this.$store.commit(
       "setLoggedIn",
@@ -396,6 +397,9 @@ export default {
     this.$store.commit("setUserEmail", localStorage.getItem("email"));
     this.$store.commit("setUserRole", localStorage.getItem("role"));
     this.$store.commit("setDashboardLinks", localStorage.getItem("role"));
+
+    if (localStorage.getItem("loggedIn") === "true")
+      await this.getUserProfileAction();
 
     // console.log(
     //   this.$store.state.loggedIn,
@@ -439,6 +443,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions(["getUserProfileAction"]),
     updatePageTitle() {
       this.pageTitle = document.title;
     },
@@ -458,7 +463,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(["dashboardLinks"]),
+    ...mapState(["dashboardLinks", "userProfile"]),
     loggedIn() {
       return this.$store.state.loggedIn;
     },

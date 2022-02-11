@@ -75,7 +75,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
-import { roleRedirect, checkUserProfile } from "../utils";
+import { roleRedirect, checkUserProfile, defaultImageUrl } from "../utils";
 
 export default {
   name: "SignUp",
@@ -115,6 +115,9 @@ export default {
           localStorage.setItem("email", res.user.email);
           this.$store.commit("setUserEmail", res.user.email);
 
+          // Store photo url in local storage
+          localStorage.setItem("imageUrl", defaultImageUrl);
+
           // Redirect according to user profile existence
           this.redirect();
         } catch (error) {
@@ -139,6 +142,9 @@ export default {
         // Store user's email address
         localStorage.setItem("email", res.user.email);
         this.$store.commit("setUserEmail", res.user.email);
+
+        // Store photo url in local storage
+        localStorage.setItem("imageUrl", res.user.photoURL);
 
         // Redirect according to user profile existence
         this.redirect();

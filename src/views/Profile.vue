@@ -4,13 +4,8 @@
       <!-- Consumer profile view -->
       <v-list subheader two-line v-if="$store.state.userRole === 'consumer'">
         <v-list-item three-line>
-          <v-list-item-avatar
-            tile
-            size="80"
-            class="rounded-circle"
-            color="grey"
-          >
-            <v-img src="https://cdn.vuetifyjs.com/images/john.png"></v-img>
+          <v-list-item-avatar tile size="80" class="rounded-circle">
+            <v-img :src="userProfile.imageUrl"></v-img>
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title class="text-h5">{{
@@ -22,7 +17,7 @@
             }}</v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>
-            <v-btn icon @click="editConsumerProfileDialog = true">
+            <v-btn icon @click="editUserProfile = true">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </v-list-item-action>
@@ -360,7 +355,7 @@
             >
           </v-list-item-content>
           <v-list-item-action>
-            <v-btn icon @click="editEateryProfileDialog = true">
+            <v-btn icon @click="editUserProfile = true">
               <v-icon color="white">mdi-pencil</v-icon>
             </v-btn>
           </v-list-item-action>
@@ -372,14 +367,15 @@
     <v-dialog
       persistent
       scrollable
-      v-model="editConsumerProfileDialog"
+      v-if="$store.state.userRole === 'consumer'"
+      v-model="editUserProfile"
       width="50vw"
     >
       <v-card>
         <v-card-title>
           <span>Edit profile</span>
           <v-spacer></v-spacer>
-          <v-btn icon @click="editConsumerProfileDialog = false">
+          <v-btn icon @click="editUserProfile = false">
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-card-title>
@@ -390,7 +386,10 @@
               <v-row>
                 <!-- Avatar field -->
                 <v-col cols="12">
-                  <avatar-field></avatar-field>
+                  <avatar-field
+                    :src="userProfile.imageUrl"
+                    @imageChange="updateImageUrl"
+                  ></avatar-field>
                 </v-col>
                 <!-- Name field -->
                 <v-col cols="12" lg="6">
@@ -399,6 +398,7 @@
                     dense
                     clearable
                     hide-details
+                    :rules="[rules.required]"
                     type="text"
                     color="success"
                     prepend-icon="mdi-account"
@@ -413,11 +413,13 @@
                     dense
                     clearable
                     hide-details
+                    :rules="[rules.required]"
                     type="date"
                     color="success"
                     prepend-icon="mdi-calendar"
                     label="Date of birth"
-                    v-model="userProfile.birthdate"
+                    :value="formatDate"
+                    v-model="userProfile.dateOfBirth"
                   ></v-text-field>
                 </v-col>
                 <!-- Gender field -->
@@ -427,6 +429,7 @@
                     clearable
                     dense
                     hide-details
+                    :rules="[rules.required]"
                     prepend-icon="mdi-account"
                     color="success"
                     :items="['Male', 'Female']"
@@ -581,7 +584,8 @@
             rounded
             color="success"
             class="text-none"
-            @click="saveProfile('bio')"
+            :loading="loadingProfile"
+            @click="saveProfile()"
           >
             Save
           </v-btn>
@@ -591,11 +595,16 @@
     </v-dialog>
 
     <!-- Eatery edit profile form -->
-    <v-dialog persistent v-model="editEateryProfileDialog" width="500">
+    <v-dialog
+      persistent
+      v-if="$store.state.userRole === 'eatery'"
+      v-model="editUserProfile"
+      width="500"
+    >
       <v-card>
         <v-card-title class="d-flex justify-space-between align-center">
           <span>Edit profile</span>
-          <v-btn icon @click="editEateryProfileDialog = false">
+          <v-btn icon @click="editUserProfile = false">
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-card-title>
@@ -634,7 +643,7 @@
             rounded
             color="success"
             class="text-none"
-            @click="editEateryProfileDialog = false"
+            @click="editUserProfile = false"
           >
             Save
           </v-btn>
@@ -642,25 +651,44 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!-- Action toast -->
+    <toast
+      :show="showToast"
+      :message="toastMessage"
+      :success="toastSuccess"
+      @close="showToast = false"
+    ></toast>
   </v-container>
 </template>
 
 <script>
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getFirestore, setDoc, doc } from "firebase/firestore";
 import { mapState, mapActions } from "vuex";
-import { differenceInYears } from "date-fns";
+import { differenceInYears, format, parseISO } from "date-fns";
+import { defaultImageUrl } from "../utils";
 import AvatarField from "@/components/AvatarField.vue";
+import Toast from "@/components/Toast.vue";
 // import UnitField from "@/components/UnitField.vue";
 
 export default {
   title: "Profile",
   name: "Profile",
-  created() {
-    this.getUserProfileAction();
+  async created() {
+    await this.getUserProfileAction();
   },
   data() {
     return {
-      editConsumerProfileDialog: false,
-      editEateryProfileDialog: false,
+      editUserProfile: false,
+      loadingProfile: false,
+      newAvatarImage: undefined,
+      showToast: false,
+      toastMessage: "",
+      toastSuccess: false,
+      rules: {
+        required: (value) => !!value || "This field is required!",
+      },
       // units: {
       //   weight: [
       //     { title: "Grams", value: "g" },
@@ -716,6 +744,24 @@ export default {
         new Date(this.userProfile.dateOfBirth)
       );
     },
+    formatDate() {
+      return format(parseISO(this.userProfile.dateOfBirth), "yyyy-MM-dd");
+    },
+    updateImageUrl(e) {
+      let reader = new FileReader();
+
+      reader.onloadend = () => {
+        this.userProfile.imageUrl = reader.result;
+      };
+
+      let images = e.target.files || e.dataTransfer.files;
+
+      if (!images.length) this.userProfile.imageUrl = defaultImageUrl;
+      else {
+        this.newAvatarImage = images[0];
+        this.userProfile.imageUrl = reader.readAsDataURL(images[0]);
+      }
+    },
     // setWeightUnits(value) {
     //   this.weight.unit = value;
     // },
@@ -725,15 +771,71 @@ export default {
     // setCurrency(value) {
     //   this.dailySpending.currency = value;
     // },
-    saveProfile() {
+    async saveProfile() {
+      this.loadingProfile = true;
+
       if (this.$refs.profileForm.validate()) {
-        console.log(this.userProfile);
-        this.editConsumerProfileDialog = false;
+        // Upload user avatar if uploaded
+        if (typeof this.newAvatarImage === "object") {
+          try {
+            const storage = getStorage();
+
+            // Upload the image to storage
+            const snapshot = await uploadBytes(
+              ref(
+                storage,
+                `profileAvatars/${this.userProfile.email}/avatar.jpg`
+              ),
+              this.newAvatarImage
+            );
+
+            // Get the image url
+            this.userProfile.imageUrl = await getDownloadURL(snapshot.ref);
+          } catch (error) {
+            this.loadingProfile = false;
+            this.editUserProfile = false;
+
+            // Display error toast
+            this.toastMessage = error.code;
+            this.toastSuccess = false;
+            this.showToast = true;
+            return;
+          }
+        }
+
+        // Upload the user profile to the database
+        try {
+          const db = getFirestore();
+          await setDoc(
+            doc(db, "profiles", this.userProfile.email),
+            this.userProfile,
+            {
+              merge: true,
+            }
+          );
+
+          this.loadingProfile = false;
+          this.editUserProfile = false;
+
+          // Display success toast
+          this.toastMessage = "Profile updated successfully!";
+          this.toastSuccess = true;
+          this.showToast = true;
+        } catch (error) {
+          this.loadingProfile = false;
+          this.editUserProfile = false;
+
+          // Display success toast
+          this.toastMessage = error.code;
+          this.toastSuccess = false;
+          this.showToast = true;
+        }
       }
     },
   },
   components: {
     AvatarField,
+    Toast,
     // UnitField,
   },
 };

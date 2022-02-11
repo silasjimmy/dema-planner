@@ -990,7 +990,7 @@ export default {
         location: "Kilifi, Kenya",
         created: new Date(),
         email: localStorage.getItem("email"),
-        imageUrl: "",
+        imageUrl: localStorage.getItem("imageUrl"),
         // weight: { amount: null, units: "kg" },
         // height: { amount: null, units: "cm" },
         // activityLevel: "",
@@ -1011,7 +1011,7 @@ export default {
         bio: "",
         created: new Date(),
         email: localStorage.getItem("email"),
-        imageUrl: "",
+        imageUrl: localStorage.getItem("imageUrl"),
       },
       consumerSettings: {
         receiveNews: true,
@@ -1116,6 +1116,9 @@ export default {
         // Stop button loading
         this.consumerLoading = false;
 
+        // Delete the image url in local storage
+        localStorage.removeItem("imageUrl");
+
         // Set the dashboard links
         this.$store.commit("setDashboardLinks", this.consumerProfile.role);
 
@@ -1162,6 +1165,9 @@ export default {
 
         // Stop button loading
         this.eateryLoading = false;
+
+        // Delete the image url in local storage
+        localStorage.removeItem("imageUrl");
 
         // Set the dashboard links
         this.$store.commit("setDashboardLinks", this.eateryProfile.role);

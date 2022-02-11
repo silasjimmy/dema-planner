@@ -55,4 +55,6 @@ async function checkUserProfile(email) {
     }
 }
 
-export { roleRedirect, checkUserProfile }
+const defaultImageUrl = "https://firebasestorage.googleapis.com/v0/b/demaplanner.appspot.com/o/profileAvatars%2Fdefault%2Fdefault-image.png?alt=media&token=c5fac7bb-ab08-4cf4-9e53-4560d08b60df"
+
+export { roleRedirect, checkUserProfile, defaultImageUrl }
