@@ -369,7 +369,12 @@
     </v-card>
 
     <!-- Consumer edit profile form -->
-    <v-dialog persistent v-model="editConsumerProfileDialog" width="500">
+    <v-dialog
+      persistent
+      scrollable
+      v-model="editConsumerProfileDialog"
+      width="50vw"
+    >
       <v-card>
         <v-card-title>
           <span>Edit profile</span>
@@ -379,53 +384,195 @@
           </v-btn>
         </v-card-title>
 
-        <v-card-text class="text-center">
-          <div class="avatar-upload mb-4">
-            <v-img
-              width="80px"
-              height="80px"
-              class="rounded-circle mx-auto d-flex align-center"
-              src="https://cdn.vuetifyjs.com/images/john.png"
-              gradient="to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)"
-            >
-              <label id="avatar-label" for="avatar">
-                <v-icon class="icon" color="white">mdi-camera</v-icon>
-              </label>
-            </v-img>
-
-            <input id="avatar" type="file" accept="image/*" />
-          </div>
-          <v-text-field
-            outlined
-            dense
-            clearable
-            type="text"
-            color="success"
-            prepend-icon="mdi-account"
-            label="Name"
-            v-model="userProfile.name"
-          ></v-text-field>
-          <v-text-field
-            outlined
-            dense
-            clearable
-            type="date"
-            color="success"
-            prepend-icon="mdi-calendar"
-            label="Date of birth"
-            v-model="userProfile.birthdate"
-          ></v-text-field>
-          <v-select
-            outlined
-            clearable
-            dense
-            hide-details
-            prepend-icon="mdi-account"
-            color="success"
-            :items="['Male', 'Female']"
-            v-model="userProfile.gender"
-            label="Gender"
-          ></v-select>
+        <v-card-text class="text-center" style="max-height: 70vh">
+          <v-form ref="profileForm">
+            <v-container>
+              <v-row>
+                <!-- Avatar field -->
+                <v-col cols="12">
+                  <avatar-field></avatar-field>
+                </v-col>
+                <!-- Name field -->
+                <v-col cols="12" lg="6">
+                  <v-text-field
+                    outlined
+                    dense
+                    clearable
+                    hide-details
+                    type="text"
+                    color="success"
+                    prepend-icon="mdi-account"
+                    label="Name"
+                    v-model="userProfile.name"
+                  ></v-text-field>
+                </v-col>
+                <!-- Date of birth field -->
+                <v-col cols="12" lg="6">
+                  <v-text-field
+                    outlined
+                    dense
+                    clearable
+                    hide-details
+                    type="date"
+                    color="success"
+                    prepend-icon="mdi-calendar"
+                    label="Date of birth"
+                    v-model="userProfile.birthdate"
+                  ></v-text-field>
+                </v-col>
+                <!-- Gender field -->
+                <v-col cols="12" lg="6">
+                  <v-select
+                    outlined
+                    clearable
+                    dense
+                    hide-details
+                    prepend-icon="mdi-account"
+                    color="success"
+                    :items="['Male', 'Female']"
+                    v-model="userProfile.gender"
+                    label="Gender"
+                  ></v-select>
+                </v-col>
+                <!-- Diet field -->
+                <!-- <v-col cols="12" lg="6">
+                  <v-select
+                    outlined
+                    clearable
+                    dense
+                    hide-details
+                    prepend-icon="mdi-home"
+                    color="success"
+                    :items="profileValues.diets"
+                    v-model="diet"
+                    label="Diet"
+                  ></v-select>
+                </v-col> -->
+                <!-- Weight field -->
+                <!-- <v-col cols="12" lg="6">
+                  <unit-field
+                    :icon="`mdi-home`"
+                    :label="`Weight`"
+                    :fieldVar="weight.amount"
+                    :suffix="weight.unit"
+                    :units="units.weight"
+                    @setUnits="setWeightUnits"
+                  ></unit-field>
+                </v-col> -->
+                <!-- Height field -->
+                <!-- <v-col cols="12" lg="6">
+                  <unit-field
+                    :icon="`mdi-home`"
+                    :label="`Height`"
+                    :fieldVar="height.amount"
+                    :suffix="height.unit"
+                    :units="units.height"
+                    @setUnits="setHeightUnits"
+                  ></unit-field>
+                </v-col> -->
+                <!-- Activity level field -->
+                <!-- <v-col cols="12" lg="6">
+                  <v-select
+                    outlined
+                    clearable
+                    dense
+                    hide-details
+                    prepend-icon="mdi-account"
+                    color="success"
+                    :items="profileValues.activityLevels"
+                    v-model="activityLevel"
+                    label="Activity level"
+                  ></v-select>
+                </v-col> -->
+                <!-- Health condition field -->
+                <!-- <v-col cols="12" lg="6">
+                  <v-select
+                    outlined
+                    clearable
+                    dense
+                    hide-details
+                    prepend-icon="mdi-heart"
+                    color="success"
+                    :items="profileValues.healthConditions"
+                    v-model="healthCondition"
+                    label="Health condition"
+                  ></v-select>
+                </v-col> -->
+                <!-- Body fat field -->
+                <!-- <v-col cols="12" lg="6">
+                  <v-select
+                    outlined
+                    clearable
+                    dense
+                    hide-details
+                    prepend-icon="mdi-home"
+                    color="success"
+                    :items="profileValues.bodyFats"
+                    v-model="bodyFat"
+                    label="Body fat"
+                  ></v-select>
+                </v-col> -->
+                <!-- Allergies field -->
+                <!-- <v-col cols="12" lg="6">
+                  <v-combobox
+                    outlined
+                    clearable
+                    dense
+                    hide-details
+                    multiple
+                    small-chips
+                    hide-selected
+                    prepend-icon="mdi-account"
+                    color="success"
+                    :items="profileValues.allergies"
+                    v-model="allergies"
+                    label="Allergies"
+                  ></v-combobox>
+                </v-col> -->
+                <!-- Objective field -->
+                <!-- <v-col cols="12" lg="6">
+                  <v-select
+                    outlined
+                    clearable
+                    dense
+                    hide-details
+                    prepend-icon="mdi-home"
+                    color="success"
+                    :items="profileValues.objectives"
+                    v-model="objective"
+                    label="Objective"
+                  ></v-select>
+                </v-col> -->
+                <!-- Weight goal field -->
+                <!-- <v-col cols="12" lg="6">
+                  <v-text-field
+                    outlined
+                    dense
+                    clearable
+                    hide-details
+                    hide-spin-buttons
+                    :suffix="weight.unit"
+                    type="number"
+                    color="success"
+                    prepend-icon="mdi-account"
+                    label="Weight goal"
+                    v-model="weightGoal"
+                  ></v-text-field>
+                </v-col> -->
+                <!-- Spending field -->
+                <!-- <v-col cols="12" lg="6">
+                  <unit-field
+                    :icon="`mdi-cash`"
+                    :label="`Daily min spending`"
+                    :fieldVar="dailySpending.amount"
+                    :suffix="dailySpending.currency"
+                    :units="units.currencies"
+                    @setUnits="setCurrency"
+                  ></unit-field>
+                </v-col> -->
+              </v-row>
+            </v-container>
+          </v-form>
         </v-card-text>
 
         <v-card-actions>
@@ -500,10 +647,9 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
-import {
-  differenceInYears,
-  // format,
-} from "date-fns";
+import { differenceInYears } from "date-fns";
+import AvatarField from "@/components/AvatarField.vue";
+// import UnitField from "@/components/UnitField.vue";
 
 export default {
   title: "Profile",
@@ -515,6 +661,43 @@ export default {
     return {
       editConsumerProfileDialog: false,
       editEateryProfileDialog: false,
+      // units: {
+      //   weight: [
+      //     { title: "Grams", value: "g" },
+      //     { title: "Kilograms", value: "kg" },
+      //   ],
+      //   height: [
+      //     { title: "Centimeters", value: "cm" },
+      //     { title: "Meters", value: "m" },
+      //     { title: "Inches", value: "inch" },
+      //     { title: "Foot", value: "ft" },
+      //   ],
+      //   currencies: [{ title: "Kenya shilling", value: "ksh" }],
+      // },
+      // profileValues: {
+      //   activityLevels: [
+      //     { text: "Low", value: "low" },
+      //     { text: "Medium", value: "medium" },
+      //     { text: "High", value: "high" },
+      //   ],
+      //   healthConditions: [{ text: "Diabetic", value: "diabetic" }],
+      //   bodyFats: [
+      //     { text: "Low", value: "low" },
+      //     { text: "Medium", value: "medium" },
+      //     { text: "High", value: "high" },
+      //   ],
+      //   allergies: [
+      //     { text: "Nuts", value: "nuts" },
+      //     { text: "Meat", value: "meat" },
+      //   ],
+      //   diets: [{ text: "Vegan", value: "vegan" }],
+      //   objectives: [
+      //     { text: "None", value: "none" },
+      //     { text: "Loose weight", value: "loose weight" },
+      //     { text: "Maintain weight", value: "maintain weight" },
+      //     { text: "Build muscle", value: "build muscle" },
+      //   ],
+      // },
       // eateryBioDialog: false,
       // consumerBioDialog: false,
       // primaryInfoDialog: false,
@@ -533,10 +716,25 @@ export default {
         new Date(this.userProfile.dateOfBirth)
       );
     },
+    // setWeightUnits(value) {
+    //   this.weight.unit = value;
+    // },
+    // setHeightUnits(value) {
+    //   this.height.unit = value;
+    // },
+    // setCurrency(value) {
+    //   this.dailySpending.currency = value;
+    // },
     saveProfile() {
-      console.log(this.userProfile);
-      this.editConsumerProfileDialog = false;
+      if (this.$refs.profileForm.validate()) {
+        console.log(this.userProfile);
+        this.editConsumerProfileDialog = false;
+      }
     },
+  },
+  components: {
+    AvatarField,
+    // UnitField,
   },
 };
 </script>

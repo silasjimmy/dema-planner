@@ -990,6 +990,7 @@ export default {
         location: "Kilifi, Kenya",
         created: new Date(),
         email: localStorage.getItem("email"),
+        imageUrl: "",
         // weight: { amount: null, units: "kg" },
         // height: { amount: null, units: "cm" },
         // activityLevel: "",
@@ -1010,6 +1011,7 @@ export default {
         bio: "",
         created: new Date(),
         email: localStorage.getItem("email"),
+        imageUrl: "",
       },
       consumerSettings: {
         receiveNews: true,
