@@ -3,7 +3,6 @@
     <v-card outlined class="rounded-lg">
       <v-list flat subheader>
         <v-subheader>General</v-subheader>
-
         <!-- Dema notifications -->
         <v-list-item two-line>
           <v-list-item-action>
@@ -15,173 +14,122 @@
 
           <v-list-item-content>
             <v-list-item-title>Notifications</v-list-item-title>
+            <v-list-item-subtitle>Send me news about Dema</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+        <!-- Sound notifications -->
+        <v-list-item two-line>
+          <v-list-item-action>
+            <v-checkbox
+              color="success"
+              v-model="notificationsAlert"
+            ></v-checkbox>
+          </v-list-item-action>
+
+          <v-list-item-content>
+            <v-list-item-title>Sound</v-list-item-title>
             <v-list-item-subtitle
-              >Notify me on news and updates about Dema</v-list-item-subtitle
+              >Alert me of any notifications</v-list-item-subtitle
+            >
+          </v-list-item-content>
+        </v-list-item>
+        <!-- Location change -->
+        <v-list-item two-line>
+          <v-list-item-action>
+            <v-checkbox
+              color="success"
+              v-model="autoUpdateLocation"
+            ></v-checkbox>
+          </v-list-item-action>
+
+          <v-list-item-content>
+            <v-list-item-title>Update location</v-list-item-title>
+            <v-list-item-subtitle
+              >Update my location automatically</v-list-item-subtitle
             >
           </v-list-item-content>
         </v-list-item>
 
-        <!-- <v-list-item-group v-model="settings" multiple active-class="">
-          <v-list-item class="mb-1" two-line>
-            <template v-slot:default="{ active }">
-              <v-list-item-action>
-                <v-checkbox color="success" :input-value="active"></v-checkbox>
-              </v-list-item-action>
+        <v-divider></v-divider>
 
-              <v-list-item-content>
-                <v-list-item-title>Sound</v-list-item-title>
-                <v-list-item-subtitle
-                  >Alert me of any new notifications or
-                  messages</v-list-item-subtitle
-                >
-              </v-list-item-content>
-            </template>
-          </v-list-item>
-
-          <v-list-item class="mb-3" two-line>
-            <template v-slot:default="{ active }">
-              <v-list-item-action>
-                <v-checkbox color="success" :input-value="active"></v-checkbox>
-              </v-list-item-action>
-
-              <v-list-item-content>
-                <v-list-item-title>Location</v-list-item-title>
-                <v-list-item-subtitle
-                  >Auto-update my location wherever i go</v-list-item-subtitle
-                >
-              </v-list-item-content>
-            </template>
-          </v-list-item>
-        </v-list-item-group> -->
-
-        <!-- <v-divider></v-divider> -->
-
-        <!-- <v-subheader>Account</v-subheader>
-
-        <v-list-item three-line>
-          <v-list-item-content>
-            <v-list-item-title>Language</v-list-item-title>
-            <v-list-item-subtitle
-              >Change to your preferred language
-            </v-list-item-subtitle>
-            <v-list-item-subtitle class="ml-1">
-              <v-sheet height="auto" class="py-3" width="250px">
-                <v-combobox
-                  hide-details
-                  dense
-                  outlined
-                  color="success"
-                  v-model="selectedLanguage"
-                  item-color="success"
-                  :items="languages"
-                ></v-combobox>
-              </v-sheet>
-            </v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-
-        <v-list-item three-line>
+        <v-subheader>Appearance</v-subheader>
+        <!-- Theme change -->
+        <v-list-item two-line>
           <v-list-item-content>
             <v-list-item-title>Theme</v-list-item-title>
-            <v-list-item-subtitle
-              >Choose your preferred theme</v-list-item-subtitle
-            >
-            <v-list-item-subtitle class="ml-1">
-              <v-sheet class="py-3" height="auto">
-                <v-item-group
-                  mandatory
-                  active-class="white--text"
-                  v-model="appTheme"
-                >
-                  <v-item value="light-theme" v-slot="{ active, toggle }">
-                    <v-btn
-                      elevation="0"
-                      width="120px"
-                      height="42px"
-                      class="rounded text-none mr-4"
-                      :color="active ? 'grey darken-2' : 'grey lighten-2'"
-                      @click="toggle"
-                    >
-                      <v-icon left>mdi-white-balance-sunny</v-icon>
-                      Light
-                    </v-btn>
-                  </v-item>
-                  <v-item value="dark-theme" v-slot="{ active, toggle }">
-                    <v-btn
-                      elevation="0"
-                      width="120px"
-                      height="42px"
-                      class="rounded text-none"
-                      @click="toggle"
-                      :color="active ? 'grey darken-2' : 'grey lighten-2'"
-                    >
-                      <v-icon left>mdi-weather-night</v-icon>
-                      Dark
-                    </v-btn>
-                  </v-item>
-                </v-item-group>
-              </v-sheet>
-            </v-list-item-subtitle>
+            <v-list-item-subtitle>Light theme</v-list-item-subtitle>
           </v-list-item-content>
+
+          <v-list-item-action>
+            <v-btn icon>
+              <v-icon>mdi-white-balance-sunny</v-icon>
+            </v-btn>
+            <!-- <v-switch color="success" v-model="$vuetify.theme.dark"></v-switch> -->
+          </v-list-item-action>
         </v-list-item>
 
+        <!-- Language change -->
         <v-list-item two-line>
-        <v-list-item-content>
-          <v-list-item-title>Meal times</v-list-item-title>
-          <v-list-item-subtitle>Add or delete meal times</v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
+          <v-list-item-content>
+            <v-list-item-title>Language</v-list-item-title>
+            <v-list-item-subtitle>English </v-list-item-subtitle>
+          </v-list-item-content>
+
+          <v-list-item-action>
+            <v-btn icon>
+              <v-icon>mdi-web</v-icon>
+            </v-btn>
+          </v-list-item-action>
+        </v-list-item>
+
+        <v-divider></v-divider>
+
+        <v-subheader>Preferences</v-subheader>
+
+        <!-- Meal add/delete -->
+        <v-list-item two-line>
+          <v-list-item-content>
+            <v-list-item-title>Meals</v-list-item-title>
+            <v-list-item-subtitle>Add or edit meal time</v-list-item-subtitle>
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-btn icon>
+              <v-icon>mdi-plus</v-icon>
+            </v-btn>
+          </v-list-item-action>
+        </v-list-item>
 
         <v-divider></v-divider>
 
         <v-subheader>Advanced</v-subheader>
 
-        <v-list-item three-line>
+        <!-- Change email -->
+        <v-list-item two-line>
           <v-list-item-content>
-            <v-list-item-title>Password</v-list-item-title>
-            <v-list-item-subtitle>Change your password</v-list-item-subtitle>
-            <v-list-item-subtitle class="py-3 ml-1"
-              >s*******</v-list-item-subtitle
-            >
+            <v-list-item-title>Change email</v-list-item-title>
+            <v-list-item-subtitle>name@domain.com</v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>
-            <v-btn icon color="grey">
+            <v-btn icon>
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </v-list-item-action>
         </v-list-item>
 
-        <v-list-item three-line>
-          <v-list-item-content>
-            <v-list-item-title>Location</v-list-item-title>
-            <v-list-item-subtitle
-              >Update to your current location</v-list-item-subtitle
-            >
-            <v-list-item-subtitle class="py-3">
-              <v-icon>mdi-map-marker</v-icon>
-              <span class="ml-2 text-capitalize">city, country</span>
-            </v-list-item-subtitle>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-btn icon color="grey">
-              <v-icon>mdi-pencil</v-icon>
-            </v-btn>
-          </v-list-item-action>
-        </v-list-item>
-
+        <!-- Delete account -->
         <v-list-item two-line>
           <v-list-item-content>
             <v-list-item-title>Delete account</v-list-item-title>
             <v-list-item-subtitle
-              >Remember all your data will be lost</v-list-item-subtitle
+              >All your data will be lost</v-list-item-subtitle
             >
           </v-list-item-content>
           <v-list-item-action>
-            <v-btn icon color="grey">
+            <v-btn icon color="error">
               <v-icon>mdi-delete</v-icon>
             </v-btn>
           </v-list-item-action>
-        </v-list-item> -->
+        </v-list-item>
       </v-list>
     </v-card>
     <!-- <v-row>
@@ -454,23 +402,27 @@ export default {
   async created() {
     await this.getUserSettingsAction();
   },
-  // data() {
-  //   return {
-  //     deleteAccountDialog: false,
-  //     deleteMealTimeDialog: false,
-  //     newMealTimeDialog: false,
-  //     darkMode: false,
-  //     mealIdToDelete: 0,
-  //     settings: [],
-  //     appTheme: "light-theme",
-  //     selectedLanguage: ["English"],
-  //     languages: ["English", "Swahili"],
-  //     newMeal: {
-  //       name: "",
-  //       time: "",
-  //     },
-  //   };
-  // },
+  data() {
+    return {
+      notificationsAlert: true,
+      autoUpdateLocation: true,
+      appLanguage: "english",
+      languages: [{ text: "English", value: "english" }],
+      // deleteAccountDialog: false,
+      // deleteMealTimeDialog: false,
+      // newMealTimeDialog: false,
+      // darkMode: false,
+      // mealIdToDelete: 0,
+      // settings: [],
+      // appTheme: "light-theme",
+      // selectedLanguage: ["English"],
+      // languages: ["English", "Swahili"],
+      // newMeal: {
+      //   name: "",
+      //   time: "",
+      // },
+    };
+  },
   computed: {
     ...mapState(["userSettings"]),
   },

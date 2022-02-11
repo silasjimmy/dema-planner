@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <!-- Home app bar -->
-    <v-app-bar app elevate-on-scroll color="white" v-if="!loggedIn">
+    <v-app-bar app elevate-on-scroll v-if="!loggedIn">
       <v-app-bar-nav-icon
         class="d-flex d-sm-none"
         @click="homeSidenav = true"
@@ -85,10 +85,10 @@
     </v-navigation-drawer>
 
     <!-- Dashboard app bar -->
-    <v-app-bar app elevate-on-scroll color="white" v-if="loggedIn">
+    <v-app-bar app elevate-on-scroll v-if="loggedIn">
       <v-app-bar-nav-icon
-        class="d-md-none"
-        @click="leftSidenav = true"
+        class="d-sm-none"
+        @click="rightSidenav = true"
       ></v-app-bar-nav-icon>
 
       <v-toolbar-title>{{ pageTitle }}</v-toolbar-title>
@@ -177,21 +177,14 @@
           </v-tab-item>
         </v-tabs>
       </v-menu>
-
-      <v-app-bar-nav-icon
-        class="d-sm-none"
-        @click="rightSidenav = true"
-      ></v-app-bar-nav-icon>
     </v-app-bar>
 
     <!-- Dashboard left-side navigation bar -->
     <v-navigation-drawer
       fixed
       app
-      color="white"
       v-if="loggedIn"
       :permanent="$vuetify.breakpoint.mdAndUp"
-      v-model="leftSidenav"
     >
       <!-- Userview -->
       <template v-slot:prepend>
@@ -273,13 +266,77 @@
       fixed
       app
       right
-      color="white"
       v-if="loggedIn"
       :permanent="$vuetify.breakpoint.smAndUp"
       v-model="rightSidenav"
     >
       <meals-info v-if="userRole === 'consumer'"></meals-info>
     </v-navigation-drawer>
+
+    <!-- Dashboard bottom navigation -->
+    <v-bottom-navigation
+      app
+      :shift="$vuetify.breakpoint.smAndUp"
+      v-if="loggedIn && $vuetify.breakpoint.smAndDown"
+    >
+      <v-btn
+        link
+        v-for="link in dashboardLinks"
+        :key="link.text"
+        :to="link.url"
+        @click="updatePageTitle"
+      >
+        <span class="d-none d-sm-flex">{{ link.text }}</span>
+        <v-icon>{{ link.icon }}</v-icon>
+      </v-btn>
+      <v-btn
+        link
+        to="/settings"
+        v-if="$vuetify.breakpoint.smAndUp"
+        @click="updatePageTitle"
+      >
+        <span>Settings</span>
+        <v-icon>mdi-cog</v-icon>
+      </v-btn>
+      <v-btn
+        link
+        to="/profile"
+        v-if="$vuetify.breakpoint.smAndUp"
+        @click="updatePageTitle"
+      >
+        <span>Profile</span>
+        <v-icon>mdi-account-details</v-icon>
+      </v-btn>
+
+      <!-- More links menu -->
+      <v-menu top offset-y>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn class="px-0 d-flex d-sm-none" v-bind="attrs" v-on="on">
+            <span class="d-none d-sm-flex">More</span>
+            <v-icon>mdi-dots-horizontal</v-icon>
+          </v-btn>
+        </template>
+
+        <!-- Links -->
+        <v-list class="text-center py-0">
+          <v-list-item class="px-0" link to="/profile" @click="updatePageTitle">
+            <v-list-item-title>
+              <v-icon>mdi-account-details</v-icon>
+            </v-list-item-title>
+          </v-list-item>
+          <v-list-item
+            class="px-0"
+            link
+            to="/settings"
+            @click="updatePageTitle"
+          >
+            <v-list-item-title>
+              <v-icon>mdi-cog</v-icon>
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </v-bottom-navigation>
 
     <!-- Main section -->
     <v-main>
@@ -305,7 +362,7 @@
 
     <!-- Footer -->
     <v-footer app absolute padless v-if="!loggedIn">
-      <v-card flat tile color="grey lighten-5" width="100vw">
+      <v-card flat tile width="100vw">
         <v-card-text class="text-center">
           <v-btn rounded link class="ma-2 text-none" elevation="0" to="/home"
             >Home</v-btn
@@ -338,15 +395,15 @@
           <v-row class="text-center">
             <v-col cols="12" md="6">
               <h3 class="subtitle-1 text--secondary">Find us in:</h3>
-              <v-btn text rounded class="grey--text text--darken-4 text-none">
+              <v-btn text rounded class="text-none">
                 <v-icon left size="24px">mdi-map-marker</v-icon>
                 P.O Box 000-00000, City, Country
               </v-btn>
-              <v-btn text rounded class="grey--text text--darken-4 text-none">
+              <v-btn text rounded class="text-none">
                 <v-icon left size="24px">mdi-email</v-icon>
                 dema@domain.com
               </v-btn>
-              <v-btn text rounded class="grey--text text--darken-4">
+              <v-btn text rounded class="text-none">
                 <v-icon left size="24px">mdi-phone</v-icon>
                 +254 000 000 000
               </v-btn>
@@ -355,16 +412,16 @@
               <h3 class="subtitle-1 text--secondary">
                 Stay updated on our social platforms
               </h3>
-              <v-btn class="grey--text mx-2 text--darken-4" icon>
+              <v-btn class="mx-2" icon>
                 <v-icon size="24px">mdi-facebook</v-icon>
               </v-btn>
-              <v-btn class="grey--text mx-2 text--darken-4" icon>
+              <v-btn class="mx-2" icon>
                 <v-icon size="24px">mdi-linkedin</v-icon>
               </v-btn>
-              <v-btn class="grey--text mx-2 text--darken-4" icon>
+              <v-btn class="mx-2" icon>
                 <v-icon size="24px">mdi-twitter</v-icon>
               </v-btn>
-              <v-btn class="grey--text mx-2 text--darken-4" icon>
+              <v-btn class="mx-2" icon>
                 <v-icon size="24px">mdi-instagram</v-icon>
               </v-btn>
             </v-col>
@@ -373,7 +430,7 @@
 
         <v-divider></v-divider>
 
-        <v-card-text class="grey--text text--darken-4 text-center">
+        <v-card-text class="text-center">
           <span>{{ new Date().getFullYear() }} — <strong>Dema</strong></span>
         </v-card-text>
       </v-card>
@@ -412,6 +469,10 @@ export default {
     // Monitor the user sign in activity
     const auth = getAuth();
 
+    // Update the page title
+    if (localStorage.getItem("loggedIn") === "true")
+      this.pageTitle = document.title;
+
     onAuthStateChanged(auth, (user) => {
       if (user) {
         // Update the local storage data
@@ -434,7 +495,6 @@ export default {
     return {
       pageTitle: "",
       homeSidenav: false,
-      leftSidenav: false,
       rightSidenav: false,
       notificationsMenu: false,
       isOnline: !navigator.onLine,
@@ -478,6 +538,10 @@ export default {
 <style>
 .b {
   border: 1px solid black;
+}
+
+.theme--light.v-app-bar.v-toolbar.v-sheet {
+  background-color: #ffffff !important;
 }
 
 .blockquote::before,

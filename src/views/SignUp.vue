@@ -58,7 +58,6 @@
         rounded
         :loading="googleCreateLoad"
         @click="googleSignUp"
-        color="grey darken-3"
         class="my-4 text-none"
       >
         <v-icon left>mdi-google</v-icon>

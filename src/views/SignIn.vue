@@ -62,7 +62,6 @@
           rounded
           :loading="googleAuthLoad"
           @click="googleSignIn"
-          color="grey darken-3"
           class="my-4 text-none"
         >
           <v-icon left>mdi-google</v-icon>
