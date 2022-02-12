@@ -2,7 +2,8 @@
   <v-container>
     <v-row>
       <v-col cols="12" lg="8" class="mx-auto">
-        <p class="text--secondary text-center">Eateries around location.</p>
+        <!-- <p class="text--secondary text-center">Eateries around location.</p> -->
+        <p class="text--secondary text-center">No data available</p>
       </v-col>
       <v-col v-for="eatery in eateries" :key="eatery.name" cols="12" lg="6">
         <v-card outlined class="rounded-lg">
@@ -43,10 +44,9 @@
             <v-btn
               link
               plain
+              disabled
               :to="{ name: 'eatery-details', params: { id: eatery.id } }"
-              color="black"
-              class="text-none"
-              >View details</v-btn
+              >More info</v-btn
             >
             <v-spacer></v-spacer>
           </v-card-actions>

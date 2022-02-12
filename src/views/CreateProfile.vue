@@ -1015,6 +1015,32 @@ export default {
       },
       consumerSettings: {
         receiveNews: true,
+        notificationsAlert: true,
+        autoUpdateLocation: true,
+        appLanguage: "english",
+        appTheme: "light",
+        mealTimes: [
+          {
+            id: "1",
+            name: "Breakfast",
+            time: "07:00",
+          },
+          {
+            id: "2",
+            name: "Lunch",
+            time: "13:00",
+          },
+          {
+            id: "3",
+            name: "Snack",
+            time: "16:00",
+          },
+          {
+            id: "4",
+            name: "Supper",
+            time: "19:00",
+          },
+        ],
       },
       eaterySettings: {
         receiveNews: true,

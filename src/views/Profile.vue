@@ -17,7 +17,7 @@
             }}</v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>
-            <v-btn icon @click="editUserProfile = true">
+            <v-btn disabled icon @click="editUserProfile = true">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </v-list-item-action>

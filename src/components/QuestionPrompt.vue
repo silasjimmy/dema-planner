@@ -9,15 +9,10 @@
 
       <v-card-actions class="pt-0">
         <v-spacer></v-spacer>
-        <v-btn text rounded @click="cancel" class="text-none mx-2" color="error"
+        <v-btn text rounded @click="cancel" class="mx-2" color="error"
           >No</v-btn
         >
-        <v-btn
-          text
-          rounded
-          class="text-none mx-2"
-          color="success"
-          @click="confirm"
+        <v-btn text rounded class="mx-2" color="success" @click="confirm"
           >Yes</v-btn
         >
         <v-spacer></v-spacer>

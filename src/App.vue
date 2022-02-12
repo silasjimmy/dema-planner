@@ -107,7 +107,7 @@
       >
         <template v-slot:activator="{ on, attrs }">
           <v-badge dot bordered offset-x="15" color="green" offset-y="15">
-            <v-btn v-bind="attrs" v-on="on" icon>
+            <v-btn disabled v-bind="attrs" v-on="on" icon>
               <v-icon>mdi-bell</v-icon>
             </v-btn>
           </v-badge>
@@ -435,6 +435,19 @@
         </v-card-text>
       </v-card>
     </v-footer>
+
+    <!-- Page load overlay -->
+    <v-overlay opacity="1" z-index="10" :value="pageLoadOverlay">
+      <v-progress-circular
+        :rotate="360"
+        :size="200"
+        :width="15"
+        :value="pageLoadValue"
+        color="success"
+      >
+        Loading: {{ pageLoadValue }}
+      </v-progress-circular>
+    </v-overlay>
   </v-app>
 </template>
 
@@ -455,9 +468,6 @@ export default {
     this.$store.commit("setUserRole", localStorage.getItem("role"));
     this.$store.commit("setDashboardLinks", localStorage.getItem("role"));
 
-    if (localStorage.getItem("loggedIn") === "true")
-      await this.getUserProfileAction();
-
     // console.log(
     //   this.$store.state.loggedIn,
     //   this.$store.state.userEmail,
@@ -465,13 +475,33 @@ export default {
     //   this.$store.state.dashboardLinks
     // );
   },
-  mounted() {
+  async mounted() {
+    if (localStorage.getItem("loggedIn") === "true") {
+      // Show the overlay
+      this.pageLoadOverlay = true;
+
+      // Fetch user settings
+      await this.getUserSettingsAction();
+      this.pageLoadValue += 50;
+
+      // Fetch user profile
+      await this.getUserProfileAction();
+      this.pageLoadValue += 50;
+
+      // Set the app's theme
+      this.$vuetify.theme.dark = this.userSettings.appTheme === "dark";
+
+      // Set the page title
+      this.pageTitle = document.title;
+
+      setTimeout(() => {
+        // Hide the overlay
+        this.pageLoadOverlay = false;
+      }, 1000);
+    }
+
     // Monitor the user sign in activity
     const auth = getAuth();
-
-    // Update the page title
-    if (localStorage.getItem("loggedIn") === "true")
-      this.pageTitle = document.title;
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -494,6 +524,9 @@ export default {
   data() {
     return {
       pageTitle: "",
+      pageLoadOverlay: false,
+      interval: {},
+      pageLoadValue: 0,
       homeSidenav: false,
       rightSidenav: false,
       notificationsMenu: false,
@@ -503,7 +536,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["getUserProfileAction"]),
+    ...mapActions(["getUserProfileAction", "getUserSettingsAction"]),
     updatePageTitle() {
       this.pageTitle = document.title;
     },
@@ -523,7 +556,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(["dashboardLinks", "userProfile"]),
+    ...mapState(["dashboardLinks", "userProfile", "userSettings"]),
     loggedIn() {
       return this.$store.state.loggedIn;
     },

@@ -96,6 +96,7 @@
           </p>
           <v-btn
             rounded
+            disabled
             :loading="loadingMeals"
             @click="generateMeals"
             color="success"

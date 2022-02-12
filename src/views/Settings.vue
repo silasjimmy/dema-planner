@@ -9,6 +9,7 @@
             <v-checkbox
               color="success"
               v-model="userSettings.receiveNews"
+              @change="detectSettingChange('dema')"
             ></v-checkbox>
           </v-list-item-action>
 
@@ -22,7 +23,8 @@
           <v-list-item-action>
             <v-checkbox
               color="success"
-              v-model="notificationsAlert"
+              v-model="userSettings.notificationsAlert"
+              @change="detectSettingChange('sound')"
             ></v-checkbox>
           </v-list-item-action>
 
@@ -38,12 +40,13 @@
           <v-list-item-action>
             <v-checkbox
               color="success"
-              v-model="autoUpdateLocation"
+              v-model="userSettings.autoUpdateLocation"
+              @change="detectSettingChange('location')"
             ></v-checkbox>
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title>Update location</v-list-item-title>
+            <v-list-item-title>Location</v-list-item-title>
             <v-list-item-subtitle
               >Update my location automatically</v-list-item-subtitle
             >
@@ -57,65 +60,259 @@
         <v-list-item two-line>
           <v-list-item-content>
             <v-list-item-title>Theme</v-list-item-title>
-            <v-list-item-subtitle>Light theme</v-list-item-subtitle>
+            <v-list-item-subtitle>
+              {{ userSettings.appTheme === "light" ? "Light" : "Dark" }} theme
+            </v-list-item-subtitle>
           </v-list-item-content>
 
           <v-list-item-action>
-            <v-btn icon>
-              <v-icon>mdi-white-balance-sunny</v-icon>
+            <v-btn icon @click="themeChangeDialog = true">
+              <v-icon>
+                {{
+                  userSettings.appTheme === "light"
+                    ? "mdi-white-balance-sunny"
+                    : "mdi-weather-night"
+                }}
+              </v-icon>
             </v-btn>
-            <!-- <v-switch color="success" v-model="$vuetify.theme.dark"></v-switch> -->
           </v-list-item-action>
-        </v-list-item>
 
+          <v-dialog persistent width="auto" v-model="themeChangeDialog">
+            <v-card>
+              <v-card-title>Choose theme</v-card-title>
+
+              <v-divider></v-divider>
+
+              <v-card-text class="py-0">
+                <v-radio-group
+                  hide-details
+                  class="mt-0"
+                  v-model="userSettings.appTheme"
+                >
+                  <v-list>
+                    <v-list-item>
+                      <v-list-item-content>
+                        <v-list-item-title>
+                          <v-radio
+                            color="success"
+                            label="Light theme"
+                            value="light"
+                          ></v-radio>
+                        </v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item>
+                      <v-list-item-content>
+                        <v-list-item-title>
+                          <v-radio
+                            color="success"
+                            label="Dark theme"
+                            value="dark"
+                          ></v-radio>
+                        </v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-list>
+                </v-radio-group>
+              </v-card-text>
+
+              <v-divider></v-divider>
+
+              <v-card-actions class="justify-center">
+                <v-btn text rounded color="success" @click="changeAppTheme"
+                  >Ok</v-btn
+                >
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-list-item>
         <!-- Language change -->
         <v-list-item two-line>
           <v-list-item-content>
             <v-list-item-title>Language</v-list-item-title>
-            <v-list-item-subtitle>English </v-list-item-subtitle>
+            <v-list-item-subtitle class="text-capitalize"
+              >{{ userSettings.appLanguage }}
+            </v-list-item-subtitle>
           </v-list-item-content>
 
           <v-list-item-action>
-            <v-btn icon>
+            <v-btn icon @click="languageChangeDialog = true">
               <v-icon>mdi-web</v-icon>
             </v-btn>
           </v-list-item-action>
+
+          <!-- Language change dialog -->
+          <v-dialog persistent width="auto" v-model="languageChangeDialog">
+            <v-card>
+              <v-card-title>Choose language</v-card-title>
+
+              <v-divider></v-divider>
+
+              <v-card-text class="py-0">
+                <v-radio-group
+                  hide-details
+                  class="mt-0"
+                  v-model="userSettings.appLanguage"
+                >
+                  <v-list>
+                    <v-list-item>
+                      <v-list-item-content>
+                        <v-list-item-title>
+                          <v-radio
+                            color="success"
+                            label="English"
+                            value="english"
+                          ></v-radio>
+                        </v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-list>
+                </v-radio-group>
+              </v-card-text>
+
+              <v-divider></v-divider>
+
+              <v-card-actions class="justify-center">
+                <v-btn text rounded color="success" @click="changeAppLanguage"
+                  >Ok</v-btn
+                >
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </v-list-item>
 
-        <v-divider></v-divider>
+        <!-- <v-divider></v-divider>
 
-        <v-subheader>Preferences</v-subheader>
+        <v-subheader>Preferences</v-subheader> -->
 
         <!-- Meal add/delete -->
-        <v-list-item two-line>
+        <!-- <v-list-item three-line>
           <v-list-item-content>
             <v-list-item-title>Meals</v-list-item-title>
-            <v-list-item-subtitle>Add or edit meal time</v-list-item-subtitle>
+            <v-list-item-subtitle
+              >Add, edit or delete meal time</v-list-item-subtitle
+            >
+            <v-list-item-subtitle class="text-center">
+              <v-chip
+                close
+                class="mt-2 mr-2 mb-0"
+                :input-value="mealTimeDialog"
+                @click="editMealTime(mealTime)"
+                close-icon="mdi-delete"
+                @click:close="deleteMealTime(mealTime)"
+                v-for="mealTime in userSettings.mealTimes"
+                :key="mealTime.id"
+              >
+                <v-avatar left color="success">
+                  <span class="white--text text-h5">{{
+                    mealTime.name[0]
+                  }}</span>
+                </v-avatar>
+                <span>{{ formatTime(mealTime.time) }}</span>
+              </v-chip>
+
+              <question-prompt
+                :question="'Are you sure you want to delete this meal time?'"
+                :dialog="deleteMealTimeDialog"
+                :overlay="deleteMealTimeOverlay"
+                @cancel="deleteMealTimeCancel"
+                @confirm="deleteMealTimeConfirm"
+              ></question-prompt>
+
+              <v-dialog width="400px" v-model="mealTimeDialog">
+                <v-card>
+                  <v-card-title>
+                    <span>{{ mealTimeAction }} meal time</span>
+                    <v-spacer></v-spacer>
+                    <v-btn icon @click="mealTimeDialog = false">
+                      <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                  </v-card-title>
+
+                  <v-card-text class="pb-0 pt-2">
+                    <v-text-field
+                      outlined
+                      dense
+                      type="text"
+                      color="success"
+                      label="Name"
+                      prepend-icon="mdi-pizza"
+                      v-model="selectedMealTime.name"
+                    ></v-text-field>
+                    <v-text-field
+                      outlined
+                      dense
+                      type="time"
+                      label="Time"
+                      color="success"
+                      prepend-icon="mdi-clock"
+                      v-model="selectedMealTime.time"
+                    ></v-text-field>
+                  </v-card-text>
+
+                  <v-card-actions class="justify-center">
+                    <v-btn text rounded @click="saveMealTime" color="success"
+                      >Save</v-btn
+                    >
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-list-item-subtitle>
           </v-list-item-content>
+
           <v-list-item-action>
-            <v-btn icon>
+            <v-btn icon @click="addMealTime">
               <v-icon>mdi-plus</v-icon>
             </v-btn>
           </v-list-item-action>
-        </v-list-item>
+        </v-list-item> -->
 
         <v-divider></v-divider>
 
         <v-subheader>Advanced</v-subheader>
-
-        <!-- Change email -->
-        <v-list-item two-line>
+        <!-- Email change -->
+        <!-- <v-list-item two-line>
           <v-list-item-content>
             <v-list-item-title>Change email</v-list-item-title>
             <v-list-item-subtitle>name@domain.com</v-list-item-subtitle>
           </v-list-item-content>
+
           <v-list-item-action>
-            <v-btn icon>
+            <v-btn icon @click="emailChangeDialog = true">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </v-list-item-action>
-        </v-list-item>
 
+          <v-dialog width="350px" v-model="emailChangeDialog">
+            <v-card>
+              <v-card-title>
+                <span>Change your email</span>
+                <v-spacer></v-spacer>
+                <v-btn icon @click="emailChangeDialog = false">
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+              </v-card-title>
+
+              <v-card-text class="pb-0 pt-2">
+                <v-text-field
+                  outlined
+                  dense
+                  type="text"
+                  color="success"
+                  label="Email address"
+                  prepend-icon="mdi-email"
+                  value="name@domain.com"
+                ></v-text-field>
+              </v-card-text>
+
+              <v-card-actions class="justify-center">
+                <v-btn text rounded color="success" @click="changeEmail"
+                  >Update</v-btn
+                >
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-list-item> -->
         <!-- Delete account -->
         <v-list-item two-line>
           <v-list-item-content>
@@ -124,303 +321,88 @@
               >All your data will be lost</v-list-item-subtitle
             >
           </v-list-item-content>
+
           <v-list-item-action>
-            <v-btn icon color="error">
+            <v-btn icon color="error" @click="deleteAccountDialog = true">
               <v-icon>mdi-delete</v-icon>
             </v-btn>
           </v-list-item-action>
+
+          <!-- Account delete dialog -->
+          <question-prompt
+            :question="'Are you sure you want to delete your account?'"
+            :dialog="deleteAccountDialog"
+            :overlay="deleteAccountOverlay"
+            @cancel="deleteAccountCancel"
+            @confirm="deleteAccountConfirm"
+          ></question-prompt>
         </v-list-item>
       </v-list>
     </v-card>
-    <!-- <v-row>
-      <v-col cols="12">
-        <v-card>
-          <v-card-text>
-            <v-list dense class="transparent">
-              <v-list-item-title>General settings</v-list-item-title>
-              <v-list-item-subtitle class="text--secondary"
-                >Appearance</v-list-item-subtitle
-              >
-              <v-list-item>
-                <v-container>
-                  <v-row>
-                    <v-col cols="12">
-                      <v-switch
-                        v-model="darkMode"
-                        label="Dark mode"
-                        color="grey darken-4"
-                      ></v-switch>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-list-item>
-            </v-list>
-          </v-card-text>
-          <v-card-text>
-            <v-list dense class="transparent">
-              <v-list-item-title>Meal time</v-list-item-title>
-              <v-list-item-subtitle
-                class="
-                  text--secondary
-                  d-flex
-                  justify-space-between
-                  align-center
-                "
-              >
-                <span>Add or delete time of meals</span>
-                <v-btn
-                  rounded
-                  text
-                  @click="newMealTimeDialog = true"
-                  class="text-none"
-                >
-                  <v-icon left>mdi-plus</v-icon>
-                  New meal time
-                </v-btn>
-              </v-list-item-subtitle>
-              <v-list-item>
-                <v-container fluid>
-                  <v-row>
-                    <v-col
-                      v-for="meal in mealTimes"
-                      :key="meal.name"
-                      cols="12"
-                      sm="6"
-                      lg="4"
-                      xl="3"
-                    >
-                      <v-card outlined>
-                        <v-card-title class="subtitle-1 text-capitalize">{{
-                          meal.name
-                        }}</v-card-title>
-                        <v-card-subtitle
-                          class="subtitle-2 font-weight-thin text-uppercase"
-                          >{{ meal.time }}</v-card-subtitle
-                        >
-                        <v-card-actions class="py-0">
-                          <v-spacer></v-spacer>
-                          <v-btn icon @click="deleteMeal(meal.id)">
-                            <v-icon small>mdi-delete</v-icon>
-                          </v-btn>
-                        </v-card-actions>
-                      </v-card>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-list-item>
-            </v-list>
 
-            <v-dialog width="400" v-model="newMealTimeDialog">
-              <v-card>
-                <v-card-title class="d-flex justify-space-between align-center">
-                  <h1 class="text-h6">New meal time</h1>
-                  <v-btn icon @click="newMealTimeDialog = !newMealTimeDialog">
-                    <v-icon>mdi-close</v-icon>
-                  </v-btn>
-                </v-card-title>
-                <v-card-text class="pt-3">
-                  <v-text-field
-                    outlined
-                    dense
-                    type="text"
-                    color="success"
-                    label="Name"
-                    prepend-icon="mdi-pizza"
-                    v-model="newMeal.name"
-                  ></v-text-field>
-                  <v-text-field
-                    outlined
-                    dense
-                    type="time"
-                    label="Time"
-                    color="success"
-                    prepend-icon="mdi-clock"
-                    v-model="newMeal.time"
-                  ></v-text-field>
-                  <div class="text-center">
-                    <v-btn
-                      @click="createMealTime"
-                      color="success"
-                      class="text-none"
-                      >Create</v-btn
-                    >
-                  </div>
-                </v-card-text>
-              </v-card>
-            </v-dialog>
-          </v-card-text>
-          <v-card-text>
-            <v-list dense class="transparent">
-              <v-list-item-title>Advanced</v-list-item-title>
-              <v-list-item-subtitle class="text--secondary"
-                >Current location</v-list-item-subtitle
-              >
-              <v-list-item>
-                <v-container>
-                  <v-dialog
-                    persistent
-                    width="auto"
-                    v-model="deleteAccountDialog"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        text
-                        rounded
-                        v-bind="attrs"
-                        v-on="on"
-                        class="text-capitalize"
-                      >
-                        <v-icon left>mdi-map-marker</v-icon>
-                        Kilifi, Kenya
-                      </v-btn>
-                    </template>
-
-                    <v-card max-width="50vw">
-                      <v-card-text class="py-0 text-center">
-                        <p class="pt-4 subtitle-1">
-                          Turn location on to update to your current location.
-                        </p>
-                      </v-card-text>
-                      <v-card-actions class="pt-0">
-                        <v-spacer></v-spacer>
-                        <v-btn
-                          text
-                          rounded
-                          @click="deleteAccountDialog = !deleteAccountDialog"
-                          class="text-none mr-4"
-                          color="error"
-                          >No</v-btn
-                        >
-                        <v-btn
-                          text
-                          rounded
-                          class="text-none ml-4"
-                          color="success"
-                          @click="deleteAccountConfirm"
-                          >Yes</v-btn
-                        >
-                        <v-spacer></v-spacer>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
-                </v-container>
-              </v-list-item>
-
-              <v-list-item>
-                <v-container class="text-center">
-                  <v-dialog
-                    persistent
-                    width="auto"
-                    v-model="deleteAccountDialog"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        rounded
-                        class="text-none"
-                        v-bind="attrs"
-                        v-on="on"
-                        color="error"
-                      >
-                        <v-icon left>mdi-delete</v-icon>
-                        Delete account
-                      </v-btn>
-                    </template>
-
-                    <v-card max-width="50vw">
-                      <v-card-text class="py-0 text-center">
-                        <p class="pt-4 subtitle-1">
-                          Are you sure you want to delete your account? Once you
-                          delete your account all data will be lost.
-                        </p>
-                      </v-card-text>
-                      <v-card-actions class="pt-0">
-                        <v-spacer></v-spacer>
-                        <v-btn
-                          text
-                          rounded
-                          @click="deleteAccountDialog = !deleteAccountDialog"
-                          class="text-none mr-4"
-                          color="error"
-                          >No</v-btn
-                        >
-                        <v-btn
-                          text
-                          rounded
-                          class="text-none ml-4"
-                          color="success"
-                          @click="deleteAccountConfirm"
-                          >Yes</v-btn
-                        >
-                        <v-spacer></v-spacer>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
-                </v-container>
-              </v-list-item>
-            </v-list>
-          </v-card-text>
-        </v-card>
-      </v-col>
-
-      <v-dialog persistent v-model="deleteMealTimeDialog" width="auto">
-        <v-card>
-          <v-card-text class="py-0 text-center">
-            <p class="pt-4 subtitle-1">
-              Are you sure you want to delete this meal time?
-            </p>
-          </v-card-text>
-          <v-card-actions class="pt-0">
-            <v-spacer></v-spacer>
-            <v-btn
-              text
-              @click="deleteMealTimeDialog = !deleteMealTimeDialog"
-              class="text-none mr-4"
-              color="error"
-              >No</v-btn
-            >
-            <v-btn
-              text
-              class="text-none ml-4"
-              color="success"
-              @click="deleteMealTimeConfirm(mealIdToDelete)"
-              >Yes</v-btn
-            >
-            <v-spacer></v-spacer>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </v-row> -->
+    <!-- Action toast -->
+    <toast
+      :show="showToast"
+      :success="actionSuccess"
+      :message="toastMessage"
+      @close="showToast = false"
+    ></toast>
   </v-container>
 </template>
 
 <script>
 import { mapState, mapActions } from "vuex";
+import { format } from "date-fns";
+import { doc, getFirestore, updateDoc } from "firebase/firestore";
+import QuestionPrompt from "../components/QuestionPrompt.vue";
+import Toast from "@/components/Toast.vue";
 
 export default {
   title: "Settings",
   name: "Settings",
   async created() {
-    await this.getUserSettingsAction();
+    // await this.getUserSettingsAction();
   },
+  // mounted() {
+  //   // Listen to settings changes
+  //   const db = getFirestore();
+  //   const docRef = doc(db, "settings", this.$store.state.userEmail);
+
+  //   this.unsubscribeListener = onSnapshot(docRef, (snapshot) => {
+  //     console.log("Snapshot data: ", snapshot.data());
+  //     // snapshot.forEach((change) => {
+  //     //   console.log(change);
+  //     // });
+  //   });
+  // },
+  // beforeDestroy() {
+  //   // Unsubsribe to the realtime firestore listener
+  //   this.unsubscribeListener();
+  // },
   data() {
     return {
-      notificationsAlert: true,
-      autoUpdateLocation: true,
-      appLanguage: "english",
+      // unsubscribeListener: null,
+      showToast: false,
+      toastMessage: "",
+      actionSuccess: true,
+      themeChangeDialog: false,
+      languageChangeDialog: false,
+      deleteAccountDialog: false,
+      emailChangeDialog: false,
+      deleteAccountOverlay: false,
+      mealTimeAction: "Add",
+      mealTimeDialog: false,
+      deleteMealTimeDialog: false,
+      deleteMealTimeOverlay: false,
       languages: [{ text: "English", value: "english" }],
-      // deleteAccountDialog: false,
-      // deleteMealTimeDialog: false,
-      // newMealTimeDialog: false,
-      // darkMode: false,
-      // mealIdToDelete: 0,
-      // settings: [],
-      // appTheme: "light-theme",
-      // selectedLanguage: ["English"],
-      // languages: ["English", "Swahili"],
-      // newMeal: {
-      //   name: "",
-      //   time: "",
-      // },
+      selectedMealTime: {
+        name: "",
+        time: "",
+      },
+      defaultMealTime: {
+        name: "",
+        time: "",
+      },
     };
   },
   computed: {
@@ -428,25 +410,103 @@ export default {
   },
   methods: {
     ...mapActions(["getUserSettingsAction"]),
-    // deleteAccountConfirm() {
-    //   console.log("Deleted account!");
-    //   this.deleteAccountDialog = false;
-    // },
-    // deleteMeal(id) {
-    //   this.mealIdToDelete = id;
-    //   this.deleteMealTimeDialog = true;
-    // },
-    // deleteMealTimeConfirm(id) {
-    //   console.log(`Deleted meal id: ${id}`);
-    //   this.deleteMealTimeDialog = false;
-    // },
-    // createMealTime() {
-    //   console.log(this.newMeal);
-    //   this.newMealTimeDialog = false;
-    // },
-    // viewMealTime(id) {
-    //   console.log(id);
-    // },
+    detectSettingChange(name) {
+      switch (name) {
+        case "dema":
+          this.updateSetting({ receiveNews: this.userSettings.receiveNews });
+          break;
+        case "sound":
+          this.updateSetting({
+            notificationsAlert: this.userSettings.notificationsAlert,
+          });
+          break;
+        case "location":
+          this.updateSetting({
+            autoUpdateLocation: this.userSettings.autoUpdateLocation,
+          });
+          break;
+        default:
+          break;
+      }
+    },
+    async updateSetting(setting) {
+      const db = getFirestore();
+      const ref = doc(db, "settings", this.$store.state.userEmail);
+
+      try {
+        // Update the setting in database
+        await updateDoc(ref, setting);
+
+        // Update the settings in store
+        this.$store.commit("setUserSettings", this.userSettings);
+
+        // Show toast message on success
+        this.showToast = true;
+        this.toastMessage = "Setting updated successfully!";
+        this.actionSuccess = true;
+      } catch (error) {
+        // Show toast message on failure
+        this.showToast = true;
+        this.toastMessage = error.code;
+        this.actionSuccess = false;
+      }
+    },
+    changeAppTheme() {
+      this.$vuetify.theme.dark = this.userSettings.appTheme === "dark";
+      this.updateSetting({ appTheme: this.userSettings.appTheme });
+      this.themeChangeDialog = false;
+    },
+    changeAppLanguage() {
+      // this.updateSetting({ appLanguage: this.userSettings.appTheme });
+      this.languageChangeDialog = false;
+    },
+    changeEmail() {
+      this.emailChangeDialog = false;
+    },
+    formatTime(time) {
+      return format(new Date("1970-1-1 " + time), "HH:mm a");
+    },
+    deleteAccountCancel() {
+      this.deleteAccountDialog = false;
+    },
+    deleteAccountConfirm() {
+      this.deleteAccountDialog = false;
+    },
+    addMealTime() {
+      this.mealTimeAction = "Add";
+      this.mealTimeDialog = true;
+    },
+    editMealTime(mealTime) {
+      this.selectedMealTime = Object.assign({}, mealTime);
+      this.mealTimeAction = "Edit";
+      this.mealTimeDialog = true;
+    },
+    saveMealTime() {
+      switch (this.mealTimeAction) {
+        case "Add":
+          console.log(this.selectedMealTime);
+          alert("Save a new meal time!");
+          break;
+        case "Edit":
+          alert("Save an existing meal time!");
+          break;
+      }
+    },
+    deleteMealTime(mealTime) {
+      this.selectedMealTime = Object.assign({}, mealTime);
+      this.deleteMealTimeDialog = true;
+    },
+    deleteMealTimeCancel() {
+      this.selectedMealTime = JSON.parse(JSON.stringify(this.defaultMealTime));
+      this.deleteMealTimeDialog = false;
+    },
+    deleteMealTimeConfirm() {
+      this.deleteMealTimeDialog = false;
+    },
+  },
+  components: {
+    QuestionPrompt,
+    Toast,
   },
 };
 </script>
