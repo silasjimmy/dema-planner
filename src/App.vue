@@ -476,29 +476,29 @@ export default {
     // );
   },
   async mounted() {
-    if (localStorage.getItem("loggedIn") === "true") {
-      // Show the overlay
-      this.pageLoadOverlay = true;
+    // if (localStorage.getItem("loggedIn") === "true") {
+    //   // Show the overlay
+    //   this.pageLoadOverlay = true;
 
-      // Fetch user settings
-      await this.getUserSettingsAction();
-      this.pageLoadValue += 50;
+    //   // Fetch user settings
+    //   await this.getUserSettingsAction();
+    //   this.pageLoadValue += 50;
 
-      // Fetch user profile
-      await this.getUserProfileAction();
-      this.pageLoadValue += 50;
+    //   // Fetch user profile
+    //   await this.getUserProfileAction();
+    //   this.pageLoadValue += 50;
 
-      // Set the app's theme
-      this.$vuetify.theme.dark = this.userSettings.appTheme === "dark";
+    //   // Set the app's theme
+    //   this.$vuetify.theme.dark = this.userSettings.appTheme === "dark";
 
-      // Set the page title
-      this.pageTitle = document.title;
+    //   // Set the page title
+    //   this.pageTitle = document.title;
 
-      setTimeout(() => {
-        // Hide the overlay
-        this.pageLoadOverlay = false;
-      }, 1000);
-    }
+    //   setTimeout(() => {
+    //     // Hide the overlay
+    //     this.pageLoadOverlay = false;
+    //   }, 1000);
+    // }
 
     // Monitor the user sign in activity
     const auth = getAuth();

@@ -25,6 +25,7 @@ export default new Vuex.Store({
     availableFoods: [],
     userSettings: {},
     menu: [],
+    notifications: [],
 
     meals: [],
     likedFoods: null,
@@ -110,6 +111,9 @@ export default new Vuex.Store({
     },
     deleteMenuFood(state, food) {
       state.menu.splice(food, 1);
+    },
+    setNotifications(state, notifications) {
+      state.notifications = notifications
     },
 
     setMeals(state, meals) {
@@ -241,6 +245,27 @@ export default new Vuex.Store({
 
       // Delete from store
       commit('deleteMenuFood', food)
+    },
+    getNotificationsAction({ commit }) {
+      // const notifications = [
+      //   {
+      //     message:
+      //       "Magroove restaurant added another food to their menu. Check it out!",
+      //     time: "07:00am",
+      //     id: 1,
+      //     link: "",
+      //     read: false,
+      //   },
+      //   {
+      //     message: "The nitty gritty details of it",
+      //     time: "06:12am",
+      //     id: 2,
+      //     link: "",
+      //     read: true,
+      //   },
+      // ]
+
+      commit('setNotifications', [])
     },
 
     getMealsAction({ commit }) {
