@@ -91,10 +91,12 @@
         @click="rightSidenav = true"
       ></v-app-bar-nav-icon>
 
+      <!-- Page title -->
       <v-toolbar-title>{{ pageTitle }}</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
+      <!-- Notifications dropdown -->
       <v-menu
         bottom
         left
@@ -102,20 +104,35 @@
         v-model="notificationsMenu"
         :close-on-content-click="false"
         transition="slide-y-transition"
-        max-width="400px"
-        max-height="500px"
+        width="auto"
+        max-height="50vh"
       >
         <template v-slot:activator="{ on, attrs }">
-          <v-badge dot bordered offset-x="15" color="green" offset-y="15">
-            <v-btn disabled v-bind="attrs" v-on="on" icon>
+          <v-btn
+            icon
+            v-bind="attrs"
+            v-on="on"
+            @click="notificationsMenu = true"
+          >
+            <v-icon>mdi-bell</v-icon>
+          </v-btn>
+          <!-- <v-badge dot bordered offset-x="15" color="green" offset-y="15">
+            <v-btn
+              icon
+              v-bind="attrs"
+              v-on="on"
+              @click="notificationsMenu = true"
+            >
               <v-icon>mdi-bell</v-icon>
             </v-btn>
-          </v-badge>
+          </v-badge> -->
         </template>
 
-        <v-tabs hide-slider grow color="green">
+        <v-tabs grow color="green">
           <v-tab class="text-none font-weight-medium">Notifications</v-tab>
           <v-tab class="text-none font-weight-medium">Messages</v-tab>
+
+          <!-- Notifications tab -->
           <v-tab-item>
             <v-list one-line class="py-0" max-width="400">
               <v-list-item link class="py-1" @click="bellMenu = false">
@@ -130,6 +147,7 @@
               </v-list-item>
               <v-divider></v-divider>
             </v-list>
+
             <v-card elevation="0" class="d-flex align-center justify-center">
               <v-card-text class="text-center py-1">
                 <v-btn
@@ -143,11 +161,13 @@
               </v-card-text>
             </v-card>
           </v-tab-item>
+
+          <!-- Messages tab -->
           <v-tab-item>
             <v-list two-line class="py-0" max-width="400">
               <v-list-item link to="/messages/1" @click="bellMenu = false">
                 <v-list-item-avatar>
-                  <v-img></v-img>
+                  <v-img class="b"></v-img>
                 </v-list-item-avatar>
                 <v-list-item-content>
                   <v-list-item-title>John Doe</v-list-item-title>

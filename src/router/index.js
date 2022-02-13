@@ -205,7 +205,8 @@ const routes = [
     meta: {
       requiresAuth: true,
       role: 'all'
-    }
+    },
+    props: r => ({ id: parseInt(r.params.id) }),
   },
   {
     path: '/:pathMatch(.*)*',

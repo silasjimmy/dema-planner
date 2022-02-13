@@ -1,53 +1,88 @@
 <template>
   <v-container fluid>
     <v-card outlined class="rounded-lg">
-      <v-card-text>
-        <v-subheader>
-          <v-spacer></v-spacer>
-          <span class="mx-4">Today</span>
-          <v-spacer></v-spacer>
-        </v-subheader>
-        <v-list-item
-          two-line
-          link
-          :to="`/messages/${m.id}`"
-          v-for="m in messages"
-          :key="m.id"
-        >
-          <v-list-item-avatar>
-            <v-img class="b"></v-img>
-          </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title>{{ m.sender }}</v-list-item-title>
-            <v-list-item-subtitle>
-              {{ m.text }}
-            </v-list-item-subtitle>
-          </v-list-item-content>
-          <v-list-item-action>
-            <span class="caption text--secondary">{{ m.time }}</span>
-          </v-list-item-action>
-        </v-list-item>
+      <!-- No notifications message -->
+      <v-card-subtitle v-if="messages.length === 0" class="text-center"
+        >No messages</v-card-subtitle
+      >
+
+      <v-card-text v-if="messages.length > 0">
+        <!-- Messages list -->
+        <v-list subheader>
+          <!-- <v-subheader>
+            <v-divider></v-divider>
+            <span class="mx-4">Today</span>
+            <v-divider></v-divider>
+          </v-subheader> -->
+
+          <template v-for="(message, index) in messages">
+            <!-- <v-subheader
+          v-if="notification.header"
+          :key="notification.header"
+          v-text="notification.header"
+        ></v-subheader> -->
+
+            <v-list-item
+              :key="message.message"
+              @click="goTo(message.id)"
+              class="py-2"
+              :style="message.read ? '' : 'background-color: #C8E6C9'"
+            >
+              <v-list-item-avatar>
+                <v-img class="b" :src="message.senderAvatar"></v-img>
+              </v-list-item-avatar>
+
+              <v-list-item-content>
+                <v-list-item-title
+                  :class="
+                    message.read ? 'font-weight-thin' : 'font-weight-medium'
+                  "
+                  v-html="message.sender"
+                ></v-list-item-title>
+
+                <v-list-item-subtitle
+                  :class="
+                    message.read ? 'font-weight-thin' : 'font-weight-medium'
+                  "
+                  v-html="message.text"
+                >
+                </v-list-item-subtitle>
+              </v-list-item-content>
+
+              <v-list-item-action
+                :class="
+                  message.read ? 'font-weight-thin' : 'font-weight-medium'
+                "
+                class="text--secondary caption"
+                v-html="message.time"
+              ></v-list-item-action>
+            </v-list-item>
+
+            <v-divider :key="index"></v-divider>
+          </template>
+        </v-list>
       </v-card-text>
     </v-card>
   </v-container>
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
+
 export default {
   title: "Messages",
   name: "Messages",
-  data() {
-    return {
-      messages: [
-        {
-          text: "Can i please get an update on this food? I have requested it a long ago.",
-          sender: "John Doe",
-          time: "07:00am",
-          id: 1,
-          replies: [{ text: "Yeah, whatever.", time: "09:33am" }],
-        },
-      ],
-    };
+  created() {
+    this.getMessagesAction();
+  },
+  computed: {
+    ...mapState(["messages"]),
+  },
+  methods: {
+    ...mapActions(["getMessagesAction"]),
+    goTo(id) {
+      this.$router.push({ path: `/messages/${id}` });
+    },
   },
 };
 </script>

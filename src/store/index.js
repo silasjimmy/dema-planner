@@ -26,6 +26,7 @@ export default new Vuex.Store({
     userSettings: {},
     menu: [],
     notifications: [],
+    messages: [],
 
     meals: [],
     likedFoods: null,
@@ -114,6 +115,9 @@ export default new Vuex.Store({
     },
     setNotifications(state, notifications) {
       state.notifications = notifications
+    },
+    setMessages(state, messages) {
+      state.messages = messages
     },
 
     setMeals(state, meals) {
@@ -267,6 +271,62 @@ export default new Vuex.Store({
 
       commit('setNotifications', [])
     },
+    getMessagesAction({ commit }) {
+      // const messages = [
+      //   {
+      //     text: "Can i please get an update on this food? I have requested it a long ago.",
+      //     sender: "John Doe",
+      //     online: true,
+      //     senderAvatar: "",
+      //     time: "07:00am",
+      //     id: 1,
+      //     read: false,
+      //     replies: [
+      //       {
+      //         author: "me",
+      //         message: "I don't have that stuff.",
+      //         time: "07:00am",
+      //         read: false,
+      //         received: true,
+      //       },
+      //       {
+      //         author: "other",
+      //         message: "I gave it to you, remember?",
+      //         time: "07:02am",
+      //         read: false,
+      //         received: true,
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     text: "Hey there! We have a new food in our menu. Check it out!",
+      //     sender: "Jane Doe",
+      //     online: false,
+      //     senderAvatar: "",
+      //     time: "08:00am",
+      //     id: 2,
+      //     read: true,
+      //     replies: [
+      //       {
+      //         author: "me",
+      //         message: "I don't have that stuff.",
+      //         time: "07:00am",
+      //         read: false,
+      //         received: true,
+      //       },
+      //       {
+      //         author: "other",
+      //         message: "I gave it to you, remember?",
+      //         time: "07:02am",
+      //         read: false,
+      //         received: true,
+      //       },
+      //     ],
+      //   },
+      // ]
+
+      commit('setMessages', [])
+    },
 
     getMealsAction({ commit }) {
       // // Get the meals from the database
@@ -361,7 +421,12 @@ export default new Vuex.Store({
     },
   },
   getters: {
-    getEateryById: state => id => state.eateries.find(e => e.id === id),
+    getEateryById: (state) => id => {
+      return state.eateries.find(e => e.id === id)
+    },
+    getMessageById: (state) => id => {
+      return state.messages.find(m => m.id === id)
+    },
     getFoodByName: (state) => name => {
       return state.allFoods.find(food => food.name === name)
     },
