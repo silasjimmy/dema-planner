@@ -10,28 +10,41 @@
         <!-- Receiver information -->
         <v-list-item two-line>
           <v-list-item-avatar>
-            <img class="b" :src="message.senderAvatar" />
+            <img :src="message.senderAvatar" />
           </v-list-item-avatar>
 
           <v-list-item-content>
-            <v-list-item-title>{{ message.sender }}</v-list-item-title>
-            <v-list-item-subtitle>{{
-              message.online ? "online" : "offline"
-            }}</v-list-item-subtitle>
+            <v-list-item-title class="text-capitalize">{{
+              message.sender
+            }}</v-list-item-title>
+            <v-list-item-subtitle>offline</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
 
         <v-spacer></v-spacer>
 
-        <!-- Dropdown button -->
-        <v-btn icon>
-          <v-icon>mdi-dots-vertical</v-icon>
-        </v-btn>
+        <!-- Chat options dropdown -->
+        <v-menu bottom left offset-x transition="slide-y-transition">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn icon v-bind="attrs" v-on="on">
+              <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
+          </template>
+
+          <v-list>
+            <v-list-item link @click="deleteChat">
+              <v-list-item-title>Delete chat</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </v-card-text>
 
       <v-divider></v-divider>
 
-      <v-card-text class="overflow-auto" style="height: 50vh">
+      <v-card-text
+        class="overflow-auto d-flex flex-column-reverse"
+        style="height: 50vh"
+      >
         <div v-if="message.replies.length === 0">
           <v-subheader class="d-flex justify-center">
             <span>Send a message to start chatting with people</span>
@@ -66,10 +79,12 @@
 
               <!-- Reply time -->
               <div class="d-flex align-center justify-end">
-                <span class="mr-1 caption">{{ reply.time }}</span>
-                <v-icon small color="white" v-if="reply.author === 'me'"
-                  >mdi-check</v-icon
-                >
+                <span class="mr-1 caption">{{
+                  formatTime(reply.created)
+                }}</span>
+                <v-icon small color="white" v-if="reply.author === 'me'">{{
+                  reply.read ? "mdi-check-all" : "mdi-check"
+                }}</v-icon>
               </div>
             </div>
           </div>
@@ -91,46 +106,71 @@
           class=""
           color="success"
         ></v-textarea>
-        <v-btn fab small color="success" class="shrink ml-4">
+        <v-btn
+          fab
+          small
+          @click="sendMessage(message)"
+          color="success"
+          class="shrink ml-4"
+        >
           <v-icon small>mdi-send</v-icon>
         </v-btn>
       </v-card-actions>
     </v-card>
 
-    <!-- Chat options dropdown -->
-    <v-menu bottom left offset-x transition="slide-y-transition">
-      <v-list>
-        <v-list-item link>
-          <v-list-item-title class="font-weight-thin"
-            >Delete chat</v-list-item-title
-          >
-        </v-list-item>
-      </v-list>
-    </v-menu>
+    <!-- Action toast -->
+    <toast
+      :show="showToast"
+      :message="`Functionality not yet implemented`"
+      :success="false"
+      @close="showToast = false"
+    ></toast>
   </v-container>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapState, mapActions } from "vuex";
+import Toast from "@/components/Toast.vue";
 
 export default {
   name: "Chat",
   title: "Chat",
-  created() {
+  async created() {
+    if (this.messages) {
+      // Fetch the user messages if they are not yet fetched
+      await this.getMessagesAction();
+    }
+
     // Retrieve the message with the specified id
     this.message = this.getMessageById(this.id);
   },
   data() {
     return {
-      message: {},
+      message: [],
+      showToast: false,
     };
   },
   computed: {
+    ...mapState(["messages"]),
     ...mapGetters(["getMessageById"]),
   },
   methods: {
+    ...mapActions(["getMessagesAction"]),
+    formatTime(timestamp) {
+      return timestamp.toDate().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    },
     showEmoticons() {
-      console.log("Show emoticons!");
+      this.showToast = true;
+    },
+    sendMessage(message) {
+      console.log(message);
+      this.showToast = true;
+    },
+    deleteChat() {
+      this.showToast = true;
     },
   },
   props: {
@@ -139,8 +179,8 @@ export default {
       default: 0,
     },
   },
+  components: {
+    Toast,
+  },
 };
 </script>
-
-<style scoped>
-</style>

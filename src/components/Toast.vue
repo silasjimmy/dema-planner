@@ -7,7 +7,7 @@
   >
     <div class="d-flex align-center">
       <v-icon :color="success ? 'success' : 'error'">{{
-        show ? "mdi-check-circle" : "mdi-alert-circle"
+        success ? "mdi-check-circle" : "mdi-alert-circle"
       }}</v-icon>
       <span class="ml-2">{{ message }}</span>
     </div>

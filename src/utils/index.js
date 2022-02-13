@@ -55,6 +55,28 @@ async function checkUserProfile(email) {
     }
 }
 
+/**
+ * Transforms the messages object to an array of messages
+ * @param {object} messages user messages
+ * @returns {array} AN array of sorted messages
+ */
+function sortMessages(messages) {
+    const messagesArray = Object.entries(messages);
+
+    let sortedMessages = [];
+
+    messagesArray.forEach((message) => {
+        // Create a new message object
+        let newObj = message[1];
+        newObj.email = message[0];
+
+        // Add to the sorted list
+        sortedMessages.push(newObj);
+    });
+
+    return sortedMessages.sort((a, b) => b.created - a.created);
+}
+
 const defaultImageUrl = "https://firebasestorage.googleapis.com/v0/b/demaplanner.appspot.com/o/profileAvatars%2Fdefault%2Fdefault-image.png?alt=media&token=c5fac7bb-ab08-4cf4-9e53-4560d08b60df"
 
-export { roleRedirect, checkUserProfile, defaultImageUrl }
+export { roleRedirect, checkUserProfile, defaultImageUrl, sortMessages }

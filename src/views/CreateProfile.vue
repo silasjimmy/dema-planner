@@ -37,6 +37,7 @@
                   <v-form ref="consumerOne" lazy-validation>
                     <v-container>
                       <v-row>
+                        <!-- Name -->
                         <v-col cols="12" sm="6">
                           <v-text-field
                             hide-details
@@ -50,6 +51,7 @@
                             prepend-icon="mdi-account"
                           ></v-text-field>
                         </v-col>
+                        <!-- Date of birth -->
                         <v-col cols="12" sm="6">
                           <v-text-field
                             hide-details
@@ -63,6 +65,7 @@
                             prepend-icon="mdi-calendar"
                           ></v-text-field>
                         </v-col>
+                        <!-- Gender -->
                         <v-col cols="12" sm="6">
                           <v-select
                             outlined
@@ -77,14 +80,29 @@
                             prepend-icon="mdi-gender-male-female"
                           ></v-select>
                         </v-col>
+                        <!-- City -->
                         <v-col cols="12" sm="6">
                           <v-text-field
                             hide-details
                             dense
                             outlined
                             readonly
-                            v-model="consumerProfile.location"
-                            label="Location"
+                            v-model="consumerProfile.city"
+                            label="City"
+                            color="success"
+                            type="text"
+                            prepend-icon="mdi-map-marker"
+                          ></v-text-field>
+                        </v-col>
+                        <!-- Country -->
+                        <v-col cols="12" sm="6">
+                          <v-text-field
+                            hide-details
+                            dense
+                            outlined
+                            readonly
+                            v-model="consumerProfile.country"
+                            label="Country"
                             color="success"
                             type="text"
                             prepend-icon="mdi-map-marker"
@@ -497,6 +515,7 @@
                   <v-form lazy-validation ref="eateryOne">
                     <v-container>
                       <v-row>
+                        <!-- Name -->
                         <v-col cols="12" sm="6">
                           <v-text-field
                             hide-details
@@ -510,19 +529,35 @@
                             prepend-icon="mdi-account"
                           ></v-text-field>
                         </v-col>
+                        <!-- City -->
                         <v-col cols="12" sm="6">
                           <v-text-field
                             hide-details
                             dense
                             outlined
                             readonly
-                            v-model="eateryProfile.location"
-                            label="Location"
+                            v-model="eateryProfile.city"
+                            label="City"
                             color="success"
                             type="text"
                             prepend-icon="mdi-map-marker"
                           ></v-text-field>
                         </v-col>
+                        <!-- Country -->
+                        <v-col cols="12" sm="6">
+                          <v-text-field
+                            hide-details
+                            dense
+                            outlined
+                            readonly
+                            v-model="eateryProfile.country"
+                            label="Country"
+                            color="success"
+                            type="text"
+                            prepend-icon="mdi-map-marker"
+                          ></v-text-field>
+                        </v-col>
+                        <!-- Website -->
                         <v-col cols="12" sm="6">
                           <v-text-field
                             hide-details
@@ -536,6 +571,7 @@
                             prepend-icon="mdi-web"
                           ></v-text-field>
                         </v-col>
+                        <!-- Phone number -->
                         <v-col cols="12" sm="6">
                           <v-text-field
                             hide-details
@@ -549,6 +585,7 @@
                             prepend-icon="mdi-phone"
                           ></v-text-field>
                         </v-col>
+                        <!-- Bio -->
                         <v-col cols="12">
                           <v-textarea
                             outlined
@@ -965,12 +1002,17 @@
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
 import { getFirestore, setDoc, doc } from "firebase/firestore";
 import { roleRedirect } from "../utils";
 
 export default {
   name: "CreateProfile",
   title: "Create profile",
+  async created() {
+    // Fetch all users
+    await this.getAllUsersAction();
+  },
   data() {
     return {
       consumerWindowStep: 1,
@@ -983,11 +1025,13 @@ export default {
       eateryLoading: false,
       // setWeightGoal: false,
       consumerProfile: {
+        id: "",
         role: "consumer",
         name: "",
         dateOfBirth: "",
         gender: "",
-        location: "Kilifi, Kenya",
+        city: "kilifi",
+        country: "kenya",
         created: new Date(),
         email: localStorage.getItem("email"),
         imageUrl: localStorage.getItem("imageUrl"),
@@ -1003,9 +1047,12 @@ export default {
         // dailySpending: { amount: null, units: "ksh" },
       },
       eateryProfile: {
+        id: "",
         role: "eatery",
         name: "",
-        location: "Kilifi, Kenya",
+        city: "kilifi",
+        country: "kenya",
+        ratings: 0,
         website: "",
         phoneNumber: "",
         bio: "",
@@ -1051,6 +1098,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(["allUsers"]),
     currentConsumerTitle() {
       switch (this.consumerWindowStep) {
         case 1:
@@ -1093,6 +1141,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions(["getAllUsersAction"]),
     consumerNext() {
       let complete = null;
 
@@ -1122,9 +1171,12 @@ export default {
         // Start button loading
         this.consumerLoading = true;
 
-        const db = getFirestore();
+        // Set the user id
+        this.consumerProfile.id = this.allUsers.length;
 
         // Upload the user profile to the database
+        const db = getFirestore();
+
         await setDoc(
           doc(db, "profiles", this.$store.state.userEmail),
           this.consumerProfile,
@@ -1153,6 +1205,7 @@ export default {
         this.$store.commit("setUserRole", this.consumerProfile.role);
         this.$store.commit("setUserProfile", this.consumerProfile);
         this.$store.commit("setLoggedIn", true);
+        localStorage.setItem("loggedIn", "true");
 
         // Redirect to dashboard
         this.$router.replace({ name: roleRedirect(this.consumerProfile.role) });
@@ -1167,9 +1220,12 @@ export default {
         // Start loading button
         this.eateryLoading = true;
 
-        const db = getFirestore();
+        // Set the user id
+        this.eateryProfile.id = this.allUsers.length;
 
         // Upload the user profile to the database
+        const db = getFirestore();
+
         await setDoc(
           doc(db, "profiles", this.$store.state.userEmail),
           this.eateryProfile,

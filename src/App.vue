@@ -104,7 +104,7 @@
         v-model="notificationsMenu"
         :close-on-content-click="false"
         transition="slide-y-transition"
-        width="auto"
+        min-width="400px"
         max-height="50vh"
       >
         <template v-slot:activator="{ on, attrs }">
@@ -134,64 +134,90 @@
 
           <!-- Notifications tab -->
           <v-tab-item>
-            <v-list one-line class="py-0" max-width="400">
-              <v-list-item link class="py-1" @click="bellMenu = false">
+            <p
+              v-if="notifications.length === 0"
+              class="text--secondary subtitle-1 text-center py-4 mb-0"
+            >
+              No notifications
+            </p>
+
+            <v-list
+              v-if="notifications.length > 0"
+              one-line
+              class="py-0"
+              max-width="400"
+            >
+              <v-list-item
+                link
+                v-for="notification in notifications"
+                :key="notification.id"
+                class="py-1"
+                :class="notification.read ? '' : 'white-text'"
+                :to="notification.link"
+              >
                 <v-list-item-content>
-                  <v-list-item-subtitle
-                    >Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Nesciunt repellat temporibus nulla ipsa nemo? Optio ea natus
-                    voluptate ducimus magnam. Fugit beatae minima molestias ab
-                    odio dolorum. Excepturi, ipsum ut.</v-list-item-subtitle
-                  >
+                  <v-list-item-subtitle>{{
+                    notification.message
+                  }}</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
               <v-divider></v-divider>
             </v-list>
 
-            <v-card elevation="0" class="d-flex align-center justify-center">
+            <v-card
+              v-if="notifications.length > 0"
+              elevation="0"
+              class="d-flex align-center justify-center"
+            >
               <v-card-text class="text-center py-1">
-                <v-btn
-                  link
-                  plain
-                  to="/notifications"
-                  class="text-none"
-                  @click="bellMenu = false"
-                  >View all</v-btn
-                >
+                <v-btn link plain to="/notifications">View all</v-btn>
               </v-card-text>
             </v-card>
           </v-tab-item>
 
           <!-- Messages tab -->
           <v-tab-item>
-            <v-list two-line class="py-0" max-width="400">
-              <v-list-item link to="/messages/1" @click="bellMenu = false">
+            <p
+              v-if="messages.length === 0"
+              class="text--secondary subtitle-1 text-center py-4 mb-0"
+            >
+              No messages
+            </p>
+
+            <v-list
+              two-line
+              v-if="messages.length > 0"
+              class="py-0"
+              max-width="400"
+            >
+              <v-list-item
+                link
+                v-for="message in messages"
+                :key="message.id"
+                :to="`/messages/${message.id}`"
+              >
                 <v-list-item-avatar>
-                  <v-img class="b"></v-img>
+                  <v-img :src="message.senderAvatar"></v-img>
                 </v-list-item-avatar>
+
                 <v-list-item-content>
-                  <v-list-item-title>John Doe</v-list-item-title>
-                  <v-list-item-subtitle
-                    >Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Facilis illo architecto obcaecati sequi eum! Dolores dicta
-                    repudiandae earum, et culpa qui deserunt fugit! Pariatur
-                    vel, perspiciatis iste voluptatibus accusamus
-                    officiis.</v-list-item-subtitle
-                  >
+                  <v-list-item-title>{{ message.sender }}</v-list-item-title>
+                  <v-list-item-subtitle>{{
+                    message.text
+                  }}</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
+
               <v-divider inset></v-divider>
             </v-list>
-            <v-card elevation="0" class="d-flex align-center justify-center">
+
+            <v-card
+              v-if="messages.length > 0"
+              elevation="0"
+              class="d-flex align-center justify-center"
+            >
               <v-card-text class="text-center py-1">
-                <v-btn
-                  plain
-                  link
-                  to="/messages"
-                  class="text-none"
-                  @click="bellMenu = false"
-                  >View all</v-btn
-                >
+                <v-btn plain link to="/messages">View all</v-btn>
               </v-card-text>
             </v-card>
           </v-tab-item>
@@ -267,13 +293,7 @@
       <!-- Log out button -->
       <template v-slot:append>
         <div class="px-4">
-          <v-btn
-            rounded
-            block
-            @click="logout"
-            class="text-none my-4"
-            color="success"
-          >
+          <v-btn block @click="logout" class="my-4" color="success">
             <v-icon left>mdi-logout</v-icon>
             Log out
           </v-btn>
@@ -327,9 +347,14 @@
         <span>Profile</span>
         <v-icon>mdi-account-details</v-icon>
       </v-btn>
+      <v-btn link v-if="$vuetify.breakpoint.smAndUp" @click="logout">
+        <span>Log out</span>
+        <v-icon left>mdi-logout</v-icon>
+      </v-btn>
 
       <!-- More links menu -->
       <v-menu top offset-y>
+        <!-- More button -->
         <template v-slot:activator="{ on, attrs }">
           <v-btn class="px-0 d-flex d-sm-none" v-bind="attrs" v-on="on">
             <span class="d-none d-sm-flex">More</span>
@@ -339,6 +364,11 @@
 
         <!-- Links -->
         <v-list class="text-center py-0">
+          <v-list-item class="px-0" @click="logout">
+            <v-list-item-title>
+              <v-icon>mdi-logout</v-icon>
+            </v-list-item-title>
+          </v-list-item>
           <v-list-item class="px-0" link to="/profile" @click="updatePageTitle">
             <v-list-item-title>
               <v-icon>mdi-account-details</v-icon>
@@ -496,29 +526,34 @@ export default {
     // );
   },
   async mounted() {
-    // if (localStorage.getItem("loggedIn") === "true") {
-    //   // Show the overlay
-    //   this.pageLoadOverlay = true;
+    if (localStorage.getItem("loggedIn") === "true") {
+      // Show the overlay
+      this.pageLoadOverlay = true;
 
-    //   // Fetch user settings
-    //   await this.getUserSettingsAction();
-    //   this.pageLoadValue += 50;
+      // Fetch user messages
+      await this.getMessagesAction();
+      this.pageLoadValue += 30;
 
-    //   // Fetch user profile
-    //   await this.getUserProfileAction();
-    //   this.pageLoadValue += 50;
+      // Fetch user settings
+      await this.getUserSettingsAction();
+      this.pageLoadValue += 30;
 
-    //   // Set the app's theme
-    //   this.$vuetify.theme.dark = this.userSettings.appTheme === "dark";
+      // Fetch user profile
+      await this.getUserProfileAction();
+      this.pageLoadValue += 30;
 
-    //   // Set the page title
-    //   this.pageTitle = document.title;
+      // Set the app's theme
+      this.$vuetify.theme.dark = this.userSettings.appTheme === "dark";
 
-    //   setTimeout(() => {
-    //     // Hide the overlay
-    //     this.pageLoadOverlay = false;
-    //   }, 1000);
-    // }
+      // Set the page title
+      this.pageTitle = document.title;
+      this.pageLoadValue += 10;
+
+      setTimeout(() => {
+        // Hide the overlay
+        this.pageLoadOverlay = false;
+      }, 1000);
+    }
 
     // Monitor the user sign in activity
     const auth = getAuth();
@@ -556,7 +591,12 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["getUserProfileAction", "getUserSettingsAction"]),
+    ...mapActions([
+      "getUserProfileAction",
+      "getUserSettingsAction",
+      "getMessagesAction",
+      "getNotificationsAction",
+    ]),
     updatePageTitle() {
       this.pageTitle = document.title;
     },
@@ -576,7 +616,13 @@ export default {
     },
   },
   computed: {
-    ...mapState(["dashboardLinks", "userProfile", "userSettings"]),
+    ...mapState([
+      "dashboardLinks",
+      "userProfile",
+      "userSettings",
+      "messages",
+      "notifications",
+    ]),
     loggedIn() {
       return this.$store.state.loggedIn;
     },

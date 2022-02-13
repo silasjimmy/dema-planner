@@ -26,35 +26,29 @@
               :key="message.message"
               @click="goTo(message.id)"
               class="py-2"
-              :style="message.read ? '' : 'background-color: #C8E6C9'"
+              :style="message.read ? '' : 'background-color: #4CAF50'"
             >
               <v-list-item-avatar>
-                <v-img class="b" :src="message.senderAvatar"></v-img>
+                <v-img :src="message.senderAvatar"></v-img>
               </v-list-item-avatar>
 
               <v-list-item-content>
                 <v-list-item-title
-                  :class="
-                    message.read ? 'font-weight-thin' : 'font-weight-medium'
-                  "
+                  :class="message.read ? '' : 'font-weight-medium white--text'"
                   v-html="message.sender"
                 ></v-list-item-title>
 
                 <v-list-item-subtitle
-                  :class="
-                    message.read ? 'font-weight-thin' : 'font-weight-medium'
-                  "
+                  :class="message.read ? '' : 'font-weight-medium white--text'"
                   v-html="message.text"
                 >
                 </v-list-item-subtitle>
               </v-list-item-content>
 
               <v-list-item-action
-                :class="
-                  message.read ? 'font-weight-thin' : 'font-weight-medium'
-                "
-                class="text--secondary caption"
-                v-html="message.time"
+                :class="message.read ? '' : 'font-weight-medium white--text'"
+                class="caption"
+                v-html="formatTime(message.created)"
               ></v-list-item-action>
             </v-list-item>
 
@@ -72,14 +66,21 @@ import { mapState, mapActions } from "vuex";
 export default {
   title: "Messages",
   name: "Messages",
-  created() {
-    this.getMessagesAction();
+  async created() {
+    // Fetch the user messages
+    await this.getMessagesAction();
   },
   computed: {
     ...mapState(["messages"]),
   },
   methods: {
     ...mapActions(["getMessagesAction"]),
+    formatTime(timestamp) {
+      return timestamp.toDate().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    },
     goTo(id) {
       this.$router.push({ path: `/messages/${id}` });
     },

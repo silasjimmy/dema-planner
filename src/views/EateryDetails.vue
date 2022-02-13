@@ -1,19 +1,30 @@
 <template>
   <v-container fluid>
+    <!-- Back button -->
     <v-row>
       <v-btn icon @click="$router.go(-1)">
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
     </v-row>
     <v-row>
+      <!-- Eatery image -->
       <v-col cols="12" lg="5">
-        <v-img :src="eatery.image" class="rounded-lg" height="200px"></v-img>
+        <!-- <v-img :src="eatery.image" class="rounded-lg" height="200px"></v-img> -->
+        <v-img
+          class="rounded-lg"
+          height="200px"
+          src="https://images.unsplash.com/photo-1608495368297-de9ff48e6997?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=871&q=80"
+        ></v-img>
       </v-col>
+
       <v-col cols="12" lg="7" align-self="end">
         <div class="text-center text-lg-left">
+          <!-- Eatery name -->
           <h1 class="font-weight-medium text-h5 text-capitalize">
             {{ eatery.name }}
           </h1>
+
+          <!-- Eatery ratings -->
           <div class="my-2 d-flex align-center justify-center justify-lg-start">
             <v-rating
               :value="eatery.ratings"
@@ -26,51 +37,61 @@
             ></v-rating>
             <span class="subtitle-2 ml-4">({{ eatery.ratings }})</span>
           </div>
+
+          <!-- Eatery bio -->
           <p class="blockquote pl-0 py-0">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias modi
-            obcaecati ducimus voluptate.
+            {{ eatery.bio }}
           </p>
         </div>
       </v-col>
+
       <v-col cols="9" lg="5" class="mx-auto mx-lg-0">
         <v-list two-line class="py-0">
+          <!-- Location -->
           <v-list-item>
             <v-list-item-icon>
               <v-icon> mdi-map-marker </v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>Location</v-list-item-title>
-              <v-list-item-subtitle>City, Country</v-list-item-subtitle>
+              <v-list-item-subtitle class="text-capitalize"
+                >{{ eatery.city }}, {{ eatery.country }}</v-list-item-subtitle
+              >
             </v-list-item-content>
           </v-list-item>
 
+          <!-- Email -->
           <v-list-item>
             <v-list-item-icon>
               <v-icon> mdi-email </v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>Email address</v-list-item-title>
-              <v-list-item-subtitle>name@domain.com</v-list-item-subtitle>
+              <v-list-item-subtitle>{{ eatery.email }}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
 
+          <!-- Phone number -->
           <v-list-item>
             <v-list-item-icon>
               <v-icon> mdi-phone </v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>Phone number</v-list-item-title>
-              <v-list-item-subtitle>+0 000 000 000</v-list-item-subtitle>
+              <v-list-item-subtitle>{{
+                eatery.phoneNumber
+              }}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
 
+          <!-- Website -->
           <v-list-item>
             <v-list-item-icon>
               <v-icon>mdi-web</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>Website</v-list-item-title>
-              <v-list-item-subtitle>www.domainname.com</v-list-item-subtitle>
+              <v-list-item-subtitle>{{ eatery.website }}</v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
               <v-btn icon>
@@ -81,6 +102,7 @@
 
           <v-divider></v-divider>
 
+          <!-- Send message button -->
           <v-list-item>
             <v-btn block color="success">
               <v-icon left>mdi-message-text</v-icon>
@@ -89,7 +111,8 @@
           </v-list-item>
         </v-list>
       </v-col>
-      <v-col cols="12" lg="7">
+
+      <!-- <v-col cols="12" lg="7">
         <div class="b">
           <h1>Menu</h1>
         </div>
@@ -97,7 +120,7 @@
           <p>You have meals today in this restaurant</p>
           <v-btn>Reserve a seat</v-btn>
         </div>
-      </v-col>
+      </v-col> -->
     </v-row>
   </v-container>
 </template>

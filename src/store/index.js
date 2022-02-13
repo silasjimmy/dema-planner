@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+import { sortMessages } from '../utils'
 import {
   doc,
   getDoc,
@@ -10,7 +11,9 @@ import {
   deleteDoc,
   getFirestore,
   collection,
-  getDocs
+  getDocs,
+  query,
+  where,
 } from "firebase/firestore";
 
 export default new Vuex.Store({
@@ -27,10 +30,10 @@ export default new Vuex.Store({
     menu: [],
     notifications: [],
     messages: [],
+    eateries: [],
 
     meals: [],
     likedFoods: null,
-    eateries: [],
     mealTimes: null,
   },
   mutations: {
@@ -119,6 +122,9 @@ export default new Vuex.Store({
     setMessages(state, messages) {
       state.messages = messages
     },
+    setEateries(state, eateries) {
+      state.eateries = eateries
+    },
 
     setMeals(state, meals) {
       state.meals = meals
@@ -126,9 +132,7 @@ export default new Vuex.Store({
     setLikedFoods(state, foods) {
       state.likedFoods = foods
     },
-    setEateries(state, eateries) {
-      state.eateries = eateries
-    },
+
     setMealTimes(state, mealTimes) {
       state.mealTimes = mealTimes
     },
@@ -250,82 +254,34 @@ export default new Vuex.Store({
       // Delete from store
       commit('deleteMenuFood', food)
     },
-    getNotificationsAction({ commit }) {
-      // const notifications = [
-      //   {
-      //     message:
-      //       "Magroove restaurant added another food to their menu. Check it out!",
-      //     time: "07:00am",
-      //     id: 1,
-      //     link: "",
-      //     read: false,
-      //   },
-      //   {
-      //     message: "The nitty gritty details of it",
-      //     time: "06:12am",
-      //     id: 2,
-      //     link: "",
-      //     read: true,
-      //   },
-      // ]
+    async getNotificationsAction({ commit, state }) {
+      // Get user notifications
+      const db = getFirestore();
+      const snapshot = await getDoc(doc(db, `notifications/${state.userEmail}`))
+      const notifications = snapshot.data()
 
-      commit('setNotifications', [])
+      commit('setNotifications', notifications.all)
     },
-    getMessagesAction({ commit }) {
-      // const messages = [
-      //   {
-      //     text: "Can i please get an update on this food? I have requested it a long ago.",
-      //     sender: "John Doe",
-      //     online: true,
-      //     senderAvatar: "",
-      //     time: "07:00am",
-      //     id: 1,
-      //     read: false,
-      //     replies: [
-      //       {
-      //         author: "me",
-      //         message: "I don't have that stuff.",
-      //         time: "07:00am",
-      //         read: false,
-      //         received: true,
-      //       },
-      //       {
-      //         author: "other",
-      //         message: "I gave it to you, remember?",
-      //         time: "07:02am",
-      //         read: false,
-      //         received: true,
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     text: "Hey there! We have a new food in our menu. Check it out!",
-      //     sender: "Jane Doe",
-      //     online: false,
-      //     senderAvatar: "",
-      //     time: "08:00am",
-      //     id: 2,
-      //     read: true,
-      //     replies: [
-      //       {
-      //         author: "me",
-      //         message: "I don't have that stuff.",
-      //         time: "07:00am",
-      //         read: false,
-      //         received: true,
-      //       },
-      //       {
-      //         author: "other",
-      //         message: "I gave it to you, remember?",
-      //         time: "07:02am",
-      //         read: false,
-      //         received: true,
-      //       },
-      //     ],
-      //   },
-      // ]
+    async getEateriesAction({ commit }) {
+      const db = getFirestore()
+      const eateriesRef = collection(db, "profiles");
+      const eateriesQuery = query(eateriesRef, where("role", "==", "eatery"));
+      const snapShot = await getDocs(eateriesQuery)
+      const eateries = snapShot.docs.map(doc => doc.data())
 
-      commit('setMessages', [])
+      // Commit the eateries to the nearest eateries state
+      commit('setEateries', eateries);
+    },
+    async getMessagesAction({ commit, state }) {
+      // Get user messages
+      const db = getFirestore();
+      const snapshot = await getDoc(doc(db, `messages/${state.userEmail}`))
+      const messages = snapshot.data()
+
+      // Sort the messages
+      const sortedMessages = sortMessages(messages)
+
+      commit('setMessages', sortedMessages)
     },
 
     getMealsAction({ commit }) {
@@ -390,22 +346,6 @@ export default new Vuex.Store({
 
       // Commit the meals to the meals state
       commit('setMeals', []);
-    },
-    getEateriesAction({ commit }) {
-      // // Get the eateries from the database
-      // const eateries = [
-      //   {
-      //     id: 1,
-      //     image: 'https://images.unsplash.com/photo-1608495368297-de9ff48e6997?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=871&q=80',
-      //     name: "mangroove restaurant",
-      //     city: "kilifi",
-      //     country: "kenya",
-      //     ratings: 4,
-      //   },
-      // ]
-
-      // Commit the eateries to the nearest eateries state
-      commit('setEateries', []);
     },
     getMealTimesAction({ commit }) {
       // Get the profile from the database
