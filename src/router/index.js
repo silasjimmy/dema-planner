@@ -2,24 +2,27 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import checkAuth from './routeGuards'
 
-import Users from '@/components/Users.vue';
-import Home from '@/components/Home.vue';
-import SignIn from '@/components/SignIn.vue';
-import SignUp from '@/components/SignUp.vue';
-import AboutUs from '@/components/AboutUs.vue';
-import ContactUs from '@/components/ContactUs.vue';
-import Foods from '@/components/Foods.vue';
-import CreateProfile from '@/components/CreateProfile.vue';
-import MealPlanner from '@/components/MealPlanner.vue';
-import AvailableFoods from '@/components/AvailableFoods.vue';
-import NearestEateries from '@/components/NearestEateries.vue';
-import EateryDetails from '@/components/EateryDetails.vue';
-import Menu from '@/components/Menu.vue';
-import FoodRequest from '@/components/FoodRequest.vue';
-import Summary from '@/components/Summary.vue';
-import Profile from '@/components/Profile.vue';
-import Settings from '@/components/Settings.vue';
-import PageNotFound from '@/components/PageNotFound.vue';
+import Users from '@/views/Users.vue';
+import Home from '@/views/Home.vue';
+import SignIn from '@/views/SignIn.vue';
+import SignUp from '@/views/SignUp.vue';
+import AboutUs from '@/views/AboutUs.vue';
+import ContactUs from '@/views/ContactUs.vue';
+import Foods from '@/views/Foods.vue';
+import CreateProfile from '@/views/CreateProfile.vue';
+import MealPlanner from '@/views/MealPlanner.vue';
+import AvailableFoods from '@/views/AvailableFoods.vue';
+import NearestEateries from '@/views/NearestEateries.vue';
+import EateryDetails from '@/views/EateryDetails.vue';
+import Menu from '@/views/Menu.vue';
+import FoodRequest from '@/views/FoodRequest.vue';
+import Summary from '@/views/Summary.vue';
+import Profile from '@/views/Profile.vue';
+import Settings from '@/views/Settings.vue';
+import PageNotFound from '@/views/PageNotFound.vue';
+import Notifications from '@/views/Notifications.vue';
+import Messages from '@/views/Messages.vue';
+import Chat from '@/views/Chat.vue';
 
 Vue.use(VueRouter)
 
@@ -30,64 +33,67 @@ const routes = [
   },
   {
     path: '/home',
-    name: 'Home',
+    name: 'home',
     component: Home,
+    meta: {
+      preventLandingView: true,
+      title: 'Home'
+    }
   },
   {
     path: '/sign-in',
     name: 'sign-in',
-    component: SignIn
+    component: SignIn,
+    meta: {
+      preventLandingView: true,
+      title: 'Log in'
+    }
   },
   {
     path: '/sign-up',
     name: 'sign-up',
-    component: SignUp
+    component: SignUp,
+    meta: {
+      preventLandingView: true,
+      title: 'Create account'
+    }
   },
   {
     path: '/about-us',
     name: 'about-us',
-    component: AboutUs
+    component: AboutUs,
+    meta: {
+      preventLandingView: true,
+      title: 'About us'
+    }
   },
   {
     path: '/contact-us',
     name: 'contact-us',
-    component: ContactUs
+    component: ContactUs,
+    meta: {
+      preventLandingView: true,
+      title: 'Contact us'
+    }
   },
   {
     path: '/create-profile',
     name: 'create-profile',
     component: CreateProfile,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'all',
+      title: 'Create profile'
     },
-    beforeEnter: (to, from, next) => {
-      // User should have an account with no profile to access this page
-
-      // 1. Check if the user is logged in
-      // 1.1 If not redirect to log in page
-      // 2 If logged in, check if his/her profile exists
-      // 2.1 If it does not exists, persist
-      // 3. If profile exists, redirect according to role
-      const role = localStorage.getItem('userRole')
-      if (role !== null) {
-        switch (role) {
-          case 'value':
-
-            break;
-
-          default:
-            break;
-        }
-      }
-      console.log(to, from, next);
-    }
   },
   {
     path: '/meal-planner',
     name: 'meal-planner',
     component: MealPlanner,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'consumer',
+      title: 'Meal planner'
     }
   },
   {
@@ -95,7 +101,9 @@ const routes = [
     name: 'available-foods',
     component: AvailableFoods,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'consumer',
+      title: 'Available foods'
     }
   },
   {
@@ -103,7 +111,9 @@ const routes = [
     name: 'nearest-eateries',
     component: NearestEateries,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'consumer',
+      title: 'Nearest eateries'
     }
   },
   {
@@ -112,7 +122,9 @@ const routes = [
     name: 'eatery-details',
     props: r => ({ id: parseInt(r.params.id) }),
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'consumer',
+      title: 'Details'
     }
   },
   {
@@ -120,7 +132,9 @@ const routes = [
     name: 'menu',
     component: Menu,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'eatery',
+      title: 'Menu'
     }
   },
   {
@@ -128,7 +142,9 @@ const routes = [
     name: 'food-request',
     component: FoodRequest,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'eatery',
+      title: 'Food request'
     }
   },
   {
@@ -136,7 +152,9 @@ const routes = [
     name: 'summary',
     component: Summary,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'admin',
+      title: 'Summary'
     }
   },
   {
@@ -144,7 +162,9 @@ const routes = [
     name: 'users',
     component: Users,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'admin',
+      title: 'Users'
     }
   },
   {
@@ -152,7 +172,9 @@ const routes = [
     name: 'foods',
     component: Foods,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'admin',
+      title: 'Foods'
     }
   },
   {
@@ -160,7 +182,9 @@ const routes = [
     name: 'profile',
     component: Profile,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'all',
+      title: 'Profile'
     }
   },
   {
@@ -168,12 +192,44 @@ const routes = [
     name: 'settings',
     component: Settings,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      role: 'all',
+      title: 'Settings'
     }
   },
   {
-    path: '/page-not-found',
-    name: 'page-not-found',
+    path: '/notifications',
+    name: 'notifications',
+    component: Notifications,
+    meta: {
+      requiresAuth: true,
+      role: 'all',
+      title: 'Notifications'
+    }
+  },
+  {
+    path: '/messages',
+    name: 'messages',
+    component: Messages,
+    meta: {
+      requiresAuth: true,
+      role: 'all',
+      title: 'Messages'
+    }
+  },
+  {
+    path: '/messages/:id',
+    name: 'message-chat',
+    component: Chat,
+    meta: {
+      requiresAuth: true,
+      role: 'all',
+      title: 'Chat'
+    },
+    props: r => ({ id: parseInt(r.params.id) }),
+  },
+  {
+    path: '/:pathMatch(.*)*',
     component: PageNotFound,
   },
 ]

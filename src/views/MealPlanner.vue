@@ -1,14 +1,14 @@
 <template>
   <v-container>
     <div class="pa-3 d-flex justify-space-between align-center">
-      <div class="d-flex flex-column align-center">
+      <div class="d-flex flex-column justify-center">
         <h2 class="text-h6 text-uppercase font-weight-light">
           {{ weekday }}
         </h2>
         <h2 class="text-h2 font-weight-bold">{{ day }}</h2>
       </div>
       <div class="d-flex align-center">
-        <h2 class="text-h6 mr-2">
+        <h2 class="subtitle-1 mr-2">
           {{ monthAndYear }}
         </h2>
         <v-menu
@@ -90,12 +90,13 @@
       <v-col cols="12" lg="8" class="mx-auto py-4" v-if="meals.length === 0">
         <div class="text-center">
           <p class="text--secondary">
-            It seems you don't have meals for today. You can do so by clicking
-            the button below to automatically create all meals of the day. Don't
-            worry, we know what you like...
+            It seems you don't have meals for today. Click generate to
+            automatically create a meal plan. Don't worry, we know what you
+            like...
           </p>
           <v-btn
             rounded
+            disabled
             :loading="loadingMeals"
             @click="generateMeals"
             color="success"
@@ -354,8 +355,7 @@ export default {
   title: "Meal planner",
   name: "MealPlanner",
   created() {
-    // this.$store.commit("setDashboardLinks", localStorage.getItem("userRole"));
-    // this.loadMeals();
+    // this.getMealsAction();
   },
   data() {
     return {
@@ -392,9 +392,6 @@ export default {
   },
   methods: {
     ...mapActions(["getMealsAction"]),
-    loadMeals() {
-      this.getMealsAction();
-    },
     generateMeals() {
       this.loadingMeals = true;
 
@@ -402,7 +399,6 @@ export default {
       setTimeout(() => {
         this.loadingMeals = false;
         this.showMeals = true;
-        this.loadMeals();
       }, 3000);
     },
     regenerateMeals() {

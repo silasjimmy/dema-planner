@@ -115,7 +115,7 @@
             </div>
           </v-card-text>
         </v-card>
-        <v-card outlined disabled width="400px" class="rounded-lg mx-auto my-2">
+        <v-card outlined width="400px" class="rounded-lg mx-auto my-2">
           <v-card-title>Eatery</v-card-title>
           <v-card-subtitle
             >Advertize your business to consumers</v-card-subtitle
@@ -144,7 +144,14 @@
         <v-card outlined class="mx-auto rounded-lg">
           <v-window show-arrows show-arrows-on-hover>
             <template v-slot:prev="{ on, attrs }">
-              <v-btn fab small depressed color="error" v-bind="attrs" v-on="on">
+              <v-btn
+                fab
+                small
+                depressed
+                color="success"
+                v-bind="attrs"
+                v-on="on"
+              >
                 <v-icon>mdi-chevron-left</v-icon>
               </v-btn>
             </template>
@@ -178,10 +185,8 @@
                       <div class="white--text pl-4 pb-2">
                         <h1 class="text-h6">{{ feedback.name }}</h1>
                         <h2 class="subtitle-1">
-                          {{ feedback.title }},
-                          <strong class="font-italic">{{
-                            feedback.country
-                          }}</strong>
+                          <i>{{ feedback.title }}, </i>
+                          <strong>{{ feedback.country }}</strong>
                         </h2>
                       </div>
                     </v-img>
@@ -230,24 +235,24 @@ export default {
           avatarUrl: "https://randomuser.me/api/portraits/women/92.jpg",
           message:
             "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam, velit voluptatum iusto cumque, vero porro repellat,debitis architecto vel amet inventore aut? Ratione, ipsamnisi. Nostrum pariatur praesentium soluta quos.",
-          title: "CEO & Founder",
-          country: "Kenya",
+          title: "Position",
+          country: "Country",
         },
         {
           name: "John Doe",
           avatarUrl: "https://randomuser.me/api/portraits/men/13.jpg",
           message:
             "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam, velit voluptatum iusto cumque, vero porro repellat,debitis architecto vel amet inventore aut? Ratione, ipsamnisi. Nostrum pariatur praesentium soluta quos.",
-          title: "Lawyer",
-          country: "US",
+          title: "Position",
+          country: "Country",
         },
         {
           name: "Ana Smith",
           avatarUrl: "https://randomuser.me/api/portraits/women/35.jpg",
           message:
             "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam, velit voluptatum iusto cumque, vero porro repellat,debitis architecto vel amet inventore aut? Ratione, ipsamnisi. Nostrum pariatur praesentium soluta quos.",
-          title: "Designer",
-          country: "China",
+          title: "Position",
+          country: "Country",
         },
       ],
     };
