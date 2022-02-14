@@ -6,50 +6,42 @@
         >No notifications</v-card-subtitle
       >
 
+      <!-- Notifications list -->
       <v-card-text v-if="notifications.length > 0">
-        <!-- Notifications list -->
-        <v-list subheader>
-          <!-- <v-subheader>
-            <v-divider></v-divider>
-            <span class="mx-4">Today</span>
-            <v-divider></v-divider>
-          </v-subheader> -->
+        <v-list two-line v-if="notifications.length > 0">
+          <v-list-item-group
+            multiple
+            v-model="unreadNotifications"
+            active-class="success--text"
+          >
+            <template v-for="(notification, index) in notifications">
+              <v-list-item
+                @click="goTo(notification.link)"
+                class="py-1"
+                :key="notification.id"
+              >
+                <template>
+                  <v-list-item-content>
+                    <v-list-item-subtitle
+                      v-text="notification.message"
+                    ></v-list-item-subtitle>
+                  </v-list-item-content>
 
-          <template v-for="(notification, index) in notifications">
-            <!-- <v-subheader
-          v-if="notification.header"
-          :key="notification.header"
-          v-text="notification.header"
-        ></v-subheader> -->
+                  <v-list-item-action>
+                    <v-list-item-action-text
+                      v-text="formatTime(notification.created)"
+                    ></v-list-item-action-text>
+                  </v-list-item-action>
+                </template>
+              </v-list-item>
 
-            <v-list-item
-              :key="notification.message"
-              @click="goTo(notification.link)"
-              class="py-1"
-              :style="notification.read ? '' : 'background-color: #C8E6C9'"
-            >
-              <v-list-item-content>
-                <v-list-item-title
-                  :class="
-                    notification.read
-                      ? 'font-weight-thin'
-                      : 'font-weight-medium'
-                  "
-                  v-html="notification.message"
-                ></v-list-item-title>
-              </v-list-item-content>
-
-              <v-list-item-action
-                :class="
-                  notification.read ? 'font-weight-thin' : 'font-weight-medium'
-                "
-                class="text--secondary caption"
-                v-html="notification.time"
-              ></v-list-item-action>
-            </v-list-item>
-
-            <v-divider :key="index"></v-divider>
-          </template>
+              <!-- Notification divider -->
+              <v-divider
+                v-if="index < notifications.length - 1"
+                :key="index"
+              ></v-divider>
+            </template>
+          </v-list-item-group>
         </v-list>
       </v-card-text>
     </v-card>
@@ -57,21 +49,39 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 
 export default {
   title: "Notifications",
   name: "Notifications",
-  created() {
-    this.getNotificationsAction();
+  async created() {
+    await this.getNotificationsAction();
+
+    // Get the indexes of unread notifications
+    const allNotifications = this.getNotificationsByRead(false);
+    allNotifications.forEach((notification) =>
+      this.unreadNotifications.push(this.notifications.indexOf(notification))
+    );
+  },
+  data() {
+    return {
+      unreadNotifications: [],
+    };
   },
   computed: {
     ...mapState(["notifications"]),
+    ...mapGetters(["getNotificationsByRead"]),
   },
   methods: {
     ...mapActions(["getNotificationsAction"]),
-    goTo(id) {
-      console.log(id);
+    formatTime(timestamp) {
+      return timestamp.toDate().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    },
+    goTo(link) {
+      this.$router.push({ path: link });
     },
   },
 };

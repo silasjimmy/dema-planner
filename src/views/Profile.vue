@@ -17,7 +17,7 @@
             }}</v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>
-            <v-btn disabled icon @click="editUserProfile = true">
+            <v-btn icon @click="editUserProfile = true">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </v-list-item-action>
@@ -676,7 +676,8 @@ export default {
   title: "Profile",
   name: "Profile",
   async created() {
-    await this.getUserProfileAction();
+    if (Object.keys(this.userProfile).length === 0)
+      await this.getUserProfileAction();
   },
   data() {
     return {

@@ -1,59 +1,66 @@
 <template>
   <v-container fluid>
     <v-card outlined class="rounded-lg">
-      <!-- No notifications message -->
+      <!-- No messages message -->
       <v-card-subtitle v-if="messages.length === 0" class="text-center"
         >No messages</v-card-subtitle
       >
 
+      <!-- Messages list -->
       <v-card-text v-if="messages.length > 0">
-        <!-- Messages list -->
-        <v-list subheader>
-          <!-- <v-subheader>
-            <v-divider></v-divider>
-            <span class="mx-4">Today</span>
-            <v-divider></v-divider>
-          </v-subheader> -->
+        <v-list two-line>
+          <v-list-item-group
+            multiple
+            v-model="unreadMessages"
+            active-class="success--text"
+          >
+            <template v-for="(message, index) in messages">
+              <v-list-item
+                link
+                :to="`/messages/${message.id}`"
+                :key="message.sender"
+              >
+                <template>
+                  <v-list-item-avatar>
+                    <v-img :src="message.senderAvatar"></v-img>
+                  </v-list-item-avatar>
 
-          <template v-for="(message, index) in messages">
-            <!-- <v-subheader
-          v-if="notification.header"
-          :key="notification.header"
-          v-text="notification.header"
-        ></v-subheader> -->
+                  <v-list-item-content>
+                    <v-list-item-title
+                      v-text="message.sender"
+                    ></v-list-item-title>
 
-            <v-list-item
-              :key="message.message"
-              @click="goTo(message.id)"
-              class="py-2"
-              :style="message.read ? '' : 'background-color: #4CAF50'"
-            >
-              <v-list-item-avatar>
-                <v-img :src="message.senderAvatar"></v-img>
-              </v-list-item-avatar>
+                    <v-list-item-subtitle
+                      class="text--primary"
+                      v-text="message.original"
+                    ></v-list-item-subtitle>
 
-              <v-list-item-content>
-                <v-list-item-title
-                  :class="message.read ? '' : 'font-weight-medium white--text'"
-                  v-html="message.sender"
-                ></v-list-item-title>
+                    <v-list-item-subtitle
+                      v-text="lastReply(message).message"
+                    ></v-list-item-subtitle>
+                  </v-list-item-content>
 
-                <v-list-item-subtitle
-                  :class="message.read ? '' : 'font-weight-medium white--text'"
-                  v-html="message.text"
-                >
-                </v-list-item-subtitle>
-              </v-list-item-content>
+                  <v-list-item-action>
+                    <v-list-item-action-text
+                      v-text="formatTime(lastReply(message).created)"
+                    ></v-list-item-action-text>
 
-              <v-list-item-action
-                :class="message.read ? '' : 'font-weight-medium white--text'"
-                class="caption"
-                v-html="formatTime(message.created)"
-              ></v-list-item-action>
-            </v-list-item>
+                    <v-icon small color="success">
+                      {{
+                        lastReply(message).read ? "mdi-check-all" : "mdi-check"
+                      }}
+                    </v-icon>
+                  </v-list-item-action>
+                </template>
+              </v-list-item>
 
-            <v-divider :key="index"></v-divider>
-          </template>
+              <!-- Message divider -->
+              <v-divider
+                v-if="index < message.length - 1"
+                :key="index"
+              ></v-divider>
+            </template>
+          </v-list-item-group>
         </v-list>
       </v-card-text>
     </v-card>
@@ -61,7 +68,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 
 export default {
   title: "Messages",
@@ -69,12 +76,27 @@ export default {
   async created() {
     // Fetch the user messages
     await this.getMessagesAction();
+
+    // Get the indexes of unread messages
+    const allMessages = this.getMessagesByRead(false);
+    allMessages.forEach((message) =>
+      this.unreadMessages.push(this.messages.indexOf(message))
+    );
+  },
+  data() {
+    return {
+      unreadMessages: [],
+    };
   },
   computed: {
     ...mapState(["messages"]),
+    ...mapGetters(["getMessagesByRead"]),
   },
   methods: {
     ...mapActions(["getMessagesAction"]),
+    lastReply(message) {
+      return message.replies[message.replies.length - 1];
+    },
     formatTime(timestamp) {
       return timestamp.toDate().toLocaleTimeString([], {
         hour: "2-digit",

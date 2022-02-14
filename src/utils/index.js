@@ -70,6 +70,9 @@ function sortMessages(messages) {
         let newObj = message[1];
         newObj.email = message[0];
 
+        // Sort replies
+        newObj.replies.sort((a, b) => a.created - b.created)
+
         // Add to the sorted list
         sortedMessages.push(newObj);
     });
@@ -77,6 +80,18 @@ function sortMessages(messages) {
     return sortedMessages.sort((a, b) => b.created - a.created);
 }
 
+/**
+ * Sorts the notifications from latest to earliest
+ * @param {object} notifications User notifications
+ * @returns {array} An array of user notifications
+ */
+function sortNotifications(notifications) {
+    const notificationsArray = Object.values(notifications);
+
+    // Sort the notifications
+    return notificationsArray.sort((a, b) => b.created - a.created);
+}
+
 const defaultImageUrl = "https://firebasestorage.googleapis.com/v0/b/demaplanner.appspot.com/o/profileAvatars%2Fdefault%2Fdefault-image.png?alt=media&token=c5fac7bb-ab08-4cf4-9e53-4560d08b60df"
 
-export { roleRedirect, checkUserProfile, defaultImageUrl, sortMessages }
+export { roleRedirect, checkUserProfile, defaultImageUrl, sortMessages, sortNotifications }

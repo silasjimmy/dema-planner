@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-import { sortMessages } from '../utils'
+import { sortMessages, sortNotifications } from '../utils'
 import {
   doc,
   getDoc,
@@ -18,6 +18,7 @@ import {
 
 export default new Vuex.Store({
   state: {
+    pageTitle: 'Home',
     loggedIn: null,
     userEmail: null,
     userRole: null,
@@ -37,6 +38,9 @@ export default new Vuex.Store({
     mealTimes: null,
   },
   mutations: {
+    setPageTitle(state, title) {
+      state.pageTitle = title
+    },
     setLoggedIn(state, status) {
       state.loggedIn = status
     },
@@ -254,13 +258,16 @@ export default new Vuex.Store({
       // Delete from store
       commit('deleteMenuFood', food)
     },
-    async getNotificationsAction({ commit, state }) {
+    async getNotificationsAction({ commit }) {
       // Get user notifications
       const db = getFirestore();
-      const snapshot = await getDoc(doc(db, `notifications/${state.userEmail}`))
+      const snapshot = await getDoc(doc(db, 'notifications/jimmysilas17@gmail.com'))
       const notifications = snapshot.data()
 
-      commit('setNotifications', notifications.all)
+      // Sort the notifications according to created time
+      const sortedNotifications = sortNotifications(notifications)
+
+      commit('setNotifications', sortedNotifications)
     },
     async getEateriesAction({ commit }) {
       const db = getFirestore()
@@ -272,10 +279,10 @@ export default new Vuex.Store({
       // Commit the eateries to the nearest eateries state
       commit('setEateries', eateries);
     },
-    async getMessagesAction({ commit, state }) {
+    async getMessagesAction({ commit }) {
       // Get user messages
       const db = getFirestore();
-      const snapshot = await getDoc(doc(db, `messages/${state.userEmail}`))
+      const snapshot = await getDoc(doc(db, 'messages/jimmysilas17@gmail.com'))
       const messages = snapshot.data()
 
       // Sort the messages
@@ -369,6 +376,12 @@ export default new Vuex.Store({
     },
     getFoodByName: (state) => name => {
       return state.allFoods.find(food => food.name === name)
+    },
+    getMessagesByRead: (state) => read => {
+      return state.messages.filter(m => m.read === read)
+    },
+    getNotificationsByRead: (state) => read => {
+      return state.notifications.filter(m => m.read === read)
     },
   },
 })

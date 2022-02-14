@@ -23,7 +23,9 @@
           <v-tab class="text-none subtitle-1 font-weight-medium"
             >Consumer</v-tab
           >
-          <v-tab class="text-none subtitle-1 font-weight-medium">Eatery</v-tab>
+          <v-tab disabled class="text-none subtitle-1 font-weight-medium"
+            >Eatery</v-tab
+          >
 
           <!-- Consumer tab item -->
           <v-tab-item>

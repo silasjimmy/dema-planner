@@ -37,6 +37,7 @@ const routes = [
     component: Home,
     meta: {
       preventLandingView: true,
+      title: 'Home'
     }
   },
   {
@@ -45,6 +46,7 @@ const routes = [
     component: SignIn,
     meta: {
       preventLandingView: true,
+      title: 'Log in'
     }
   },
   {
@@ -53,6 +55,7 @@ const routes = [
     component: SignUp,
     meta: {
       preventLandingView: true,
+      title: 'Create account'
     }
   },
   {
@@ -61,6 +64,7 @@ const routes = [
     component: AboutUs,
     meta: {
       preventLandingView: true,
+      title: 'About us'
     }
   },
   {
@@ -69,6 +73,7 @@ const routes = [
     component: ContactUs,
     meta: {
       preventLandingView: true,
+      title: 'Contact us'
     }
   },
   {
@@ -77,7 +82,8 @@ const routes = [
     component: CreateProfile,
     meta: {
       requiresAuth: true,
-      role: 'all'
+      role: 'all',
+      title: 'Create profile'
     },
   },
   {
@@ -86,7 +92,8 @@ const routes = [
     component: MealPlanner,
     meta: {
       requiresAuth: true,
-      role: 'consumer'
+      role: 'consumer',
+      title: 'Meal planner'
     }
   },
   {
@@ -95,7 +102,8 @@ const routes = [
     component: AvailableFoods,
     meta: {
       requiresAuth: true,
-      role: 'consumer'
+      role: 'consumer',
+      title: 'Available foods'
     }
   },
   {
@@ -104,7 +112,8 @@ const routes = [
     component: NearestEateries,
     meta: {
       requiresAuth: true,
-      role: 'consumer'
+      role: 'consumer',
+      title: 'Nearest eateries'
     }
   },
   {
@@ -114,7 +123,8 @@ const routes = [
     props: r => ({ id: parseInt(r.params.id) }),
     meta: {
       requiresAuth: true,
-      role: 'consumer'
+      role: 'consumer',
+      title: 'Details'
     }
   },
   {
@@ -123,7 +133,8 @@ const routes = [
     component: Menu,
     meta: {
       requiresAuth: true,
-      role: 'eatery'
+      role: 'eatery',
+      title: 'Menu'
     }
   },
   {
@@ -132,7 +143,8 @@ const routes = [
     component: FoodRequest,
     meta: {
       requiresAuth: true,
-      role: 'eatery'
+      role: 'eatery',
+      title: 'Food request'
     }
   },
   {
@@ -141,7 +153,8 @@ const routes = [
     component: Summary,
     meta: {
       requiresAuth: true,
-      role: 'admin'
+      role: 'admin',
+      title: 'Summary'
     }
   },
   {
@@ -150,7 +163,8 @@ const routes = [
     component: Users,
     meta: {
       requiresAuth: true,
-      role: 'admin'
+      role: 'admin',
+      title: 'Users'
     }
   },
   {
@@ -159,7 +173,8 @@ const routes = [
     component: Foods,
     meta: {
       requiresAuth: true,
-      role: 'admin'
+      role: 'admin',
+      title: 'Foods'
     }
   },
   {
@@ -168,7 +183,8 @@ const routes = [
     component: Profile,
     meta: {
       requiresAuth: true,
-      role: 'all'
+      role: 'all',
+      title: 'Profile'
     }
   },
   {
@@ -177,7 +193,8 @@ const routes = [
     component: Settings,
     meta: {
       requiresAuth: true,
-      role: 'all'
+      role: 'all',
+      title: 'Settings'
     }
   },
   {
@@ -186,7 +203,8 @@ const routes = [
     component: Notifications,
     meta: {
       requiresAuth: true,
-      role: 'all'
+      role: 'all',
+      title: 'Notifications'
     }
   },
   {
@@ -195,7 +213,8 @@ const routes = [
     component: Messages,
     meta: {
       requiresAuth: true,
-      role: 'all'
+      role: 'all',
+      title: 'Messages'
     }
   },
   {
@@ -204,7 +223,8 @@ const routes = [
     component: Chat,
     meta: {
       requiresAuth: true,
-      role: 'all'
+      role: 'all',
+      title: 'Chat'
     },
     props: r => ({ id: parseInt(r.params.id) }),
   },

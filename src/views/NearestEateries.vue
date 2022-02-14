@@ -75,8 +75,7 @@ export default {
   title: "Nearest eateries",
   name: "NearestEateries",
   async created() {
-    // Load all eateries to the store
-    await this.getEateriesAction();
+    if (this.eateries.length === 0) await this.getEateriesAction();
   },
   computed: {
     ...mapState(["eateries"]),

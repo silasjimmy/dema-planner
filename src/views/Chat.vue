@@ -45,19 +45,13 @@
         class="overflow-auto d-flex flex-column-reverse"
         style="height: 50vh"
       >
-        <div v-if="message.replies.length === 0">
+        <div v-if="!replies">
           <v-subheader class="d-flex justify-center">
             <span>Send a message to start chatting with people</span>
           </v-subheader>
         </div>
 
-        <div v-if="message.replies.length > 0">
-          <!-- <v-subheader>
-              <v-divider></v-divider>
-              <span class="mx-4">Today</span>
-              <v-divider></v-divider>
-            </v-subheader> -->
-
+        <div v-if="replies">
           <div
             class="d-flex flex-column"
             v-for="reply in message.replies"
@@ -136,7 +130,7 @@ export default {
   name: "Chat",
   title: "Chat",
   async created() {
-    if (this.messages) {
+    if (this.messages.length === 0) {
       // Fetch the user messages if they are not yet fetched
       await this.getMessagesAction();
     }
@@ -156,6 +150,9 @@ export default {
   },
   methods: {
     ...mapActions(["getMessagesAction"]),
+    replies() {
+      return Object.keys(this.message.replies).length > 0;
+    },
     formatTime(timestamp) {
       return timestamp.toDate().toLocaleTimeString([], {
         hour: "2-digit",

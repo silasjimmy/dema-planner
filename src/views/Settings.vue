@@ -361,7 +361,8 @@ export default {
   title: "Settings",
   name: "Settings",
   async created() {
-    // await this.getUserSettingsAction();
+    if (Object.keys(this.userSettings).length === 0)
+      await this.getUserSettingsAction();
   },
   // mounted() {
   //   // Listen to settings changes
@@ -439,11 +440,6 @@ export default {
 
         // Update the settings in store
         this.$store.commit("setUserSettings", this.userSettings);
-
-        // Show toast message on success
-        this.showToast = true;
-        this.toastMessage = "Setting updated successfully!";
-        this.actionSuccess = true;
       } catch (error) {
         // Show toast message on failure
         this.showToast = true;

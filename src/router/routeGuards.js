@@ -1,4 +1,5 @@
 import { roleRedirect } from '../utils'
+import store from '../store'
 
 /**
  * Checks if the user is authorized to access the page
@@ -7,6 +8,9 @@ import { roleRedirect } from '../utils'
  * @param {object} next Vue Router next object
  */
 function checkAuth(to, from, next) {
+    // Update page title in store
+    store.commit('setPageTitle', to.meta.title)
+
     // Restrict viewing the landing pages if the user is logged in
     if (to.meta.preventLandingView) {
         if (localStorage.getItem('loggedIn') === 'true') {
