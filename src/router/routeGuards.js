@@ -11,6 +11,9 @@ function checkAuth(to, from, next) {
     // Update page title in store
     store.commit('setPageTitle', to.meta.title)
 
+    // Scroll to top
+    window.scrollTo(0, 0)
+
     // Restrict viewing the landing pages if the user is logged in
     if (to.meta.preventLandingView) {
         if (localStorage.getItem('loggedIn') === 'true') {

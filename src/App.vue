@@ -405,6 +405,7 @@
 
     <!-- Main section -->
     <v-main>
+      <!-- Internet connection banner -->
       <v-banner
         single-line
         app
@@ -422,7 +423,25 @@
           <v-btn rounded text color="error" @click="dismiss"> Dismiss </v-btn>
         </template>
       </v-banner>
+
+      <!-- Router view -->
       <router-view />
+
+      <!-- Scroll to top button -->
+      <v-fab-transition>
+        <v-btn
+          fab
+          fixed
+          bottom
+          right
+          color="success"
+          v-if="!loggedIn"
+          v-show="showFabBtn"
+          @click="$vuetify.goTo(0, scrollOptions)"
+        >
+          <v-icon>mdi-chevron-up</v-icon>
+        </v-btn>
+      </v-fab-transition>
     </v-main>
 
     <!-- Footer -->
@@ -602,6 +621,12 @@ export default {
         this.pageLoadColor = "error";
         this.pageLoadMessage = `${error.code}`;
       }
+    } else {
+      // Listen on page scroll
+      window.addEventListener(
+        "scroll",
+        () => (this.scrollYPos = window.scrollY)
+      );
     }
 
     // Monitor the user sign in activity
@@ -627,6 +652,7 @@ export default {
   },
   data() {
     return {
+      scrollYPos: 0,
       unreadMessages: [],
       unreadNotifications: [],
       pageLoadOverlay: false,
@@ -640,6 +666,10 @@ export default {
       isOnline: !navigator.onLine,
       internetConnectionMessage:
         "You are now offline. Any edits you make won't be saved.",
+      scrollOptions: {
+        duration: 400,
+        easing: "easeInQuint",
+      },
     };
   },
   methods: {
@@ -688,6 +718,10 @@ export default {
     },
     userRole() {
       return this.$store.state.userRole;
+    },
+    showFabBtn() {
+      if (this.scrollYPos > 200) return true;
+      return false;
     },
   },
   components: { MealsInfo },
