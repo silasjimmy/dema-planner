@@ -380,6 +380,8 @@
           </v-btn>
         </v-card-title>
 
+        <v-divider></v-divider>
+
         <v-card-text
           class="text-center"
           style="max-height: 70vh"
@@ -582,12 +584,14 @@
           </v-form>
         </v-card-text>
 
+        <v-divider></v-divider>
+
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
             rounded
+            text
             color="success"
-            class="text-none"
             :loading="loadingProfile"
             @click="saveProfile()"
           >

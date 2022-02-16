@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <!-- Back button -->
-    <v-card outlined>
+    <v-card outlined class="rounded-lg">
       <v-card-title>
         <v-btn icon @click="$router.go(-1)">
           <v-icon>mdi-arrow-left</v-icon>
@@ -9,7 +9,7 @@
       </v-card-title>
 
       <!-- Eatery details -->
-      <v-card-text>
+      <v-card-text class="py-0">
         <v-container>
           <v-row>
             <!-- Eatery image -->
@@ -22,7 +22,7 @@
               ></v-img>
             </v-col>
 
-            <v-col cols="12" lg="7" align-self="end">
+            <v-col cols="12" lg="7" align-self="end" class="text--primary">
               <div class="text-center text-lg-left">
                 <!-- Eatery name -->
                 <h1 class="font-weight-medium text-h5 text-capitalize">
@@ -57,7 +57,7 @@
               </div>
             </v-col>
 
-            <v-col cols="9" lg="5" class="mx-auto mx-lg-0">
+            <v-col cols="12" lg="5" class="mx-auto mx-lg-0">
               <v-list two-line class="py-0">
                 <!-- Location -->
                 <v-list-item>
@@ -121,7 +121,7 @@
 
                 <!-- Send message button -->
                 <v-list-item>
-                  <v-btn block color="success">
+                  <v-btn block text rounded color="success">
                     <v-icon left>mdi-message-text</v-icon>
                     Send a message
                   </v-btn>

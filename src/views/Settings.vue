@@ -79,7 +79,7 @@
 
           <v-dialog persistent width="auto" v-model="themeChangeDialog">
             <v-card>
-              <v-card-title>Choose theme</v-card-title>
+              <v-card-title class="justify-center">Choose theme</v-card-title>
 
               <v-divider></v-divider>
 

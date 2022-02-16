@@ -18,13 +18,12 @@
               dense
               hide-details
               single-line
-              class="shrink"
+              :class="$vuetify.breakpoint.smAndUp ? 'shrink' : ''"
               color="success"
               v-model="searchFood"
               append-icon="mdi-magnify"
               label="Search for food..."
             ></v-text-field>
-            <v-spacer></v-spacer>
           </v-toolbar>
         </template>
 
@@ -84,6 +83,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-</style>
