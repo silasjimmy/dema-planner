@@ -369,7 +369,7 @@
       scrollable
       v-if="$store.state.userRole === 'consumer'"
       v-model="editUserProfile"
-      width="50vw"
+      :width="dialogWidth"
     >
       <v-card>
         <v-card-title>
@@ -380,7 +380,11 @@
           </v-btn>
         </v-card-title>
 
-        <v-card-text class="text-center" style="max-height: 70vh">
+        <v-card-text
+          class="text-center"
+          style="max-height: 70vh"
+          :class="$vuetify.breakpoint.xs ? 'px-0' : ''"
+        >
           <v-form ref="profileForm">
             <v-container>
               <v-row>
@@ -392,7 +396,7 @@
                   ></avatar-field>
                 </v-col>
                 <!-- Name field -->
-                <v-col cols="12" lg="6">
+                <v-col cols="12" sm="6">
                   <v-text-field
                     outlined
                     dense
@@ -407,7 +411,7 @@
                   ></v-text-field>
                 </v-col>
                 <!-- Date of birth field -->
-                <v-col cols="12" lg="6">
+                <v-col cols="12" sm="6">
                   <v-text-field
                     outlined
                     dense
@@ -423,14 +427,14 @@
                   ></v-text-field>
                 </v-col>
                 <!-- Gender field -->
-                <v-col cols="12" lg="6">
+                <v-col cols="12" sm="6">
                   <v-select
                     outlined
                     clearable
                     dense
                     hide-details
                     :rules="[rules.required]"
-                    prepend-icon="mdi-account"
+                    prepend-icon="mdi-gender-male-female"
                     color="success"
                     :items="['Male', 'Female']"
                     v-model="userProfile.gender"
@@ -736,6 +740,22 @@ export default {
   },
   computed: {
     ...mapState(["userProfile"]),
+    dialogWidth() {
+      switch (this.$vuetify.breakpoint.name) {
+        case "xl":
+          return "40vw";
+        case "lg":
+          return "50vw";
+        case "md":
+          return "60vw";
+        case "sm":
+          return "80vw";
+        case "xs":
+          return "100vw";
+        default:
+          return "100vw";
+      }
+    },
   },
   methods: {
     ...mapActions(["getUserProfileAction"]),
