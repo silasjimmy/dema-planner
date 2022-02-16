@@ -82,14 +82,14 @@
                             prepend-icon="mdi-gender-male-female"
                           ></v-select>
                         </v-col>
-                        <!-- City -->
+                        <!-- Town -->
                         <v-col cols="12" sm="6">
                           <v-text-field
                             hide-details
                             dense
                             outlined
                             readonly
-                            v-model="consumerProfile.city"
+                            v-model="consumerProfile.town"
                             label="City"
                             color="success"
                             type="text"
@@ -531,14 +531,14 @@
                             prepend-icon="mdi-account"
                           ></v-text-field>
                         </v-col>
-                        <!-- City -->
+                        <!-- Town -->
                         <v-col cols="12" sm="6">
                           <v-text-field
                             hide-details
                             dense
                             outlined
                             readonly
-                            v-model="eateryProfile.city"
+                            v-model="eateryProfile.town"
                             label="City"
                             color="success"
                             type="text"
@@ -1015,6 +1015,9 @@ export default {
     // Fetch all users
     await this.getAllUsersAction();
   },
+  mounted() {
+    this.getUserLocation();
+  },
   data() {
     return {
       consumerWindowStep: 1,
@@ -1032,8 +1035,10 @@ export default {
         name: "",
         dateOfBirth: "",
         gender: "",
-        city: "kilifi",
-        country: "kenya",
+        latitude: "",
+        longitude: "",
+        town: "",
+        country: "",
         created: new Date(),
         email: localStorage.getItem("email"),
         imageUrl: localStorage.getItem("imageUrl"),
@@ -1052,8 +1057,10 @@ export default {
         id: "",
         role: "eatery",
         name: "",
-        city: "kilifi",
-        country: "kenya",
+        latitude: "",
+        longitude: "",
+        town: "",
+        country: "",
         ratings: 0,
         website: "",
         phoneNumber: "",
@@ -1064,7 +1071,7 @@ export default {
       },
       consumerSettings: {
         receiveNews: true,
-        notificationsAlert: true,
+        notificationsAlert: false,
         autoUpdateLocation: true,
         appLanguage: "english",
         appTheme: "light",
@@ -1093,9 +1100,17 @@ export default {
       },
       eaterySettings: {
         receiveNews: true,
+        notificationsAlert: false,
+        appLanguage: "english",
+        appTheme: "light",
       },
       rules: {
         required: (value) => !!value || "This field is required!",
+      },
+      geoLocationOptions: {
+        enableHighAccuracy: true,
+        timeout: 1500,
+        maximumAge: 0,
       },
     };
   },
@@ -1144,6 +1159,59 @@ export default {
   },
   methods: {
     ...mapActions(["getAllUsersAction"]),
+    getUserLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          this.locateSuccess,
+          this.locateError,
+          this.geoLocationOptions
+        );
+      } else {
+        this.errorMessage =
+          "Your browser does not support geolocation. Please use a browser that does.";
+        this.errorAlert = true;
+      }
+    },
+    locateSuccess(position) {
+      const coords = position.coords;
+
+      // Set the user geolocation coordinates
+      this.consumerProfile.latitude = coords.latitude;
+      this.consumerProfile.longitude = coords.longitude;
+      this.eateryProfile.latitude = coords.latitude;
+      this.eateryProfile.longitude = coords.longitude;
+
+      // Fetch the user location details
+      fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${coords.latitude}&lon=${coords.longitude}`
+      )
+        .then((response) => {
+          // Retrieve the json data
+          return response.json();
+        })
+        .then((data) => {
+          // Set the user location details
+          this.consumerProfile.town = data.address.town;
+          this.consumerProfile.country = data.address.country;
+          this.eateryProfile.town = data.address.town;
+          this.eateryProfile.country = data.address.country;
+        })
+        .catch((error) => {
+          this.errorMessage = error;
+          this.errorAlert = true;
+        });
+    },
+    locateError(error) {
+      switch (error.code) {
+        case 1:
+          this.errorMessage = `${error.message}: Your location is required to continue`;
+          break;
+        default:
+          this.errorMessage = error.message;
+          break;
+      }
+      this.errorAlert = true;
+    },
     consumerNext() {
       let complete = null;
 

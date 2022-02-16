@@ -22,6 +22,21 @@
             </v-btn>
           </v-list-item-action>
         </v-list-item>
+
+        <!-- Location -->
+        <v-list-item>
+          <v-list-item-avatar>
+            <v-icon> mdi-map-marker </v-icon>
+          </v-list-item-avatar>
+
+          <v-list-item-content>
+            <v-list-item-title>Location</v-list-item-title>
+            <v-list-item-subtitle
+              >{{ userProfile.town }},
+              {{ userProfile.country }}</v-list-item-subtitle
+            >
+          </v-list-item-content>
+        </v-list-item>
         <!-- 
         <v-divider inset class="my-3"></v-divider>
 
