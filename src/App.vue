@@ -559,8 +559,7 @@ export default {
     //   this.$store.state.userRole,
     //   this.$store.state.dashboardLinks
     // );
-  },
-  async mounted() {
+
     if (localStorage.getItem("loggedIn") === "true") {
       try {
         // Start loading data
@@ -590,6 +589,14 @@ export default {
         await this.getNotificationsAction();
         this.pageLoadValue += 25;
         this.pageLoadMessage = `Loading data: ${this.pageLoadValue}%`;
+
+        switch (this.$store.state.userRole) {
+          case "consumer":
+            await this.getAvailableFoodsAction();
+            break;
+          default:
+            break;
+        }
 
         // Set the page title
         this.$store.commit("setPageTitle", document.title);
@@ -628,7 +635,8 @@ export default {
         () => (this.scrollYPos = window.scrollY)
       );
     }
-
+  },
+  async mounted() {
     // Monitor the user sign in activity
     const auth = getAuth();
 
@@ -679,6 +687,7 @@ export default {
       "getMessagesAction",
       "getNotificationsAction",
       "getEateriesAction",
+      "getAvailableFoodsAction",
     ]),
     lastReply(message) {
       return message.replies[message.replies.length - 1];

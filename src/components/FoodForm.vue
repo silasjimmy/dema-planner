@@ -388,14 +388,17 @@ export default {
       },
       foodValues: {
         nutrients: [
-          { text: "Proteins", value: "proteins" },
-          { text: "Carbohydrates", value: "carbohydrates" },
-          { text: "Vitamins", value: "vitamins" },
+          { text: "Protein", value: "protein" },
+          { text: "Carbohydrate", value: "carbohydrate" },
+          { text: "Vitamin", value: "vitamin" },
         ],
         groups: [
           { text: "Starch", value: "starch" },
-          { text: "Animal proteins", value: "animal proteins" },
-          { text: "Vegetables", value: "vegetables" },
+          { text: "Sugar", value: "sugar" },
+          { text: "Animal protein", value: "animal protein" },
+          { text: "Vegetable", value: "vegetable" },
+          { text: "Fruit", value: "fruit" },
+          { text: "Legume", value: "legume" },
         ],
         forms: [
           { text: "Solid", value: "solid" },

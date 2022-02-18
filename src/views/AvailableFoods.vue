@@ -48,7 +48,6 @@ export default {
   title: "Available foods",
   name: "AvailableFoods",
   created() {
-    this.getAvailableFoodsAction();
     this.getLikedFoodsAction();
   },
   data() {
@@ -75,7 +74,7 @@ export default {
     ...mapState(["availableFoods", "likedFoods"]),
   },
   methods: {
-    ...mapActions(["getAvailableFoodsAction", "getLikedFoodsAction"]),
+    ...mapActions(["getLikedFoodsAction"]),
     likeFood(state) {
       if (state) return "mdi-heart";
       else return "mdi-heart-outline";

@@ -163,6 +163,15 @@ export default {
   },
   computed: {
     ...mapState(["meals"]),
+    proteins() {
+      return 20;
+    },
+    carbohydrates() {
+      return 30;
+    },
+    vitamins() {
+      return 50;
+    },
   },
   components: {
     GChart,

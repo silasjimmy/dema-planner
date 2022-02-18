@@ -32,8 +32,8 @@ export default new Vuex.Store({
     notifications: [],
     messages: [],
     eateries: [],
-
     meals: [],
+
     likedFoods: null,
     mealTimes: null,
   },
@@ -129,6 +129,9 @@ export default new Vuex.Store({
     setEateries(state, eateries) {
       state.eateries = eateries
     },
+    addMeal(state, meal) {
+      state.meals.push(meal)
+    },
 
     setMeals(state, meals) {
       state.meals = meals
@@ -136,7 +139,6 @@ export default new Vuex.Store({
     setLikedFoods(state, foods) {
       state.likedFoods = foods
     },
-
     setMealTimes(state, mealTimes) {
       state.mealTimes = mealTimes
     },
@@ -201,11 +203,15 @@ export default new Vuex.Store({
       // Add the foods to the store
       commit('setAllUsers', users);
     },
-    getAvailableFoodsAction({ commit }) {
+    async getAvailableFoodsAction({ commit, state }) {
       // Get the foods from the database
+      const db = getFirestore()
+      const foodsQuery = query(collection(db, "foods"), where("regions", "array-contains", state.userProfile.country));
+      const snapShot = await getDocs(foodsQuery)
+      const availableFoods = snapShot.docs.map(doc => doc.data())
 
       // Commit the foods to the available foods state
-      commit('setAvailableFoods', []);
+      commit('setAvailableFoods', availableFoods);
     },
     getLikedFoodsAction({ commit }) {
       // Get the foods from the database
@@ -290,81 +296,19 @@ export default new Vuex.Store({
 
       commit('setMessages', sortedMessages)
     },
-
-    getMealsAction({ commit }) {
-      // // Get the meals from the database
-      // const meals = [
-      //   {
-      //     name: "breakfast",
-      //     image: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
-      //     id: 1,
-      //     time: "07:00am",
-      //     ate: false,
-      //     revealServings: false,
-      //     servingsDialog: false,
-      //     foods: [
-      //       { name: "chapati", cost: 10, serving: 1 },
-      //       { name: "cabbage", cost: 20, serving: 1 },
-      //       { name: "meat stew", cost: 50, serving: 1 },
-      //     ],
-      //   },
-      //   {
-      //     name: "lunch",
-      //     image: 'https://images.unsplash.com/photo-1573225342350-16731dd9bf3d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=762&q=80',
-      //     id: 2,
-      //     time: "01:00pm",
-      //     ate: false,
-      //     revealServings: false,
-      //     servingsDialog: false,
-      //     foods: [
-      //       { name: "pilau", cost: 150, serving: 1 },
-      //       { name: "mango juice", cost: 70, serving: 1 },
-      //       { name: "meat stew", cost: 50, serving: 1 },
-      //     ],
-      //   },
-      //   {
-      //     name: "snack",
-      //     image: 'https://images.unsplash.com/photo-1566496875470-68ada46a38c5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
-      //     id: 4,
-      //     time: "04:00pm",
-      //     ate: false,
-      //     revealServings: false,
-      //     servingsDialog: false,
-      //     foods: [
-      //       { name: "donut", cost: 10, serving: 1 },
-      //       { name: "passion juice", cost: 30, serving: 1 },
-      //     ],
-      //   },
-      //   {
-      //     name: "supper",
-      //     image: 'https://images.unsplash.com/photo-1598515213692-5f252f75d785?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
-      //     id: 3,
-      //     time: "07:00pm",
-      //     ate: false,
-      //     revealServings: false,
-      //     servingsDialog: false,
-      //     foods: [
-      //       { name: "rice", cost: 30, serving: 1 },
-      //       { name: "cabbage", cost: 20, serving: 1 },
-      //       { name: "beans", cost: 20, serving: 1 },
-      //     ],
-      //   },
-      // ]
-
-      // Commit the meals to the meals state
-      commit('setMeals', []);
+    async addMealAction({ commit, state }, meal) {
+      // Add a single meal to the database
+      const db = getFirestore();
+      const docRef = doc(db, `profiles/${state.userEmail}/meals/meal${meal.id}`)
+      await setDoc(docRef, meal, { merge: true })
+      commit('addMeal', meal)
     },
-    getMealTimesAction({ commit }) {
-      // Get the profile from the database
-      let mealTimes = [
-        { id: 1, name: "breakfast", time: "07:00am" },
-        { id: 2, name: "lunch", time: "01:00pm" },
-        { id: 3, name: "snack", time: "04:00pm" },
-        { id: 4, name: "supper", time: "07:00pm" },
-      ]
-
-      // Commit the profile to the user profile state
-      commit('setMealTimes', mealTimes);
+    async getMealsAction({ commit, state }) {
+      const db = getFirestore();
+      const docRef = collection(db, `profiles/${state.userEmail}/meals`)
+      const snapShot = await getDocs(docRef)
+      const meals = snapShot.docs.map(doc => doc.data())
+      commit('setMeals', meals);
     },
   },
   getters: {
@@ -382,6 +326,9 @@ export default new Vuex.Store({
     },
     getNotificationsByRead: (state) => read => {
       return state.notifications.filter(m => m.read === read)
+    },
+    getFoodsByNutrient: (state) => nutrient => {
+      return state.availableFoods.filter(f => f.nutrient.name === nutrient)
     },
   },
 })

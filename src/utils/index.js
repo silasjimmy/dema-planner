@@ -92,6 +92,56 @@ function sortNotifications(notifications) {
     return notificationsArray.sort((a, b) => b.created - a.created);
 }
 
+function generateMeal(foods, mealTime) {
+    const nutrients = ['protein', 'carbohydrate', 'vitamin']
+    let mealFoods = []
+    let mealImages = []
+
+    nutrients.forEach(nutrient => {
+        // 1. Filter foods based on nutrient
+        const foodsByNutrient = foods.filter(food => food.nutrient.name === nutrient)
+
+        // 2. Pick a random food from the list
+        const n = Math.floor(Math.random() * foodsByNutrient.length);
+        let randomFood = foodsByNutrient[n]
+
+        // 3. Add the food to the list
+        mealFoods.push(
+            {
+                id: randomFood.id,
+                name: randomFood.name,
+                calories: randomFood.calories,
+                group: randomFood.group,
+                nutrient: randomFood.nutrient,
+                serving: 1,
+                cost: 0,
+            }
+        )
+
+        // 4. Add the food image url to the list
+        mealImages.push(randomFood.imageUrl)
+    });
+
+    return {
+        name: mealTime.name,
+        time: mealTime.time,
+        id: mealTime.id,
+        created: new Date(),
+        ate: false,
+        image: mealImages[Math.floor(Math.random() * mealImages.length)],
+        foods: mealFoods,
+        revealServings: false,
+        servingsDialog: false,
+    }
+}
+
 const defaultImageUrl = "https://firebasestorage.googleapis.com/v0/b/demaplanner.appspot.com/o/profileAvatars%2Fdefault%2Fdefault-image.png?alt=media&token=c5fac7bb-ab08-4cf4-9e53-4560d08b60df"
 
-export { roleRedirect, checkUserProfile, defaultImageUrl, sortMessages, sortNotifications }
+export {
+    roleRedirect,
+    checkUserProfile,
+    defaultImageUrl,
+    sortMessages,
+    sortNotifications,
+    generateMeal
+}
