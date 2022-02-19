@@ -81,11 +81,86 @@
 
       <v-spacer></v-spacer>
 
-      <!-- Notifications dropdown -->
+      <!-- Extra links menu -->
+      <v-menu
+        bottom
+        offset-y
+        min-width="200px"
+        transition="slide-y-transition"
+        v-if="$vuetify.breakpoint.xs"
+      >
+        <template v-slot:activator="{ on }">
+          <v-btn icon class="mr-1" v-on="on">
+            <v-badge bordered overlap dot color="success">
+              <v-avatar size="36">
+                <img :src="userProfile.imageUrl" :alt="userProfile.name" />
+              </v-avatar>
+            </v-badge>
+          </v-btn>
+        </template>
+
+        <v-card>
+          <!-- Links -->
+          <v-list class="py-0">
+            <v-list-item link to="/messages">
+              <v-list-item-avatar>
+                <v-icon>mdi-message</v-icon>
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title>Messages</v-list-item-title>
+                <!-- <v-list-item-title>
+                  <v-badge color="success" content="1">Messages</v-badge>
+                </v-list-item-title> -->
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item link to="/notifications">
+              <v-list-item-avatar>
+                <v-icon>mdi-bell</v-icon>
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title>Notifications</v-list-item-title>
+                <!-- <v-list-item-title>
+                  <v-badge color="success" content="1">Notifications</v-badge>
+                </v-list-item-title> -->
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item link to="/profile">
+              <v-list-item-avatar>
+                <v-icon>mdi-account-details</v-icon>
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title>Profile</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item link to="/settings">
+              <v-list-item-avatar>
+                <v-icon>mdi-cog</v-icon>
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title>Settings</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-divider></v-divider>
+
+            <v-list-item @click="logout">
+              <v-list-item-avatar>
+                <v-icon>mdi-logout</v-icon>
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title>Logout</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-menu>
+
+      <!-- Notifications menu -->
       <v-menu
         bottom
         left
         offset-y
+        v-if="$vuetify.breakpoint.smAndUp"
         :close-on-content-click="false"
         v-model="notificationsMenu"
         transition="slide-y-transition"
@@ -288,7 +363,7 @@
 
       <!-- Navigation links -->
       <v-list rounded>
-        <v-list-item-group>
+        <v-list-item-group color="success">
           <v-list-item
             link
             v-for="link in dashboardLinks"
@@ -323,12 +398,14 @@
 
       <!-- Log out button -->
       <template v-slot:append>
-        <div class="px-4">
-          <v-btn block @click="logout" class="my-4" color="success">
-            <v-icon left>mdi-logout</v-icon>
-            Log out
-          </v-btn>
-        </div>
+        <v-list-item color="success" class="pl-6" @click="logout">
+          <v-list-item-icon>
+            <v-icon>mdi-logout</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Log out</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </template>
     </v-navigation-drawer>
 
@@ -347,7 +424,9 @@
     <!-- Dashboard bottom navigation -->
     <v-bottom-navigation
       app
-      :shift="$vuetify.breakpoint.smAndUp"
+      shift
+      grow
+      color="success"
       v-if="loggedIn && $vuetify.breakpoint.smAndDown"
     >
       <v-btn
@@ -356,7 +435,7 @@
         :key="link.text"
         :to="link.url"
       >
-        <span class="d-none d-sm-flex">{{ link.text }}</span>
+        <span>{{ link.text }}</span>
         <v-icon>{{ link.icon }}</v-icon>
       </v-btn>
       <v-btn link to="/settings" v-if="$vuetify.breakpoint.smAndUp">
@@ -371,36 +450,6 @@
         <span>Log out</span>
         <v-icon left>mdi-logout</v-icon>
       </v-btn>
-
-      <!-- More links menu -->
-      <v-menu top offset-y>
-        <!-- More button -->
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn class="px-0 d-flex d-sm-none" v-bind="attrs" v-on="on">
-            <span class="d-none d-sm-flex">More</span>
-            <v-icon>mdi-dots-horizontal</v-icon>
-          </v-btn>
-        </template>
-
-        <!-- Links -->
-        <v-list class="text-center py-0">
-          <v-list-item class="px-0" @click="logout">
-            <v-list-item-title>
-              <v-icon>mdi-logout</v-icon>
-            </v-list-item-title>
-          </v-list-item>
-          <v-list-item class="px-0" link to="/profile">
-            <v-list-item-title>
-              <v-icon>mdi-account-details</v-icon>
-            </v-list-item-title>
-          </v-list-item>
-          <v-list-item class="px-0" link to="/settings">
-            <v-list-item-title>
-              <v-icon>mdi-cog</v-icon>
-            </v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
     </v-bottom-navigation>
 
     <!-- Main section -->
@@ -657,6 +706,9 @@ export default {
         this.$store.commit("setDashboardLinks", "");
       }
     });
+  },
+  beforeDestroy() {
+    window.removeEventListener("scroll");
   },
   data() {
     return {
