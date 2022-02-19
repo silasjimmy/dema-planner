@@ -33,8 +33,8 @@ export default new Vuex.Store({
     messages: [],
     eateries: [],
     meals: [],
+    likedFoods: [],
 
-    likedFoods: null,
     mealTimes: null,
   },
   mutations: {
@@ -140,12 +140,18 @@ export default new Vuex.Store({
     deleteMeal(state, meal) {
       state.meals.splice(meal, 1);
     },
+    setLikedFoods(state, foods) {
+      state.likedFoods = foods
+    },
+    addLikedFood(state, food) {
+      state.likedFoods.push(food)
+    },
+    removeLikedFood(state, food) {
+      state.likedFoods.splice(food, 1);
+    },
 
     setMeals(state, meals) {
       state.meals = meals
-    },
-    setLikedFoods(state, foods) {
-      state.likedFoods = foods
     },
     setMealTimes(state, mealTimes) {
       state.mealTimes = mealTimes
@@ -220,12 +226,6 @@ export default new Vuex.Store({
 
       // Commit the foods to the available foods state
       commit('setAvailableFoods', availableFoods);
-    },
-    getLikedFoodsAction({ commit }) {
-      // Get the foods from the database
-
-      // Commit the foods to the liked foods state
-      commit('setLikedFoods', []);
     },
     async getUserSettingsAction({ commit, state }) {
       const db = getFirestore()
@@ -337,6 +337,31 @@ export default new Vuex.Store({
 
       // Delete from store
       commit('deleteMeal', meal)
+    },
+    async getLikedFoodsAction({ commit, state }) {
+      const db = getFirestore();
+      const docRef = collection(db, `profiles/${state.userEmail}/likedFoods`)
+      const snapShot = await getDocs(docRef)
+      const likedFoods = snapShot.docs.map(doc => doc.data())
+
+      // Commit the foods to the liked foods state
+      commit('setLikedFoods', likedFoods);
+    },
+    async addLikedFoodAction({ commit, state }, food) {
+      // Add a single liked food to the database
+      const db = getFirestore();
+      const docRef = doc(db, `profiles/${state.userEmail}/likedFoods/food${food.id}`)
+      await setDoc(docRef, food)
+      commit('addLikedFood', food)
+    },
+    async removeLikedFoodAction({ commit, state }, food) {
+      const db = getFirestore()
+
+      // Delete from database
+      await deleteDoc(doc(db, `profiles/${state.userEmail}/likedFoods/food${food.id}`));
+
+      // Delete from store
+      commit('removeLikedFood', food)
     },
   },
   getters: {

@@ -2,7 +2,6 @@
   <v-container fluid>
     <v-card outlined class="rounded-lg">
       <v-data-table
-        v-model="likedFoods"
         :headers="headers"
         :items="availableFoods"
         :search="searchFood"
@@ -28,7 +27,7 @@
         </template>
 
         <template v-slot:[`item.favorite`]="{ item }">
-          <v-item-group multiple v-model="favoriteFoods">
+          <v-item-group multiple v-model="favorites" @change="favoriteChange">
             <v-item v-slot="{ active, toggle }" :value="item">
               <v-icon @click="toggle" :color="active ? 'success' : ''">{{
                 likeFood(active)
@@ -47,14 +46,15 @@ import { mapState, mapActions } from "vuex";
 export default {
   title: "Available foods",
   name: "AvailableFoods",
-  created() {
-    this.getLikedFoodsAction();
+  async created() {
+    await this.getLikedFoodsAction();
+    this.favorites = [...this.likedFoods];
   },
   data() {
     return {
       loadingFoods: false,
-      favoriteFoods: [],
       searchFood: "",
+      favorites: [],
       headers: [
         {
           text: "Name",
@@ -74,10 +74,41 @@ export default {
     ...mapState(["availableFoods", "likedFoods"]),
   },
   methods: {
-    ...mapActions(["getLikedFoodsAction"]),
-    likeFood(state) {
-      if (state) return "mdi-heart";
+    ...mapActions([
+      "getLikedFoodsAction",
+      "addLikedFoodAction",
+      "removeLikedFoodAction",
+    ]),
+    likeFood(liked) {
+      if (liked) return "mdi-heart";
       else return "mdi-heart-outline";
+    },
+    async favoriteChange() {
+      // Get the added food
+      const newLikedFoods = this.favorites.filter(
+        (f) => !this.likedFoods.includes(f)
+      );
+
+      if (newLikedFoods.length > 0) {
+        // Update the store
+        try {
+          await this.addLikedFoodAction(newLikedFoods[0]);
+        } catch (error) {
+          console.log(error.code);
+        }
+      } else {
+        // Get the removed food
+        const removedLikedFoods = this.likedFoods.filter(
+          (f) => !this.favorites.includes(f)
+        );
+
+        // Update the store
+        try {
+          await this.removeLikedFoodAction(removedLikedFoods[0]);
+        } catch (error) {
+          console.log(error.code);
+        }
+      }
     },
   },
 };
