@@ -132,6 +132,14 @@ export default new Vuex.Store({
     addMeal(state, meal) {
       state.meals.push(meal)
     },
+    updateMeal(state, meal) {
+      const index = state.meals.findIndex(m => m.id === meal.id);
+      state.meals.splice(index, 1, meal);
+      state.meals = [...state.meals];
+    },
+    deleteMeal(state, meal) {
+      state.meals.splice(meal, 1);
+    },
 
     setMeals(state, meals) {
       state.meals = meals
@@ -310,6 +318,26 @@ export default new Vuex.Store({
       const meals = snapShot.docs.map(doc => doc.data())
       commit('setMeals', meals);
     },
+    async updateMealAction({ commit, state }, meal) {
+      const db = getFirestore()
+
+      // Change the dialog variables to false
+      meal.servingsDialog = false
+      meal.revealServings = false
+
+      await setDoc(doc(db, `profiles/${state.userEmail}/meals/meal${meal.id}`), meal, { merge: true })
+
+      commit('updateMeal', meal)
+    },
+    async deleteMealAction({ commit, state }, meal) {
+      const db = getFirestore()
+
+      // Delete from database
+      await deleteDoc(doc(db, `profiles/${state.userEmail}/meals/meal${meal.id}`));
+
+      // Delete from store
+      commit('deleteMeal', meal)
+    },
   },
   getters: {
     getEateryById: (state) => id => {
@@ -327,8 +355,35 @@ export default new Vuex.Store({
     getNotificationsByRead: (state) => read => {
       return state.notifications.filter(m => m.read === read)
     },
-    getFoodsByNutrient: (state) => nutrient => {
-      return state.availableFoods.filter(f => f.nutrient.name === nutrient)
+    calculateNutrientContent: (state) => nutrient => {
+      let nutrientValues = []
+
+      // Get the nutrient values from the meal foods
+      state.meals.forEach(meal => {
+        const foodWithNutrient = meal.foods.find(food => food.nutrient.name === nutrient)
+        nutrientValues.push(parseInt(foodWithNutrient.nutrient.amount))
+      });
+
+      // Calculate the total of the nutrient amount
+      const nutrientContent = nutrientValues.reduce((prevValue, currentValue) => prevValue + currentValue, 0)
+
+      return nutrientContent
+    },
+    calculateCaloricContent: (state) => () => {
+      let calorieValues = []
+
+      // Get the calorie values in each food
+      state.meals.forEach(meal => {
+
+        meal.foods.forEach(food => {
+          calorieValues.push(parseInt(food.calories.amount))
+        });
+      });
+
+      // Calculate the total of the nutrient amount
+      const caloricContent = calorieValues.reduce((prevValue, currentValue) => prevValue + currentValue, 0)
+
+      return caloricContent
     },
   },
 })

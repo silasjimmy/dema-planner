@@ -106,33 +106,32 @@
         </div>
       </v-col>
       <v-col cols="12" v-if="meals.length > 0">
-        <div class="meal-cards">
-          <v-container>
-            <v-row>
-              <v-col
-                cols="12"
-                sm="6"
-                md="12"
-                lg="6"
-                xl="4"
-                v-for="meal in meals"
-                :key="meal.id"
-              >
-                <v-card outlined class="rounded-lg">
-                  <div class="d-flex align-center justify-space-between pr-4">
-                    <!-- Meal name and time -->
-                    <div>
-                      <v-card-title class="pt-2">{{ meal.name }}</v-card-title>
-                      <v-card-subtitle class="pb-2">{{
-                        formatTime(meal.time)
-                      }}</v-card-subtitle>
-                    </div>
+        <v-container>
+          <v-row>
+            <v-col
+              cols="12"
+              sm="6"
+              md="12"
+              lg="6"
+              xl="4"
+              v-for="meal in meals"
+              :key="meal.id"
+            >
+              <v-card outlined class="rounded-lg">
+                <div class="d-flex align-center justify-space-between pr-4">
+                  <!-- Meal name and time -->
+                  <div>
+                    <v-card-title class="pt-2">{{ meal.name }}</v-card-title>
+                    <v-card-subtitle class="pb-2">{{
+                      formatTime(meal.time)
+                    }}</v-card-subtitle>
+                  </div>
 
-                    <!-- Dropdown menu -->
-                    <v-btn icon>
-                      <v-icon>mdi-dots-vertical</v-icon>
-                    </v-btn>
-                    <!-- <v-menu offset-x left transition="slide-y-transition">
+                  <!-- Dropdown menu -->
+                  <v-btn icon>
+                    <v-icon>mdi-dots-vertical</v-icon>
+                  </v-btn>
+                  <!-- <v-menu offset-x left transition="slide-y-transition">
                         <template v-slot:activator="{ on, attrs }">
                           <v-btn icon v-bind="attrs" v-on="on">
                             <v-icon>mdi-dots-vertical</v-icon>
@@ -147,164 +146,149 @@
                           </v-list-item>
                         </v-list>
                       </v-menu> -->
+                </div>
+
+                <v-card-text class="d-flex align-center py-2">
+                  <!-- Meal image -->
+                  <v-img
+                    class="rounded-lg mr-2"
+                    width="50"
+                    max-width="50"
+                    height="50"
+                    :src="meal.image"
+                  ></v-img>
+
+                  <!-- Meal foods -->
+                  <div class="food-names subtitle-1 text-capitalize">
+                    <span v-for="food in meal.foods" :key="food.name">{{
+                      food.name
+                    }}</span>
                   </div>
+                </v-card-text>
 
-                  <v-card-text class="d-flex align-center py-2">
-                    <!-- Meal image -->
-                    <v-img
-                      class="rounded-lg mr-2"
-                      width="50"
-                      max-width="50"
-                      height="50"
-                      :src="meal.image"
-                    ></v-img>
+                <v-card-actions class="px-4">
+                  <!-- Ate meal checkbox -->
+                  <v-checkbox
+                    hide-details
+                    dense
+                    @change="ateMeal(meal.id)"
+                    v-model="meal.ate"
+                    label="I ate this meal"
+                    color="green"
+                    class="pt-0"
+                  ></v-checkbox>
 
-                    <!-- Meal foods -->
-                    <div class="food-names subtitle-1 text-capitalize">
-                      <span v-for="food in meal.foods" :key="food.name">{{
-                        food.name
-                      }}</span>
-                    </div>
-                  </v-card-text>
+                  <v-spacer></v-spacer>
 
-                  <v-card-actions class="px-4">
-                    <!-- Ate meal checkbox -->
-                    <v-checkbox
-                      hide-details
-                      dense
-                      @change="ateMeal(meal.id)"
-                      v-model="meal.ate"
-                      label="I ate this meal"
-                      color="green"
-                      class="pt-0"
-                    ></v-checkbox>
+                  <!-- View servings button -->
+                  <v-btn icon @click="meal.revealServings = true">
+                    <v-icon>mdi-chevron-up</v-icon>
+                  </v-btn>
+                </v-card-actions>
 
-                    <v-spacer></v-spacer>
+                <v-expand-transition>
+                  <v-card
+                    v-if="meal.revealServings"
+                    class="
+                      transition-fast-in-fast-out
+                      v-card--revealServings
+                      rounded-lg
+                      overflow-auto
+                    "
+                    height="100%"
+                    elevation="0"
+                  >
+                    <v-card-title class="py-2">
+                      <span>Servings</span>
+                      <v-spacer></v-spacer>
+                      <v-btn icon @click="meal.revealServings = false"
+                        ><v-icon>mdi-chevron-down</v-icon></v-btn
+                      >
+                    </v-card-title>
 
-                    <!-- View servings button -->
-                    <v-btn icon @click="meal.revealServings = true">
-                      <v-icon>mdi-chevron-up</v-icon>
-                    </v-btn>
-                  </v-card-actions>
-
-                  <v-expand-transition>
-                    <v-card
-                      v-if="meal.revealServings"
-                      class="
-                        transition-fast-in-fast-out
-                        v-card--revealServings
-                        rounded-lg
-                        overflow-auto
-                      "
-                      height="100%"
-                      elevation="0"
-                    >
-                      <v-card-title class="py-2">
-                        <span>Servings</span>
+                    <v-card-text class="overflow-auto py-0">
+                      <div
+                        v-for="food in meal.foods"
+                        :key="food.name"
+                        class="d-flex align-center my-1 px-4"
+                      >
+                        <span class="text-capitalize">{{ food.name }}</span>
                         <v-spacer></v-spacer>
-                        <v-btn icon @click="meal.revealServings = false"
-                          ><v-icon>mdi-chevron-down</v-icon></v-btn
-                        >
-                      </v-card-title>
+                        <span class="">{{ food.serving }}</span>
+                      </div>
+                    </v-card-text>
 
-                      <v-card-text class="overflow-auto py-0">
-                        <div
-                          v-for="food in meal.foods"
-                          :key="food.name"
-                          class="d-flex align-center my-1 px-4"
-                        >
-                          <span class="text-capitalize">{{ food.name }}</span>
-                          <v-spacer></v-spacer>
-                          <span class="">{{ food.serving }}</span>
-                        </div>
-                      </v-card-text>
+                    <v-card-actions class="justify-center">
+                      <!-- Edit servings button -->
+                      <v-btn
+                        text
+                        rounded
+                        @click="meal.servingsDialog = true"
+                        color="success"
+                      >
+                        Edit
+                      </v-btn>
 
-                      <v-card-actions class="justify-center">
-                        <!-- Edit servings button -->
-                        <v-btn
-                          text
-                          rounded
-                          @click="meal.servingsDialog = true"
-                          color="success"
-                        >
-                          Edit
-                        </v-btn>
+                      <!-- Servings edit form -->
+                      <v-dialog
+                        v-model="meal.servingsDialog"
+                        persistent
+                        width="400"
+                      >
+                        <v-card>
+                          <v-card-title>
+                            <span>Edit food servings</span>
+                            <v-spacer></v-spacer>
+                            <v-btn icon @click="meal.servingsDialog = false">
+                              <v-icon>mdi-close</v-icon>
+                            </v-btn>
+                          </v-card-title>
 
-                        <!-- Servings edit form -->
-                        <v-dialog
-                          v-model="meal.servingsDialog"
-                          persistent
-                          width="400"
-                        >
-                          <v-card>
-                            <v-card-title>
-                              <span>Edit food servings</span>
-                              <v-spacer></v-spacer>
-                              <v-btn icon @click="meal.servingsDialog = false">
-                                <v-icon>mdi-close</v-icon>
-                              </v-btn>
-                            </v-card-title>
+                          <v-divider></v-divider>
 
-                            <v-divider></v-divider>
+                          <v-card-text class="py-0">
+                            <v-text-field
+                              outlined
+                              dense
+                              hide-spin-buttons
+                              hide-details
+                              class="my-4"
+                              v-for="food in meal.foods"
+                              :key="food.name"
+                              :label="food.name"
+                              v-model="food.serving"
+                              color="green"
+                              type="number"
+                            ></v-text-field>
+                          </v-card-text>
 
-                            <v-card-text class="py-0">
-                              <v-text-field
-                                outlined
-                                dense
-                                hide-spin-buttons
-                                hide-details
-                                class="my-4"
-                                v-for="food in meal.foods"
-                                :key="food.name"
-                                :label="food.name"
-                                :value="food.serving"
-                                color="green"
-                                type="number"
-                              ></v-text-field>
-                            </v-card-text>
+                          <v-divider></v-divider>
 
-                            <v-divider></v-divider>
+                          <v-card-actions class="justify-center">
+                            <v-btn
+                              text
+                              rounded
+                              color="success"
+                              @click="saveServings(meal)"
+                            >
+                              save
+                            </v-btn>
+                          </v-card-actions>
+                        </v-card>
+                      </v-dialog>
+                    </v-card-actions>
+                  </v-card>
+                </v-expand-transition>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
 
-                            <v-card-actions class="justify-center">
-                              <v-btn
-                                text
-                                rounded
-                                color="success"
-                                @click="saveServings(meal.id)"
-                              >
-                                save
-                              </v-btn>
-                            </v-card-actions>
-                          </v-card>
-                        </v-dialog>
-                      </v-card-actions>
-                    </v-card>
-                  </v-expand-transition>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-container>
-        </div>
-        <div class="meal-card-loaders" v-if="regenerateMealsLoader">
-          <v-container>
-            <v-row>
-              <v-col
-                cols="12"
-                sm="6"
-                md="12"
-                lg="6"
-                xl="4"
-                v-for="meal in meals"
-                :key="meal.id"
-              >
-                <v-skeleton-loader
+        <!-- Meal card skeleton loader -->
+        <!-- <v-skeleton-loader
                   elevation="1"
                   type="card-heading, list-item-avatar, card-heading"
-                ></v-skeleton-loader>
-              </v-col>
-            </v-row>
-          </v-container>
-        </div>
+                ></v-skeleton-loader> -->
       </v-col>
     </v-row>
   </v-container>
@@ -327,7 +311,6 @@ export default {
       alertMessage: "Something..",
       alertShow: false,
       loadingMeals: false,
-      regenerateMealsLoader: false,
       datePickerMenu: false,
       mealsDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
@@ -355,7 +338,12 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["getMealsAction", "setMealsAction", "addMealAction"]),
+    ...mapActions([
+      "getMealsAction",
+      "deleteMealAction",
+      "addMealAction",
+      "updateMealAction",
+    ]),
     formatTime(timeString) {
       const date = new Date("1970-01-01 " + timeString);
       return date.toLocaleTimeString([], {
@@ -383,8 +371,18 @@ export default {
       this.loadingMeals = false;
     },
     async regenerateMeals() {
-      this.regenerateMealsLoader = true;
+      const mealsCopy = [...this.meals];
 
+      // First delete all the meals that exists
+      for (let mealIndex = 0; mealIndex < mealsCopy.length; mealIndex++) {
+        try {
+          await this.deleteMealAction(mealsCopy[mealIndex]);
+        } catch (error) {
+          console.log(error.code);
+        }
+      }
+
+      // Then create new meals
       for (let index = 0; index < this.userSettings.mealTimes.length; index++) {
         const meal = generateMeal(
           this.availableFoods,
@@ -398,12 +396,16 @@ export default {
           console.log(error.code);
         }
       }
-
-      this.regenerateMealsLoader = false;
     },
-    saveServings(id) {
-      const meal = this.meals.find((obj) => obj.id === id);
-      meal.servingsDialog = false;
+    async saveServings(meal) {
+      // const meal = this.meals.find((obj) => obj.id === id);
+      try {
+        await this.updateMealAction(meal);
+      } catch (error) {
+        console.log(error.code);
+      } finally {
+        meal.servingsDialog = false;
+      }
     },
     regenerateMeal(id) {
       const meal = this.meals.find((obj) => obj.id === id);

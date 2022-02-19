@@ -707,9 +707,9 @@ export default {
       }
     });
   },
-  beforeDestroy() {
-    window.removeEventListener("scroll");
-  },
+  // beforeDestroy() {
+  //   window.removeEventListener("scroll", () => {});
+  // },
   data() {
     return {
       scrollYPos: 0,
