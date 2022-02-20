@@ -455,23 +455,46 @@
     <!-- Main section -->
     <v-main>
       <!-- Internet connection banner -->
-      <v-banner
-        single-line
-        app
-        outlined
-        v-model="isOnline"
-        v-if="loggedIn"
-        class="rounded-lg"
-        transition="slide-y-transition"
-      >
-        <v-icon slot="icon" color="warning" size="24">
-          mdi-wifi-strength-alert-outline
-        </v-icon>
-        {{ internetConnectionMessage }}
-        <template v-slot:actions="{ dismiss }">
-          <v-btn rounded text color="error" @click="dismiss"> Dismiss </v-btn>
-        </template>
-      </v-banner>
+      <v-container fluid>
+        <v-row>
+          <v-col cols="12">
+            <v-banner
+              app
+              outlined
+              v-model="showBanner"
+              class="rounded-lg"
+              transition="slide-y-transition"
+            >
+              <v-icon
+                slot="icon"
+                :color="isOnline ? 'success' : 'error'"
+                size="24"
+              >
+                {{ isOnline ? "mdi-wifi" : "mdi-wifi-alert" }}
+              </v-icon>
+
+              <span>
+                {{
+                  isOnline
+                    ? "You are now connected!"
+                    : "You have no internet connection!"
+                }}
+              </span>
+
+              <template v-slot:actions="{ dismiss }">
+                <v-btn
+                  rounded
+                  text
+                  :color="isOnline ? 'success' : 'error'"
+                  @click="dismiss"
+                >
+                  {{ isOnline ? "dismiss" : "connect" }}
+                </v-btn>
+              </template>
+            </v-banner>
+          </v-col>
+        </v-row>
+      </v-container>
 
       <!-- Router view -->
       <router-view />
@@ -723,9 +746,8 @@ export default {
       homeSidenav: false,
       rightSidenav: false,
       notificationsMenu: false,
-      isOnline: !navigator.onLine,
-      internetConnectionMessage:
-        "You are now offline. Any edits you make won't be saved.",
+      isOnline: true,
+      showBanner: false,
       scrollOptions: {
         duration: 400,
         easing: "easeInQuint",
@@ -749,6 +771,14 @@ export default {
         hour: "2-digit",
         minute: "2-digit",
       });
+    },
+    async checkOnlineStatus() {
+      try {
+        const online = await fetch("./assets/images/silas-jimmy.jpg");
+        return online.status >= 200 && online.status < 300; // either true or false
+      } catch (err) {
+        return false; // definitely offline
+      }
     },
     logout() {
       const auth = getAuth();

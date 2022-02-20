@@ -37,11 +37,20 @@
         </template>
       </v-data-table>
     </v-card>
+
+    <!-- Action toast -->
+    <toast
+      :show="showToast"
+      :message="toastMessage"
+      :success="actionSuccess"
+      @close="showToast = false"
+    ></toast>
   </v-container>
 </template>
 
 <script>
 import { mapState, mapActions } from "vuex";
+import Toast from "@/components/Toast.vue";
 
 export default {
   title: "Available foods",
@@ -52,6 +61,9 @@ export default {
   },
   data() {
     return {
+      actionSuccess: false,
+      toastMessage: "",
+      showToast: false,
       loadingFoods: false,
       searchFood: "",
       favorites: [],
@@ -93,8 +105,14 @@ export default {
         // Update the store
         try {
           await this.addLikedFoodAction(newLikedFoods[0]);
+
+          this.toastMessage = "Food added successfully!";
+          this.actionSuccess = true;
         } catch (error) {
-          console.log(error.code);
+          this.toastMessage = error.code;
+          this.actionSuccess = false;
+        } finally {
+          this.showToast = true;
         }
       } else {
         // Get the removed food
@@ -105,11 +123,20 @@ export default {
         // Update the store
         try {
           await this.removeLikedFoodAction(removedLikedFoods[0]);
+
+          this.toastMessage = "Food removed successfully!";
+          this.actionSuccess = true;
         } catch (error) {
-          console.log(error.code);
+          this.toastMessage = error.code;
+          this.actionSuccess = false;
+        } finally {
+          this.showToast = true;
         }
       }
     },
+  },
+  components: {
+    Toast,
   },
 };
 </script>

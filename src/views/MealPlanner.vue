@@ -71,7 +71,7 @@
     </div>
 
     <!-- Alert for anything that happens in the page -->
-    <v-alert
+    <!-- <v-alert
       text
       dense
       dismissible
@@ -83,7 +83,7 @@
       transition="scale-transition"
     >
       {{ alertMessage }}
-    </v-alert>
+    </v-alert> -->
 
     <v-row no-gutters>
       <v-col cols="12" lg="8" class="mx-auto py-4" v-if="meals.length === 0">
@@ -291,12 +291,21 @@
                 ></v-skeleton-loader> -->
       </v-col>
     </v-row>
+
+    <!-- Action toast -->
+    <toast
+      :show="showToast"
+      :message="toastMessage"
+      :success="actionSuccess"
+      @close="showToast = false"
+    ></toast>
   </v-container>
 </template>
 
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
 import { generateMeal } from "../utils";
+import Toast from "@/components/Toast.vue";
 
 export default {
   title: "Meal planner",
@@ -306,10 +315,9 @@ export default {
   },
   data() {
     return {
-      alertIcon: "mdi-cloud-alert",
-      alertType: "error",
-      alertMessage: "Something..",
-      alertShow: false,
+      actionSuccess: false,
+      toastMessage: "",
+      showToast: false,
       loadingMeals: false,
       datePickerMenu: false,
       mealsDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
@@ -355,20 +363,26 @@ export default {
       this.loadingMeals = true;
 
       for (let index = 0; index < this.userSettings.mealTimes.length; index++) {
-        const meal = generateMeal(
-          this.availableFoods,
-          this.userSettings.mealTimes[index]
-        );
-
         try {
+          // Create the meals
+          const meal = generateMeal(
+            this.availableFoods,
+            this.userSettings.mealTimes[index]
+          );
+
           // Uplaod the generated meal to the database
           await this.addMealAction(meal);
+
+          this.toastMessage = "Meals created successfully!";
+          this.actionSuccess = true;
         } catch (error) {
-          console.log(error.code);
+          this.toastMessage = error;
+          this.actionSuccess = false;
+        } finally {
+          this.loadingMeals = false;
+          this.showToast = true;
         }
       }
-
-      this.loadingMeals = false;
     },
     async regenerateMeals() {
       const mealsCopy = [...this.meals];
@@ -378,32 +392,45 @@ export default {
         try {
           await this.deleteMealAction(mealsCopy[mealIndex]);
         } catch (error) {
-          console.log(error.code);
+          this.toastMessage = error.code;
+          this.actionSuccess = false;
+          this.showToast = true;
+          return;
         }
       }
 
       // Then create new meals
       for (let index = 0; index < this.userSettings.mealTimes.length; index++) {
-        const meal = generateMeal(
-          this.availableFoods,
-          this.userSettings.mealTimes[index]
-        );
-
         try {
+          const meal = generateMeal(
+            this.availableFoods,
+            this.userSettings.mealTimes[index]
+          );
+
           // Uplaod the generated meal to the database
           await this.addMealAction(meal);
         } catch (error) {
-          console.log(error.code);
+          this.toastMessage = error;
+          this.actionSuccess = false;
+          return;
         }
       }
+
+      this.toastMessage = "Meals regenerated successfully!";
+      this.actionSuccess = true;
+      this.showToast = true;
     },
     async saveServings(meal) {
-      // const meal = this.meals.find((obj) => obj.id === id);
       try {
         await this.updateMealAction(meal);
+
+        this.toastMessage = "Servings saved successfully!";
+        this.actionSuccess = true;
       } catch (error) {
-        console.log(error.code);
+        this.toastMessage = error.code;
+        this.actionSuccess = false;
       } finally {
+        this.showToast = true;
         meal.servingsDialog = false;
       }
     },
@@ -415,6 +442,9 @@ export default {
       const meal = this.meals.find((obj) => obj.id === id);
       console.log(meal.name);
     },
+  },
+  components: {
+    Toast,
   },
 };
 </script>
