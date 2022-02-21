@@ -95,7 +95,6 @@
           </p>
           <v-btn
             rounded
-            text
             :loading="loadingMeals"
             @click="generateMeals"
             color="success"
@@ -311,6 +310,7 @@ export default {
   title: "Meal planner",
   name: "MealPlanner",
   async created() {
+    // Fetch user meals for the day
     await this.getMealsAction();
   },
   data() {

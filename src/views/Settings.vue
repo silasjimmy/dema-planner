@@ -8,8 +8,7 @@
           <v-list-item-action>
             <v-checkbox
               color="success"
-              v-model="userSettings.receiveNews"
-              @change="detectSettingChange('dema')"
+              v-model="settings.receiveNews"
             ></v-checkbox>
           </v-list-item-action>
 
@@ -23,8 +22,7 @@
           <v-list-item-action>
             <v-checkbox
               color="success"
-              v-model="userSettings.notificationsAlert"
-              @change="detectSettingChange('sound')"
+              v-model="settings.notificationsAlert"
             ></v-checkbox>
           </v-list-item-action>
 
@@ -40,8 +38,7 @@
           <v-list-item-action>
             <v-checkbox
               color="success"
-              v-model="userSettings.autoUpdateLocation"
-              @change="detectSettingChange('location')"
+              v-model="settings.autoUpdateLocation"
             ></v-checkbox>
           </v-list-item-action>
 
@@ -61,7 +58,7 @@
           <v-list-item-content>
             <v-list-item-title>Theme</v-list-item-title>
             <v-list-item-subtitle>
-              {{ userSettings.appTheme === "light" ? "Light" : "Dark" }} theme
+              {{ settings.appTheme === "light" ? "Light" : "Dark" }} theme
             </v-list-item-subtitle>
           </v-list-item-content>
 
@@ -69,7 +66,7 @@
             <v-btn icon @click="themeChangeDialog = true">
               <v-icon>
                 {{
-                  userSettings.appTheme === "light"
+                  settings.appTheme === "light"
                     ? "mdi-white-balance-sunny"
                     : "mdi-weather-night"
                 }}
@@ -87,7 +84,7 @@
                 <v-radio-group
                   hide-details
                   class="mt-0"
-                  v-model="userSettings.appTheme"
+                  v-model="settings.appTheme"
                 >
                   <v-list>
                     <v-list-item>
@@ -131,7 +128,7 @@
           <v-list-item-content>
             <v-list-item-title>Language</v-list-item-title>
             <v-list-item-subtitle class="text-capitalize"
-              >{{ userSettings.appLanguage }}
+              >{{ settings.appLanguage }}
             </v-list-item-subtitle>
           </v-list-item-content>
 
@@ -152,7 +149,7 @@
                 <v-radio-group
                   hide-details
                   class="mt-0"
-                  v-model="userSettings.appLanguage"
+                  v-model="settings.appLanguage"
                 >
                   <v-list>
                     <v-list-item>
@@ -200,7 +197,7 @@
                 @click="editMealTime(mealTime)"
                 close-icon="mdi-delete"
                 @click:close="deleteMealTime(mealTime)"
-                v-for="mealTime in userSettings.mealTimes"
+                v-for="mealTime in settings.mealTimes"
                 :key="mealTime.id"
               >
                 <v-avatar left color="success">
@@ -353,7 +350,6 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import { format } from "date-fns";
-import { doc, getFirestore, updateDoc } from "firebase/firestore";
 import QuestionPrompt from "../components/QuestionPrompt.vue";
 import Toast from "@/components/Toast.vue";
 
@@ -361,25 +357,9 @@ export default {
   title: "Settings",
   name: "Settings",
   async created() {
-    if (Object.keys(this.userSettings).length === 0)
-      await this.getUserSettingsAction();
+    // Fetch user's settings
+    await this.getSettingsAction();
   },
-  // mounted() {
-  //   // Listen to settings changes
-  //   const db = getFirestore();
-  //   const docRef = doc(db, "settings", this.$store.state.userEmail);
-
-  //   this.unsubscribeListener = onSnapshot(docRef, (snapshot) => {
-  //     console.log("Snapshot data: ", snapshot.data());
-  //     // snapshot.forEach((change) => {
-  //     //   console.log(change);
-  //     // });
-  //   });
-  // },
-  // beforeDestroy() {
-  //   // Unsubsribe to the realtime firestore listener
-  //   this.unsubscribeListener();
-  // },
   data() {
     return {
       // unsubscribeListener: null,
@@ -406,61 +386,44 @@ export default {
       },
     };
   },
+  watch: {
+    // settings: {
+    //   handler(newValue) {
+    //     console.log(newValue);
+    //     // try {
+    //     //   // Update the setting in database
+    //     //   await this.uploadSettingsAction(newValue);
+    //     //   // Show success message
+    //     //   this.toastMessage = "Settings updated successfully!";
+    //     //   this.actionSuccess = true;
+    //     //   this.showToast = true;
+    //     // } catch (error) {
+    //     //   // Show error message
+    //     //   this.toastMessage = error.code;
+    //     //   this.actionSuccess = false;
+    //     //   this.showToast = true;
+    //     // }
+    //   },
+    //   deep: true,
+    // },
+  },
   computed: {
-    ...mapState(["userSettings"]),
+    ...mapState(["settings"]),
   },
   methods: {
-    ...mapActions(["getUserSettingsAction"]),
-    detectSettingChange(name) {
-      switch (name) {
-        case "dema":
-          this.updateSetting({ receiveNews: this.userSettings.receiveNews });
-          break;
-        case "sound":
-          this.updateSetting({
-            notificationsAlert: this.userSettings.notificationsAlert,
-          });
-          break;
-        case "location":
-          this.updateSetting({
-            autoUpdateLocation: this.userSettings.autoUpdateLocation,
-          });
-          break;
-        default:
-          break;
-      }
-    },
-    async updateSetting(setting) {
-      const db = getFirestore();
-      const ref = doc(db, "settings", this.$store.state.userEmail);
-
-      try {
-        // Update the setting in database
-        await updateDoc(ref, setting);
-
-        // Update the settings in store
-        this.$store.commit("setUserSettings", this.userSettings);
-      } catch (error) {
-        // Show toast message on failure
-        this.showToast = true;
-        this.toastMessage = error.code;
-        this.actionSuccess = false;
-      }
+    ...mapActions(["getSettingsAction", "uploadSettingsAction"]),
+    formatTime(time) {
+      return format(new Date("1970-1-1 " + time), "HH:mm a");
     },
     changeAppTheme() {
-      this.$vuetify.theme.dark = this.userSettings.appTheme === "dark";
-      this.updateSetting({ appTheme: this.userSettings.appTheme });
+      this.$vuetify.theme.dark = this.settings.appTheme === "dark";
       this.themeChangeDialog = false;
     },
     changeAppLanguage() {
-      // this.updateSetting({ appLanguage: this.userSettings.appTheme });
       this.languageChangeDialog = false;
     },
     changeEmail() {
       this.emailChangeDialog = false;
-    },
-    formatTime(time) {
-      return format(new Date("1970-1-1 " + time), "HH:mm a");
     },
     deleteAccountCancel() {
       this.deleteAccountDialog = false;

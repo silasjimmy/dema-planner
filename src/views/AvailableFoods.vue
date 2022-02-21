@@ -56,6 +56,8 @@ export default {
   title: "Available foods",
   name: "AvailableFoods",
   async created() {
+    // Fetch the available foods and user's liked foods
+    await this.getAvailableFoodsAction();
     await this.getLikedFoodsAction();
     this.favorites = [...this.likedFoods];
   },
@@ -87,6 +89,7 @@ export default {
   },
   methods: {
     ...mapActions([
+      "getAvailableFoodsAction",
       "getLikedFoodsAction",
       "addLikedFoodAction",
       "removeLikedFoodAction",

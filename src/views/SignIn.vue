@@ -1,75 +1,85 @@
 <template>
-  <v-container>
-    <v-row align="center" class="text-center">
-      <v-col cols="10" sm="8" md="6" lg="4" xl="3" class="mx-auto my-2">
-        <h1 class="text-h4 font-weight-medium my-4">Welcome back!</h1>
-        <v-form ref="loginForm" lazy-validation>
-          <!-- Log in error alert -->
-          <v-alert
-            outlined
-            dense
-            dismissible
-            transition="scale-transition"
-            v-model="errorAlert"
-            type="error"
-            >{{ errorMessage }}</v-alert
-          >
-          <!-- Email address field -->
-          <v-text-field
-            dense
-            outlined
-            clearable
-            rounded
-            single-line
-            :rules="[rules.required]"
-            placeholder="example@domain.com"
-            color="success"
-            prepend-icon="mdi-email"
-            v-model="email"
-            label="Email address"
-            type="email"
-          ></v-text-field>
-          <!-- Password field -->
-          <v-text-field
-            dense
-            outlined
-            clearable
-            rounded
-            single-line
-            :rules="[rules.required]"
-            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-            @click:append="() => (showPassword = !showPassword)"
-            color="success"
-            prepend-icon="mdi-lock"
-            v-model="password"
-            label="Password"
-            :type="showPassword ? 'text' : 'password'"
-          ></v-text-field>
-        </v-form>
-        <!-- Email log in button -->
+  <v-card outlined class="rounded-lg mx-auto" width="50vw">
+    <v-card-title>Welcome back!</v-card-title>
+    <v-card-subtitle>Log in to plan an awesome day</v-card-subtitle>
+
+    <v-card-text class="text-center">
+      <!-- Action alert -->
+      <v-alert
+        text
+        dismissible
+        dense
+        v-model="showAlert"
+        transition="scale-transition"
+        :type="actionSuccess ? 'success' : 'error'"
+        :icon="actionSuccess ? 'mdi-account-check' : 'mdi-account-alert'"
+        class="rounded-lg"
+      >
+        {{ alertMessage }}
+      </v-alert>
+
+      <v-form ref="loginForm" lazy-validation>
+        <!-- Email address field -->
+        <v-text-field
+          dense
+          outlined
+          clearable
+          single-line
+          rounded
+          :rules="[rules.required]"
+          placeholder="example@domain.com"
+          color="success"
+          prepend-icon="mdi-email"
+          v-model="email"
+          label="Email address"
+          type="email"
+        ></v-text-field>
+
+        <!-- Password field -->
+        <v-text-field
+          dense
+          outlined
+          clearable
+          rounded
+          single-line
+          :rules="[rules.required]"
+          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+          @click:append="() => (showPassword = !showPassword)"
+          color="success"
+          prepend-icon="mdi-lock"
+          v-model="password"
+          label="Password"
+          :type="showPassword ? 'text' : 'password'"
+        ></v-text-field>
+
+        <!-- Submit button -->
         <v-btn
           rounded
-          :loading="emailAuthLoad"
+          :loading="emailSignInLoad"
           @click="emailSignIn"
           color="success"
-          class="text-none my-4"
+          class="text-none"
           >Log in</v-btn
         >
-        <div class="text-center">or</div>
-        <!-- Google log in button -->
-        <v-btn
-          outlined
-          rounded
-          :loading="googleAuthLoad"
-          @click="googleSignIn"
-          class="my-4 text-none"
-        >
-          <v-icon left>mdi-google</v-icon>
-          continue in with Google
-        </v-btn>
-      </v-col>
-    </v-row>
-  </v-container>
+      </v-form>
+    </v-card-text>
+
+    <v-card-text class="text-center">
+      <p>Log in with</p>
+
+      <!-- Google sign up button -->
+      <v-btn
+        small
+        fab
+        color="red"
+        class="text-none"
+        :loading="googleSignInLoad"
+        @click="googleSignIn"
+      >
+        <v-icon small color="white">mdi-google</v-icon>
+      </v-btn>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>
@@ -79,6 +89,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
+import { mapActions } from "vuex";
 import { roleRedirect, checkUserProfile } from "../utils";
 
 export default {
@@ -89,94 +100,112 @@ export default {
       email: "",
       password: "",
       showPassword: false,
-      emailAuthLoad: false,
-      googleAuthLoad: false,
+      emailSignInLoad: false,
+      googleSignInLoad: false,
       rules: {
         required: (value) => !!value || "This field is required!",
       },
-      errorAlert: false,
-      errorMessage: "",
+      showAlert: false,
+      actionSuccess: false,
+      alertMessage: "",
     };
   },
   methods: {
+    ...mapActions([
+      "getSettingsAction",
+      "getMessagesAction",
+      "getNotificationsAction",
+    ]),
     /**
-     * Signs in a user by their email and password
+     * Signs in a user with email and password.
      */
     async emailSignIn() {
       if (this.$refs.loginForm.validate()) {
         try {
-          this.emailAuthLoad = true;
+          // Start loading
+          this.emailSignInLoad = true;
+
+          const auth = getAuth();
 
           // Log in the user
-          const auth = getAuth();
-          const res = await signInWithEmailAndPassword(
-            auth,
-            this.email,
-            this.password
-          );
+          await signInWithEmailAndPassword(auth, this.email, this.password);
 
-          // Store user's email address
-          this.$store.commit("setUserEmail", res.user.email);
-          localStorage.setItem("email", res.user.email);
-
-          // Redirect the user to the dashboard
+          // Redirect user to the dashboard
           await this.redirect();
         } catch (error) {
-          this.emailAuthLoad = false;
-          this.errorAlert = true;
-          this.errorMessage = error.code;
+          // Stop loading
+          this.emailSignInLoad = false;
+
+          // Show error message
+          this.alertMessage = error.code;
+          this.actionSuccess = false;
+          this.showAlert = true;
         }
       }
     },
     /**
-     * Signs in a user using Google provider
+     * Signs in a user with google provider.
      */
     async googleSignIn() {
       try {
-        this.googleAuthLoad = true;
+        // Start loading
+        this.googleSignInLoad = true;
 
-        // Log in the user
         const auth = getAuth();
         const provider = new GoogleAuthProvider();
-        const res = await signInWithPopup(auth, provider);
 
-        // Store user's email address
-        this.$store.commit("setUserEmail", res.user.email);
-        localStorage.setItem("email", res.user.email);
+        // Log in the user
+        await signInWithPopup(auth, provider);
 
-        // Redirect the user to the dashboard
+        // Redirect to dashboard
         await this.redirect();
       } catch (error) {
-        this.googleAuthLoad = false;
-        this.errorAlert = true;
-        this.errorMessage = error.code;
+        // Stop loading
+        this.googleSignInLoad = false;
+
+        // Show error message
+        this.alertMessage = error;
+        this.actionSuccess = false;
+        this.showAlert = true;
       }
     },
     /**
-     * Handles the profile checking after logging in
+     * Redirects the user to the dashboard.
      */
     async redirect() {
-      try {
-        // Check if the user has a profile set up
-        const { ...res } = await checkUserProfile(
-          localStorage.getItem("email")
-        );
+      // Check if user profile exists
+      const { ...response } = await checkUserProfile();
 
-        // Stop button loading
-        this.emailAuthLoad = false;
-        this.googleAuthLoad = false;
+      // If it does, pull the required data from database
+      if (response.hasProfile) {
+        // Store user data in store
+        this.$store.commit("setProfile", response.profile);
+        this.$store.commit("setDashboardLinks", response.profile.role);
 
-        // Redirect to dashboard or create profile page
-        if (res.hasProfile)
-          this.$router.replace({ name: roleRedirect(res.role) });
-        else this.$router.replace({ name: "create-profile" });
-      } catch (error) {
-        this.emailAuthLoad = false;
-        this.googleAuthLoad = false;
+        // Fetch user data
+        await this.getSettingsAction();
+        // await this.getMessagesAction();
+        // await this.getNotificationsAction();
 
-        // Show the error
-        this.errorAlert = true;
-        this.errorMessage = error.code;
+        // Save role, email and log in state in local storage
+        localStorage.setItem("role", response.profile.role);
+        localStorage.setItem("email", response.profile.email);
+        localStorage.setItem("loggedIn", "true");
+
+        // Stop loading
+        this.googleSignInLoad = false;
+
+        // Set user role
+        this.$store.commit("setRole", response.profile.role);
+
+        // 5. Redirect to dashboard
+        this.$router.replace({ name: roleRedirect(response.profile.role) });
+      } else {
+        // Stop loading
+        this.googleSignInLoad = false;
+
+        // If it does not exists, redirect to create profile page
+        this.$router.replace({ name: "create-profile" });
       }
     },
   },

@@ -1,119 +1,122 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12">
-        <h1 class="text-h4 text-center font-weight-medium my-4">
-          Create your profile
-        </h1>
-      </v-col>
-      <v-col cols="12" md="8" lg="6" xl="4" class="mx-auto">
-        <!-- Error alert -->
-        <v-alert
-          outlined
-          dense
-          dismissible
-          transition="scale-transition"
-          v-model="errorAlert"
-          type="error"
-          >{{ errorMessage }}</v-alert
-        >
+  <v-card flat width="60vw" class="mx-auto">
+    <v-card-title class="justify-center">Create your profile</v-card-title>
+    <v-card-subtitle class="text-center"
+      >This will help us know you better</v-card-subtitle
+    >
 
-        <!-- Profile tabs -->
-        <v-tabs fixed-tabs hide-slider color="success">
-          <v-tab class="text-none subtitle-1 font-weight-medium"
-            >Consumer</v-tab
-          >
-          <v-tab disabled class="text-none subtitle-1 font-weight-medium"
-            >Eatery</v-tab
-          >
+    <v-card-text>
+      <v-tabs fixed-tabs v-model="tab" color="success">
+        <v-tabs-slider></v-tabs-slider>
+        <v-tab class="text-capitalize">Consumer</v-tab>
+        <v-tab disabled class="text-capitalize">Eatery</v-tab>
+      </v-tabs>
+    </v-card-text>
 
-          <!-- Consumer tab item -->
-          <v-tab-item>
-            <v-card outlined class="rounded-lg ma-2">
-              <v-card-title>{{ currentConsumerTitle }}</v-card-title>
-              <v-card-subtitle>{{ currentConsumerSubtitle }}</v-card-subtitle>
+    <v-card-text>
+      <!-- Action alert -->
+      <v-alert
+        text
+        dismissible
+        dense
+        v-model="showAlert"
+        transition="scale-transition"
+        :type="actionSuccess ? 'success' : 'error'"
+        :icon="actionSuccess ? 'mdi-account-check' : 'mdi-account-alert'"
+        class="rounded-lg"
+      >
+        {{ alertMessage }}
+      </v-alert>
 
-              <v-window v-model="consumerWindowStep">
-                <v-window-item :value="1">
-                  <v-subheader>Primary</v-subheader>
-                  <v-form ref="consumerOne" lazy-validation>
-                    <v-container>
-                      <v-row>
-                        <!-- Name -->
-                        <v-col cols="12" sm="6">
-                          <v-text-field
-                            hide-details
-                            dense
-                            outlined
-                            :rules="[rules.required]"
-                            v-model="consumerProfile.name"
-                            label="Name"
-                            color="success"
-                            type="text"
-                            prepend-icon="mdi-account"
-                          ></v-text-field>
-                        </v-col>
-                        <!-- Date of birth -->
-                        <v-col cols="12" sm="6">
-                          <v-text-field
-                            hide-details
-                            dense
-                            outlined
-                            :rules="[rules.required]"
-                            v-model="consumerProfile.dateOfBirth"
-                            label="Date of birth"
-                            color="success"
-                            type="date"
-                            prepend-icon="mdi-calendar"
-                          ></v-text-field>
-                        </v-col>
-                        <!-- Gender -->
-                        <v-col cols="12" sm="6">
-                          <v-select
-                            outlined
-                            hide-details
-                            dense
-                            :rules="[rules.required]"
-                            v-model="consumerProfile.gender"
-                            color="success"
-                            item-color="success"
-                            :items="['Male', 'Female']"
-                            label="Gender"
-                            prepend-icon="mdi-gender-male-female"
-                          ></v-select>
-                        </v-col>
-                        <!-- Town -->
-                        <v-col cols="12" sm="6">
-                          <v-text-field
-                            hide-details
-                            dense
-                            outlined
-                            readonly
-                            v-model="consumerProfile.town"
-                            label="City"
-                            color="success"
-                            type="text"
-                            prepend-icon="mdi-map-marker"
-                          ></v-text-field>
-                        </v-col>
-                        <!-- Country -->
-                        <v-col cols="12" sm="6">
-                          <v-text-field
-                            hide-details
-                            dense
-                            outlined
-                            readonly
-                            v-model="consumerProfile.country"
-                            label="Country"
-                            color="success"
-                            type="text"
-                            prepend-icon="mdi-map-marker"
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-form>
-                  <!-- <v-subheader class="text-center">Secondary</v-subheader>
+      <v-tabs-items v-model="tab">
+        <v-tab-item>
+          <v-card outlined class="rounded-lg">
+            <v-card-title>{{ currentConsumerTitle }}</v-card-title>
+            <v-card-subtitle>{{ currentConsumerSubtitle }}</v-card-subtitle>
+
+            <v-window v-model="consumerWindowStep">
+              <v-window-item :value="1">
+                <v-subheader>Primary</v-subheader>
+                <v-form ref="consumerOne" lazy-validation>
+                  <v-container>
+                    <v-row>
+                      <!-- Name -->
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          hide-details
+                          dense
+                          outlined
+                          :rules="[rules.required]"
+                          v-model="consumerProfile.name"
+                          label="Name"
+                          color="success"
+                          type="text"
+                          prepend-icon="mdi-account"
+                        ></v-text-field>
+                      </v-col>
+                      <!-- Date of birth -->
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          hide-details
+                          dense
+                          outlined
+                          :rules="[rules.required]"
+                          v-model="consumerProfile.dateOfBirth"
+                          label="Date of birth"
+                          color="success"
+                          type="date"
+                          prepend-icon="mdi-calendar"
+                        ></v-text-field>
+                      </v-col>
+                      <!-- Gender -->
+                      <v-col cols="12" sm="6">
+                        <v-select
+                          outlined
+                          hide-details
+                          dense
+                          :rules="[rules.required]"
+                          v-model="consumerProfile.gender"
+                          color="success"
+                          item-color="success"
+                          :items="['Male', 'Female']"
+                          label="Gender"
+                          prepend-icon="mdi-gender-male-female"
+                        ></v-select>
+                      </v-col>
+                      <!-- Town -->
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          hide-details
+                          dense
+                          outlined
+                          readonly
+                          :rules="[rules.required]"
+                          v-model="consumerProfile.town"
+                          label="City"
+                          color="success"
+                          type="text"
+                          prepend-icon="mdi-map-marker"
+                        ></v-text-field>
+                      </v-col>
+                      <!-- Country -->
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          hide-details
+                          dense
+                          outlined
+                          readonly
+                          :rules="[rules.required]"
+                          v-model="consumerProfile.country"
+                          label="Country"
+                          color="success"
+                          type="text"
+                          prepend-icon="mdi-map-marker"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-form>
+                <!-- <v-subheader class="text-center">Secondary</v-subheader>
                   <v-container>
                     <v-row>
                       <v-col cols="6">
@@ -193,9 +196,9 @@
                       </v-col>
                     </v-row>
                   </v-container> -->
-                </v-window-item>
+              </v-window-item>
 
-                <!-- <v-window-item :value="2">
+              <!-- <v-window-item :value="2">
                   <v-subheader>Primary diet</v-subheader>
                   <v-card-text>
                     <v-item-group v-model="consumerProfile.diet">
@@ -366,246 +369,242 @@
                   </v-card-text>
                 </v-window-item> -->
 
-                <v-window-item :value="2">
-                  <v-card-text>
-                    <div class="text-center mb-2">
-                      <v-img
-                        contain
-                        class="mx-auto mb-1"
-                        width="100px"
-                        height="100px"
-                        src="../assets/logo.png"
-                      ></v-img>
-                      <v-btn
-                        text
-                        rounded
-                        @click="termsAndConditionsDialog = true"
+              <v-window-item :value="2">
+                <v-card-text>
+                  <div class="text-center mb-2">
+                    <v-img
+                      contain
+                      class="mx-auto mb-1"
+                      width="100px"
+                      height="100px"
+                      src="../assets/logo.png"
+                    ></v-img>
+                    <v-btn
+                      text
+                      rounded
+                      @click="termsAndConditionsDialog = true"
+                    >
+                      <span class="subtitle-1 text-none font-weight-medium"
+                        ><strong class="green--text">Dema</strong> terms and
+                        conditions</span
                       >
-                        <span class="subtitle-1 text-none font-weight-medium"
-                          ><strong class="green--text">Dema</strong> terms and
-                          conditions</span
+                    </v-btn>
+
+                    <!-- Terms and conditions dialog -->
+                    <v-dialog
+                      scrollable
+                      v-model="termsAndConditionsDialog"
+                      width="600"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <span
+                          class="green--text"
+                          v-bind="attrs"
+                          v-on="on"
+                          @click.stop
+                        ></span>
+                      </template>
+
+                      <v-card height="70vh">
+                        <v-card-title
+                          class="d-flex align-center justify-space-between"
                         >
-                      </v-btn>
+                          <span class="text-h6">Terms &amp; Conditions</span>
+                          <v-btn icon @click="termsAndConditionsDialog = false">
+                            <v-icon>mdi-close</v-icon>
+                          </v-btn>
+                        </v-card-title>
+                        <v-card-text>
+                          <p>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing
+                            elit, sed do eiusmod tempor incididunt ut labore et
+                            dolore magna aliqua. Ut enim ad minim veniam, quis
+                            nostrud exercitation ullamco laboris nisi ut aliquip
+                            ex ea commodo consequat. Duis aute irure dolor in
+                            reprehenderit in voluptate velit esse cillum dolore
+                            eu fugiat nulla pariatur. Excepteur sint occaecat
+                            cupidatat non proident, sunt in culpa qui officia
+                            deserunt mollit anim id est laborum. Lorem ipsum
+                            dolor sit, amet consectetur adipisicing elit. Quos
+                            modi unde quis harum nihil possimus dolorem hic, ea
+                            mollitia dolor asperiores, nemo quasi aliquam
+                            aperiam voluptatem. Dolores voluptatem consectetur
+                            dolor.
+                          </p>
+                          <v-checkbox
+                            label="I agree with these terms and conditions"
+                            color="success"
+                            hide-details
+                            dense
+                          ></v-checkbox>
+                        </v-card-text>
+                      </v-card>
+                    </v-dialog>
+                  </div>
 
-                      <!-- Terms and conditions dialog -->
-                      <v-dialog
-                        scrollable
-                        v-model="termsAndConditionsDialog"
-                        width="600"
-                      >
-                        <template v-slot:activator="{ on, attrs }">
-                          <span
-                            class="green--text"
-                            v-bind="attrs"
-                            v-on="on"
-                            @click.stop
-                          ></span>
-                        </template>
+                  <!-- Terms and conditions checkbox -->
+                  <v-checkbox
+                    v-model="agreeTermsAndConditions"
+                    label="I have read and i accept the terms and conditions"
+                    color="success"
+                    hide-details
+                    dense
+                  >
+                  </v-checkbox>
 
-                        <v-card height="70vh">
-                          <v-card-title
-                            class="d-flex align-center justify-space-between"
-                          >
-                            <span class="text-h6">Terms &amp; Conditions</span>
-                            <v-btn
-                              icon
-                              @click="termsAndConditionsDialog = false"
-                            >
-                              <v-icon>mdi-close</v-icon>
-                            </v-btn>
-                          </v-card-title>
-                          <v-card-text>
-                            <p>
-                              Lorem ipsum dolor sit amet, consectetur adipiscing
-                              elit, sed do eiusmod tempor incididunt ut labore
-                              et dolore magna aliqua. Ut enim ad minim veniam,
-                              quis nostrud exercitation ullamco laboris nisi ut
-                              aliquip ex ea commodo consequat. Duis aute irure
-                              dolor in reprehenderit in voluptate velit esse
-                              cillum dolore eu fugiat nulla pariatur. Excepteur
-                              sint occaecat cupidatat non proident, sunt in
-                              culpa qui officia deserunt mollit anim id est
-                              laborum. Lorem ipsum dolor sit, amet consectetur
-                              adipisicing elit. Quos modi unde quis harum nihil
-                              possimus dolorem hic, ea mollitia dolor
-                              asperiores, nemo quasi aliquam aperiam voluptatem.
-                              Dolores voluptatem consectetur dolor.
-                            </p>
-                            <v-checkbox
-                              label="I agree with these terms and conditions"
-                              color="success"
-                              hide-details
-                              dense
-                            ></v-checkbox>
-                          </v-card-text>
-                        </v-card>
-                      </v-dialog>
-                    </div>
+                  <!-- Receive news checkbox -->
+                  <v-checkbox
+                    v-model="consumerSettings.receiveNews"
+                    color="success"
+                    label="Send me any news or updates about Dema"
+                    hide-details
+                    dense
+                  ></v-checkbox>
+                </v-card-text>
+              </v-window-item>
+            </v-window>
+
+            <v-card-actions>
+              <v-btn
+                rounded
+                text
+                color="success"
+                :disabled="consumerWindowStep === 1"
+                v-if="consumerWindowStep > 1"
+                @click="consumerWindowStep--"
+              >
+                <v-icon left>mdi-chevron-left</v-icon>
+                <span class="mr-2">Back</span>
+              </v-btn>
+
+              <v-spacer></v-spacer>
+
+              <v-btn
+                rounded
+                text
+                color="success"
+                :disabled="consumerWindowStep === 2"
+                v-if="consumerWindowStep < 2"
+                @click="consumerNext"
+              >
+                <span class="ml-2">Next</span>
+                <v-icon right>mdi-chevron-right</v-icon>
+              </v-btn>
+
+              <v-btn
+                rounded
+                v-if="consumerWindowStep === 2"
+                @click="createProfile('consumer')"
+                :disabled="!agreeTermsAndConditions"
+                :loading="consumerLoading"
+                color="success"
+              >
+                <v-icon left>mdi-check-all</v-icon>
+                <span class="mr-2">Finish</span>
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-tab-item>
+
+        <v-tab-item>
+          <v-card outlined class="rounded-lg ma-2">
+            <v-card-title>{{ currentEateryTitle }}</v-card-title>
+            <v-card-subtitle>{{ currentEaterySubtitle }}</v-card-subtitle>
+
+            <v-window v-model="eateryWindowStep">
+              <v-window-item :value="1">
+                <v-form lazy-validation ref="eateryOne">
+                  <v-container>
                     <v-row>
+                      <!-- Name -->
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          hide-details
+                          dense
+                          outlined
+                          :rules="[rules.required]"
+                          v-model="eateryProfile.name"
+                          label="Name"
+                          color="success"
+                          type="text"
+                          prepend-icon="mdi-account"
+                        ></v-text-field>
+                      </v-col>
+                      <!-- Town -->
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          hide-details
+                          dense
+                          outlined
+                          readonly
+                          v-model="eateryProfile.town"
+                          label="City"
+                          color="success"
+                          type="text"
+                          prepend-icon="mdi-map-marker"
+                        ></v-text-field>
+                      </v-col>
+                      <!-- Country -->
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          hide-details
+                          dense
+                          outlined
+                          readonly
+                          v-model="eateryProfile.country"
+                          label="Country"
+                          color="success"
+                          type="text"
+                          prepend-icon="mdi-map-marker"
+                        ></v-text-field>
+                      </v-col>
+                      <!-- Website -->
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          hide-details
+                          dense
+                          outlined
+                          :rules="[rules.required]"
+                          v-model="eateryProfile.website"
+                          label="Website link"
+                          color="success"
+                          type="url"
+                          prepend-icon="mdi-web"
+                        ></v-text-field>
+                      </v-col>
+                      <!-- Phone number -->
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          hide-details
+                          dense
+                          outlined
+                          :rules="[rules.required]"
+                          v-model="eateryProfile.phoneNumber"
+                          label="Phone number"
+                          color="success"
+                          type="tel"
+                          prepend-icon="mdi-phone"
+                        ></v-text-field>
+                      </v-col>
+                      <!-- Bio -->
                       <v-col cols="12">
-                        <v-checkbox
-                          v-model="agreeTermsAndConditions"
-                          label="I have read and i accept the terms and conditions"
-                          color="success"
-                          hide-details
+                        <v-textarea
+                          outlined
+                          auto-grow
                           dense
-                        >
-                        </v-checkbox>
-                        <v-checkbox
-                          v-model="consumerSettings.receiveNews"
-                          color="success"
-                          label="Send me any news or updates about Dema"
                           hide-details
-                          dense
-                        ></v-checkbox>
+                          :rules="[rules.required]"
+                          v-model="eateryProfile.bio"
+                          rows="1"
+                          color="success"
+                          label="Bio"
+                          prepend-icon="mdi-message"
+                        ></v-textarea>
                       </v-col>
                     </v-row>
-                  </v-card-text>
-                </v-window-item>
-              </v-window>
-
-              <v-card-actions>
-                <v-btn
-                  rounded
-                  text
-                  class="text-none"
-                  :disabled="consumerWindowStep === 1"
-                  v-if="consumerWindowStep > 1"
-                  @click="consumerWindowStep--"
-                >
-                  <v-icon left>mdi-chevron-left</v-icon>
-                  <span class="mr-2">Back</span>
-                </v-btn>
-
-                <v-spacer></v-spacer>
-
-                <v-btn
-                  rounded
-                  text
-                  class="text-none"
-                  :disabled="consumerWindowStep === 2"
-                  v-if="consumerWindowStep < 2"
-                  @click="consumerNext"
-                >
-                  <span class="ml-2">Next</span>
-                  <v-icon right>mdi-chevron-right</v-icon>
-                </v-btn>
-
-                <v-btn
-                  rounded
-                  v-if="consumerWindowStep === 2"
-                  @click="createConsumerProfile"
-                  :disabled="!agreeTermsAndConditions"
-                  :loading="consumerLoading"
-                  color="success"
-                >
-                  <v-icon left>mdi-check-all</v-icon>
-                  <span class="text-none mr-2">Finish</span>
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-tab-item>
-
-          <!-- Eatery tab item -->
-          <v-tab-item>
-            <v-card outlined class="rounded-lg ma-2">
-              <v-card-title>{{ currentEateryTitle }}</v-card-title>
-              <v-card-subtitle>{{ currentEaterySubtitle }}</v-card-subtitle>
-
-              <v-window v-model="eateryWindowStep">
-                <v-window-item :value="1">
-                  <v-form lazy-validation ref="eateryOne">
-                    <v-container>
-                      <v-row>
-                        <!-- Name -->
-                        <v-col cols="12" sm="6">
-                          <v-text-field
-                            hide-details
-                            dense
-                            outlined
-                            :rules="[rules.required]"
-                            v-model="eateryProfile.name"
-                            label="Name"
-                            color="success"
-                            type="text"
-                            prepend-icon="mdi-account"
-                          ></v-text-field>
-                        </v-col>
-                        <!-- Town -->
-                        <v-col cols="12" sm="6">
-                          <v-text-field
-                            hide-details
-                            dense
-                            outlined
-                            readonly
-                            v-model="eateryProfile.town"
-                            label="City"
-                            color="success"
-                            type="text"
-                            prepend-icon="mdi-map-marker"
-                          ></v-text-field>
-                        </v-col>
-                        <!-- Country -->
-                        <v-col cols="12" sm="6">
-                          <v-text-field
-                            hide-details
-                            dense
-                            outlined
-                            readonly
-                            v-model="eateryProfile.country"
-                            label="Country"
-                            color="success"
-                            type="text"
-                            prepend-icon="mdi-map-marker"
-                          ></v-text-field>
-                        </v-col>
-                        <!-- Website -->
-                        <v-col cols="12" sm="6">
-                          <v-text-field
-                            hide-details
-                            dense
-                            outlined
-                            :rules="[rules.required]"
-                            v-model="eateryProfile.website"
-                            label="Website link"
-                            color="success"
-                            type="url"
-                            prepend-icon="mdi-web"
-                          ></v-text-field>
-                        </v-col>
-                        <!-- Phone number -->
-                        <v-col cols="12" sm="6">
-                          <v-text-field
-                            hide-details
-                            dense
-                            outlined
-                            :rules="[rules.required]"
-                            v-model="eateryProfile.phoneNumber"
-                            label="Phone number"
-                            color="success"
-                            type="tel"
-                            prepend-icon="mdi-phone"
-                          ></v-text-field>
-                        </v-col>
-                        <!-- Bio -->
-                        <v-col cols="12">
-                          <v-textarea
-                            outlined
-                            auto-grow
-                            dense
-                            hide-details
-                            :rules="[rules.required]"
-                            v-model="eateryProfile.bio"
-                            rows="1"
-                            color="success"
-                            label="Bio"
-                            prepend-icon="mdi-message"
-                          ></v-textarea>
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-form>
-                  <!-- <v-subheader class="text-center">Secondary</v-subheader>
+                  </v-container>
+                </v-form>
+                <!-- <v-subheader class="text-center">Secondary</v-subheader>
                   <v-container>
                     <v-row>
                       <v-col cols="6">
@@ -685,9 +684,9 @@
                       </v-col>
                     </v-row>
                   </v-container> -->
-                </v-window-item>
+              </v-window-item>
 
-                <!-- <v-window-item :value="2">
+              <!-- <v-window-item :value="2">
                   <v-subheader>Primary diet</v-subheader>
                   <v-card-text>
                     <v-item-group v-model="consumerProfile.diet">
@@ -858,174 +857,172 @@
                   </v-card-text>
                 </v-window-item> -->
 
-                <v-window-item :value="2">
-                  <v-card-text>
-                    <div class="text-center mb-2">
-                      <v-img
-                        contain
-                        class="mx-auto mb-1"
-                        width="100px"
-                        height="100px"
-                        src="../assets/logo.png"
-                      ></v-img>
-                      <v-btn
-                        text
-                        rounded
-                        @click="termsAndConditionsDialog = true"
+              <v-window-item :value="2">
+                <v-card-text>
+                  <div class="text-center mb-2">
+                    <v-img
+                      contain
+                      class="mx-auto mb-1"
+                      width="100px"
+                      height="100px"
+                      src="../assets/logo.png"
+                    ></v-img>
+                    <v-btn
+                      text
+                      rounded
+                      @click="termsAndConditionsDialog = true"
+                    >
+                      <span class="subtitle-1 text-none font-weight-medium"
+                        ><strong class="green--text">Dema</strong> terms and
+                        conditions</span
                       >
-                        <span class="subtitle-1 text-none font-weight-medium"
-                          ><strong class="green--text">Dema</strong> terms and
-                          conditions</span
-                        >
-                      </v-btn>
+                    </v-btn>
 
-                      <!-- Terms and conditions dialog -->
-                      <v-dialog
-                        scrollable
-                        v-model="termsAndConditionsDialog"
-                        width="600"
+                    <!-- Terms and conditions dialog -->
+                    <v-dialog
+                      scrollable
+                      v-model="termsAndConditionsDialog"
+                      width="600"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <span
+                          class="green--text"
+                          v-bind="attrs"
+                          v-on="on"
+                          @click.stop
+                        ></span>
+                      </template>
+
+                      <v-card height="70vh">
+                        <v-card-title
+                          class="d-flex align-center justify-space-between"
+                        >
+                          <span class="text-h6">Terms &amp; Conditions</span>
+                          <v-btn icon @click="termsAndConditionsDialog = false">
+                            <v-icon>mdi-close</v-icon>
+                          </v-btn>
+                        </v-card-title>
+                        <v-card-text>
+                          <p>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing
+                            elit, sed do eiusmod tempor incididunt ut labore et
+                            dolore magna aliqua. Ut enim ad minim veniam, quis
+                            nostrud exercitation ullamco laboris nisi ut aliquip
+                            ex ea commodo consequat. Duis aute irure dolor in
+                            reprehenderit in voluptate velit esse cillum dolore
+                            eu fugiat nulla pariatur. Excepteur sint occaecat
+                            cupidatat non proident, sunt in culpa qui officia
+                            deserunt mollit anim id est laborum. Lorem ipsum
+                            dolor sit, amet consectetur adipisicing elit. Quos
+                            modi unde quis harum nihil possimus dolorem hic, ea
+                            mollitia dolor asperiores, nemo quasi aliquam
+                            aperiam voluptatem. Dolores voluptatem consectetur
+                            dolor.
+                          </p>
+                          <v-checkbox
+                            label="I agree with these terms and conditions"
+                            color="success"
+                            hide-details
+                            dense
+                          ></v-checkbox>
+                        </v-card-text>
+                      </v-card>
+                    </v-dialog>
+                  </div>
+                  <v-row>
+                    <v-col cols="12">
+                      <v-checkbox
+                        v-model="agreeTermsAndConditions"
+                        label="I have read and i accept the terms and conditions"
+                        color="success"
+                        hide-details
+                        dense
                       >
-                        <template v-slot:activator="{ on, attrs }">
-                          <span
-                            class="green--text"
-                            v-bind="attrs"
-                            v-on="on"
-                            @click.stop
-                          ></span>
-                        </template>
+                      </v-checkbox>
+                      <v-checkbox
+                        v-model="eaterySettings.receiveNews"
+                        color="success"
+                        label="Send me any news or updates about Dema"
+                        hide-details
+                        dense
+                      ></v-checkbox>
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+              </v-window-item>
+            </v-window>
 
-                        <v-card height="70vh">
-                          <v-card-title
-                            class="d-flex align-center justify-space-between"
-                          >
-                            <span class="text-h6">Terms &amp; Conditions</span>
-                            <v-btn
-                              icon
-                              @click="termsAndConditionsDialog = false"
-                            >
-                              <v-icon>mdi-close</v-icon>
-                            </v-btn>
-                          </v-card-title>
-                          <v-card-text>
-                            <p>
-                              Lorem ipsum dolor sit amet, consectetur adipiscing
-                              elit, sed do eiusmod tempor incididunt ut labore
-                              et dolore magna aliqua. Ut enim ad minim veniam,
-                              quis nostrud exercitation ullamco laboris nisi ut
-                              aliquip ex ea commodo consequat. Duis aute irure
-                              dolor in reprehenderit in voluptate velit esse
-                              cillum dolore eu fugiat nulla pariatur. Excepteur
-                              sint occaecat cupidatat non proident, sunt in
-                              culpa qui officia deserunt mollit anim id est
-                              laborum. Lorem ipsum dolor sit, amet consectetur
-                              adipisicing elit. Quos modi unde quis harum nihil
-                              possimus dolorem hic, ea mollitia dolor
-                              asperiores, nemo quasi aliquam aperiam voluptatem.
-                              Dolores voluptatem consectetur dolor.
-                            </p>
-                            <v-checkbox
-                              label="I agree with these terms and conditions"
-                              color="success"
-                              hide-details
-                              dense
-                            ></v-checkbox>
-                          </v-card-text>
-                        </v-card>
-                      </v-dialog>
-                    </div>
-                    <v-row>
-                      <v-col cols="12">
-                        <v-checkbox
-                          v-model="agreeTermsAndConditions"
-                          label="I have read and i accept the terms and conditions"
-                          color="success"
-                          hide-details
-                          dense
-                        >
-                        </v-checkbox>
-                        <v-checkbox
-                          v-model="eaterySettings.receiveNews"
-                          color="success"
-                          label="Send me any news or updates about Dema"
-                          hide-details
-                          dense
-                        ></v-checkbox>
-                      </v-col>
-                    </v-row>
-                  </v-card-text>
-                </v-window-item>
-              </v-window>
+            <v-card-actions>
+              <v-btn
+                rounded
+                text
+                class="text-none"
+                :disabled="eateryWindowStep === 1"
+                v-if="eateryWindowStep > 1"
+                @click="eateryWindowStep--"
+              >
+                <v-icon left>mdi-chevron-left</v-icon>
+                <span class="mr-2">Back</span>
+              </v-btn>
 
-              <v-card-actions>
-                <v-btn
-                  rounded
-                  text
-                  class="text-none"
-                  :disabled="eateryWindowStep === 1"
-                  v-if="eateryWindowStep > 1"
-                  @click="eateryWindowStep--"
-                >
-                  <v-icon left>mdi-chevron-left</v-icon>
-                  <span class="mr-2">Back</span>
-                </v-btn>
+              <v-spacer></v-spacer>
 
-                <v-spacer></v-spacer>
+              <v-btn
+                rounded
+                text
+                class="text-none"
+                :disabled="eateryWindowStep === 2"
+                v-if="eateryWindowStep < 2"
+                @click="eateryNext"
+              >
+                <span class="ml-2">Next</span>
+                <v-icon right>mdi-chevron-right</v-icon>
+              </v-btn>
 
-                <v-btn
-                  rounded
-                  text
-                  class="text-none"
-                  :disabled="eateryWindowStep === 2"
-                  v-if="eateryWindowStep < 2"
-                  @click="eateryNext"
-                >
-                  <span class="ml-2">Next</span>
-                  <v-icon right>mdi-chevron-right</v-icon>
-                </v-btn>
-
-                <v-btn
-                  rounded
-                  :loading="eateryLoading"
-                  v-if="eateryWindowStep === 2"
-                  @click="createEateryProfile"
-                  :disabled="!agreeTermsAndConditions"
-                  color="success"
-                >
-                  <v-icon left>mdi-check-all</v-icon>
-                  <span class="text-none mr-2">Finish</span>
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-tab-item>
-        </v-tabs>
-      </v-col>
-    </v-row>
-  </v-container>
+              <v-btn
+                rounded
+                :loading="eateryLoading"
+                v-if="eateryWindowStep === 2"
+                @click="createProfile('eatery')"
+                :disabled="!agreeTermsAndConditions"
+                color="success"
+              >
+                <v-icon left>mdi-check-all</v-icon>
+                <span class="text-none mr-2">Finish</span>
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-tab-item>
+      </v-tabs-items>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
-import { getFirestore, setDoc, doc } from "firebase/firestore";
-import { roleRedirect } from "../utils";
+import { mapActions } from "vuex";
+import {
+  defaultImageUrl,
+  roleRedirect,
+  getCounter,
+  updateCounter,
+} from "../utils";
 
 export default {
   name: "CreateProfile",
   title: "Create profile",
-  async created() {
-    // Fetch all users
-    await this.getAllUsersAction();
-  },
   mounted() {
     this.getUserLocation();
   },
   data() {
     return {
+      tab: null,
       consumerWindowStep: 1,
       eateryWindowStep: 1,
       agreeTermsAndConditions: false,
       termsAndConditionsDialog: false,
-      errorAlert: false,
-      errorMessage: "",
+      showAlert: false,
+      alertMessage: "",
+      actionSuccess: false,
       consumerLoading: false,
       eateryLoading: false,
       // setWeightGoal: false,
@@ -1040,8 +1037,8 @@ export default {
         town: "",
         country: "",
         created: new Date(),
-        email: localStorage.getItem("email"),
-        imageUrl: localStorage.getItem("imageUrl"),
+        email: this.$store.state.email,
+        imageUrl: defaultImageUrl,
         // weight: { amount: null, units: "kg" },
         // height: { amount: null, units: "cm" },
         // activityLevel: "",
@@ -1066,8 +1063,8 @@ export default {
         phoneNumber: "",
         bio: "",
         created: new Date(),
-        email: localStorage.getItem("email"),
-        imageUrl: localStorage.getItem("imageUrl"),
+        email: this.$store.state.email,
+        imageUrl: defaultImageUrl,
       },
       consumerSettings: {
         receiveNews: true,
@@ -1115,7 +1112,6 @@ export default {
     };
   },
   computed: {
-    ...mapState(["allUsers"]),
     currentConsumerTitle() {
       switch (this.consumerWindowStep) {
         case 1:
@@ -1158,7 +1154,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["getAllUsersAction"]),
+    ...mapActions(["uploadProfileAction", "uploadSettingsAction"]),
     getUserLocation() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -1167,9 +1163,9 @@ export default {
           this.geoLocationOptions
         );
       } else {
-        this.errorMessage =
+        this.alertMessage =
           "Your browser does not support geolocation. Please use a browser that does.";
-        this.errorAlert = true;
+        this.showAlert = true;
       }
     },
     locateSuccess(position) {
@@ -1197,20 +1193,20 @@ export default {
           this.eateryProfile.country = data.address.country;
         })
         .catch((error) => {
-          this.errorMessage = error;
-          this.errorAlert = true;
+          this.alertMessage = error;
+          this.showAlert = true;
         });
     },
     locateError(error) {
       switch (error.code) {
         case 1:
-          this.errorMessage = `${error.message}: Your location is required to continue`;
+          this.alertMessage = `${error.message}: Your location is required to continue`;
           break;
         default:
-          this.errorMessage = error.message;
+          this.alertMessage = error.message;
           break;
       }
-      this.errorAlert = true;
+      this.showAlert = true;
     },
     consumerNext() {
       let complete = null;
@@ -1236,109 +1232,69 @@ export default {
       }
       if (complete) this.eateryWindowStep++;
     },
-    async createConsumerProfile() {
+    async createProfile(userType) {
+      let profile = undefined;
+      let settings = undefined;
+
+      // Choose which profile and settings to upload
+      switch (userType) {
+        case "consumer":
+          profile = this.consumerProfile;
+          settings = this.consumerSettings;
+          this.consumerLoading = true;
+          break;
+        case "eatery":
+          profile = this.eateryProfile;
+          settings = this.eaterySettings;
+          this.eateryLoading = true;
+          break;
+      }
+
       try {
-        // Start button loading
-        this.consumerLoading = true;
-
         // Set the user id
-        this.consumerProfile.id = this.allUsers.length;
+        const userId = await getCounter("users");
+        profile.id = userId;
 
-        // Upload the user profile to the database
-        const db = getFirestore();
+        // Show success message
+        this.actionSuccess = true;
+        this.alertMessage = "Setting up a few things... please wait";
+        this.showAlert = true;
 
-        await setDoc(
-          doc(db, "profiles", this.$store.state.userEmail),
-          this.consumerProfile,
-          {
-            merge: true,
-          }
-        );
+        // Add user profile
+        await this.uploadProfileAction(profile);
 
-        // Upload the user settings to the database
-        await setDoc(
-          doc(db, "settings", this.$store.state.userEmail),
-          this.consumerSettings
-        );
+        // Update counter
+        await updateCounter("users", { last: userId + 1 });
 
-        // Stop button loading
-        this.consumerLoading = false;
+        // Add user settings
+        await this.uploadSettingsAction(settings);
 
-        // Delete the image url in local storage
-        localStorage.removeItem("imageUrl");
-
-        // Set the dashboard links
-        this.$store.commit("setDashboardLinks", this.consumerProfile.role);
-
-        // Update local and store data and sync
-        localStorage.setItem("role", this.consumerProfile.role);
-        this.$store.commit("setUserRole", this.consumerProfile.role);
-        this.$store.commit("setUserProfile", this.consumerProfile);
-        this.$store.commit("setLoggedIn", true);
+        // Save role, email and log in state in local storage
+        localStorage.setItem("role", profile.role);
+        localStorage.setItem("email", profile.email);
         localStorage.setItem("loggedIn", "true");
 
-        // Redirect to dashboard
-        this.$router.replace({ name: roleRedirect(this.consumerProfile.role) });
-      } catch (error) {
+        // Stop loading
         this.consumerLoading = false;
-        this.errorAlert = true;
-        this.errorMessage = error.message;
-      }
-    },
-    async createEateryProfile() {
-      try {
-        // Start loading button
-        this.eateryLoading = true;
-
-        // Set the user id
-        this.eateryProfile.id = this.allUsers.length;
-
-        // Upload the user profile to the database
-        const db = getFirestore();
-
-        await setDoc(
-          doc(db, "profiles", this.$store.state.userEmail),
-          this.eateryProfile,
-          {
-            merge: true,
-          }
-        );
-
-        // Upload the user settings to the database
-        await setDoc(
-          doc(db, "settings", this.$store.state.userEmail),
-          this.eaterySettings
-        );
-
-        // Create an empty menu in the database
-        await setDoc(doc(db, "menus", this.$store.state.userEmail), {
-          menu: [],
-        });
-
-        // Stop button loading
         this.eateryLoading = false;
-
-        // Delete the image url in local storage
-        localStorage.removeItem("imageUrl");
 
         // Set the dashboard links
-        this.$store.commit("setDashboardLinks", this.eateryProfile.role);
+        this.$store.commit("setDashboardLinks", profile.role);
 
-        // Update local and store data and sync
-        localStorage.setItem("role", this.eateryProfile.role);
-        this.$store.commit("setUserRole", this.eateryProfile.role);
-        this.$store.commit("setUserProfile", this.eateryProfile);
-        this.$store.commit("setLoggedIn", true);
+        // Set user role
+        this.$store.commit("setRole", profile.role);
 
         // Redirect to dashboard
-        this.$router.replace({ name: roleRedirect(this.eateryProfile.role) });
+        this.$router.replace({ name: roleRedirect(this.$store.state.role) });
       } catch (error) {
-        // Stop button loading
+        // Stop loading
         this.consumerLoading = false;
         this.eateryLoading = false;
 
-        this.errorAlert = true;
-        this.errorMessage = error.message;
+        // Show error message
+        this.actionSuccess = false;
+        this.alertMessage = error;
+        this.showAlert = true;
       }
     },
   },

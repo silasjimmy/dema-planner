@@ -1,7 +1,7 @@
 <template>
   <v-app v-cloak>
     <!-- Home app bar -->
-    <v-app-bar app elevate-on-scroll v-if="!loggedIn">
+    <v-app-bar app elevate-on-scroll v-if="!viewDashboard">
       <v-app-bar-nav-icon
         class="d-flex d-sm-none"
         @click="homeSidenav = true"
@@ -20,7 +20,12 @@
     </v-app-bar>
 
     <!-- Home side navigation -->
-    <v-navigation-drawer temporary app v-model="homeSidenav" v-if="!loggedIn">
+    <v-navigation-drawer
+      temporary
+      app
+      v-model="homeSidenav"
+      v-if="!viewDashboard"
+    >
       <!-- Navigation links -->
       <v-list rounded subheader>
         <v-list-item-group>
@@ -70,7 +75,7 @@
     </v-navigation-drawer>
 
     <!-- Dashboard app bar -->
-    <v-app-bar app elevate-on-scroll v-if="loggedIn">
+    <v-app-bar app elevate-on-scroll v-if="viewDashboard">
       <v-app-bar-nav-icon
         class="d-sm-none"
         @click="rightSidenav = true"
@@ -93,7 +98,7 @@
           <v-btn icon class="mr-1" v-on="on">
             <v-badge bordered overlap dot color="success">
               <v-avatar size="36">
-                <img :src="userProfile.imageUrl" :alt="userProfile.name" />
+                <img :src="profile.imageUrl" :alt="profile.name" />
               </v-avatar>
             </v-badge>
           </v-btn>
@@ -336,7 +341,7 @@
     <v-navigation-drawer
       fixed
       app
-      v-if="loggedIn"
+      v-if="viewDashboard"
       :permanent="$vuetify.breakpoint.mdAndUp"
     >
       <!-- Userview -->
@@ -344,18 +349,15 @@
         <v-list>
           <v-list-item>
             <v-list-item-avatar size="80px">
-              <img :src="userProfile.imageUrl" />
+              <img :src="profile.imageUrl" />
             </v-list-item-avatar>
           </v-list-item>
           <v-list-item>
             <v-list-item-content>
-              <v-list-item-title
-                class="text-h6 font-weight-medium jost-font-family"
-                >{{ userProfile.name }}</v-list-item-title
-              >
-              <v-list-item-subtitle>{{
-                userProfile.email
-              }}</v-list-item-subtitle>
+              <v-list-item-title class="text-h6 font-weight-medium">{{
+                profile.name
+              }}</v-list-item-title>
+              <v-list-item-subtitle>{{ profile.email }}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -414,11 +416,11 @@
       fixed
       app
       right
-      v-if="loggedIn"
+      v-if="viewDashboard"
       :permanent="$vuetify.breakpoint.smAndUp"
       v-model="rightSidenav"
     >
-      <meals-info v-if="userRole === 'consumer'"></meals-info>
+      <meals-info v-if="$store.state.role === 'consumer'"></meals-info>
     </v-navigation-drawer>
 
     <!-- Dashboard bottom navigation -->
@@ -427,7 +429,7 @@
       shift
       grow
       color="success"
-      v-if="loggedIn && $vuetify.breakpoint.smAndDown"
+      v-if="viewDashboard && $vuetify.breakpoint.smAndDown"
     >
       <v-btn
         link
@@ -507,7 +509,7 @@
           bottom
           right
           color="success"
-          v-if="!loggedIn"
+          v-if="!viewDashboard"
           v-show="showFabBtn"
           @click="$vuetify.goTo(0, scrollOptions)"
         >
@@ -517,7 +519,7 @@
     </v-main>
 
     <!-- Footer -->
-    <!-- <v-footer app absolute padless v-if="!loggedIn">
+    <!-- <v-footer app absolute padless v-if="!viewDashboard">
       <v-card flat tile width="100vw">
         <v-card-text class="text-center">
           <v-btn rounded link class="ma-2 text-none" elevation="0" to="/home"
@@ -616,123 +618,65 @@ import MealsInfo from "./components/MealsInfo.vue";
 export default {
   name: "App",
   async created() {
-    // Sync local data with store data
+    // Initialize store with initial data
     this.$store.commit(
       "setLoggedIn",
       localStorage.getItem("loggedIn") === "true"
     );
-    this.$store.commit("setUserEmail", localStorage.getItem("email"));
-    this.$store.commit("setUserRole", localStorage.getItem("role"));
+    this.$store.commit("setEmail", localStorage.getItem("email"));
     this.$store.commit("setDashboardLinks", localStorage.getItem("role"));
-
-    // console.log(
-    //   this.$store.state.loggedIn,
-    //   this.$store.state.userEmail,
-    //   this.$store.state.userRole,
-    //   this.$store.state.dashboardLinks
-    // );
+    this.$store.commit("setRole", localStorage.getItem("role"));
 
     if (localStorage.getItem("loggedIn") === "true") {
+      // Show the page load overlay
+      this.pageLoadMessage = `Loading data: ${this.pageLoadValue}%`;
+      this.pageLoadColor = "success";
+      this.pageLoadOverlay = true;
+
       try {
-        // Start loading data
-        this.pageLoadOverlay = true;
-        this.pageLoadColor = "success";
+        // Load user profile
+        await this.getProfileAction();
+        this.pageLoadValue += 50;
         this.pageLoadMessage = `Loading data: ${this.pageLoadValue}%`;
 
-        // 1. Fetch the user's profile
-        await this.getUserProfileAction();
-        this.pageLoadValue += 25;
+        // Load user settings
+        await this.getSettingsAction();
+        this.pageLoadValue += 50;
         this.pageLoadMessage = `Loading data: ${this.pageLoadValue}%`;
 
-        // 2. Fetch the user's settings
-        await this.getUserSettingsAction();
-        this.pageLoadValue += 25;
-        this.pageLoadMessage = `Loading data: ${this.pageLoadValue}%`;
-
-        // Set the app's theme
-        this.$vuetify.theme.dark = this.userSettings.appTheme === "dark";
-
-        // 3. Fetch the user's messages
-        await this.getMessagesAction();
-        this.pageLoadValue += 25;
-        this.pageLoadMessage = `Loading data: ${this.pageLoadValue}%`;
-
-        // 4. Fetch the user's notifications
-        await this.getNotificationsAction();
-        this.pageLoadValue += 25;
-        this.pageLoadMessage = `Loading data: ${this.pageLoadValue}%`;
-
-        switch (this.$store.state.userRole) {
-          case "consumer":
-            await this.getAvailableFoodsAction();
-            break;
-          default:
-            break;
-        }
-
-        // Set the page title
-        this.$store.commit("setPageTitle", document.title);
-
-        // Get the indexes of unread messages
-        const allMessages = this.getMessagesByRead(false);
-        allMessages.forEach((message) =>
-          this.unreadMessages.push(this.messages.indexOf(message))
-        );
-
-        // Get the indexes of unread notifications
-        const allNotifications = this.getNotificationsByRead(false);
-        allNotifications.forEach((notification) =>
-          this.unreadNotifications.push(
-            this.notifications.indexOf(notification)
-          )
-        );
-
-        switch (localStorage.getItem("role")) {
-          case "consumer":
-            await this.getEateriesAction();
-            break;
-        }
-
-        // Hide the overlay
-        setTimeout(() => (this.pageLoadOverlay = false), 1000);
+        setTimeout(() => {
+          // Hide overlay
+          this.pageLoadOverlay = false;
+        }, 1000);
       } catch (error) {
-        // Display error message
+        this.pageLoadMessage = error.message;
         this.pageLoadColor = "error";
-        this.pageLoadMessage = `${error.code}`;
       }
-    } else {
-      // Listen on page scroll
-      window.addEventListener(
-        "scroll",
-        () => (this.scrollYPos = window.scrollY)
-      );
     }
   },
-  async mounted() {
+  mounted() {
     // Monitor the user sign in activity
     const auth = getAuth();
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        // Update the local storage data
-        localStorage.setItem("loggedIn", "true");
-        localStorage.setItem("email", user.email);
+        // Update store data
+        this.$store.commit("setLoggedIn", true);
+        this.$store.commit("setEmail", user.email);
+        this.$store.commit("setDashboardLinks", localStorage.getItem("role"));
       } else {
-        // Delete local storage data
-        localStorage.removeItem("loggedIn");
-        localStorage.removeItem("email");
+        // Delete role, email and log in state from local storage
         localStorage.removeItem("role");
+        localStorage.removeItem("email");
+        localStorage.removeItem("loggedIn");
 
-        // Update the store's data
+        // Update store data
         this.$store.commit("setLoggedIn", false);
-        this.$store.commit("setUserRole", "");
-        this.$store.commit("setDashboardLinks", "");
+        this.$store.commit("setEmail", "");
+        this.$store.commit("setRole", "");
       }
     });
   },
-  // beforeDestroy() {
-  //   window.removeEventListener("scroll", () => {});
-  // },
   data() {
     return {
       scrollYPos: 0,
@@ -741,7 +685,6 @@ export default {
       pageLoadOverlay: false,
       pageLoadMessage: "",
       pageLoadColor: "",
-      interval: {},
       pageLoadValue: 0,
       homeSidenav: false,
       rightSidenav: false,
@@ -755,14 +698,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions([
-      "getUserProfileAction",
-      "getUserSettingsAction",
-      "getMessagesAction",
-      "getNotificationsAction",
-      "getEateriesAction",
-      "getAvailableFoodsAction",
-    ]),
+    ...mapActions(["getProfileAction", "getSettingsAction"]),
     lastReply(message) {
       return message.replies[message.replies.length - 1];
     },
@@ -780,35 +716,25 @@ export default {
         return false; // definitely offline
       }
     },
-    logout() {
+    async logout() {
       const auth = getAuth();
 
-      signOut(auth)
-        .then(() => {
-          this.$store.commit("setLoggedIn", false);
+      try {
+        // Sign out
+        await signOut(auth);
 
-          // Direct to sign in
-          this.$router.replace({ name: "sign-in" });
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
+        // Go to log in page
+        this.$router.replace({ name: "sign-in" });
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
   computed: {
-    ...mapState([
-      "dashboardLinks",
-      "userProfile",
-      "userSettings",
-      "messages",
-      "notifications",
-    ]),
+    ...mapState(["dashboardLinks", "profile", "messages", "notifications"]),
     ...mapGetters(["getMessagesByRead", "getNotificationsByRead"]),
-    loggedIn() {
-      return this.$store.state.loggedIn;
-    },
-    userRole() {
-      return this.$store.state.userRole;
+    viewDashboard() {
+      return this.$store.state.loggedIn && this.$store.state.role !== "";
     },
     showFabBtn() {
       if (this.scrollYPos > 200) return true;

@@ -1,4 +1,5 @@
-import { getFirestore, getDoc, doc } from "firebase/firestore";
+import { getFirestore, getDoc, doc, setDoc } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import store from '../store'
 
 /**
@@ -21,37 +22,16 @@ function roleRedirect(role) {
 
 /**
  * Check if the user's profile exists
- * @param {string} email User's email address
- * @returns {object} If the user's profile exists and the user's role
+ * @returns {object} If the user's profile exists and the profile object
  */
-async function checkUserProfile(email) {
+async function checkUserProfile() {
     const db = getFirestore();
-    const profile = await getDoc(doc(db, "profiles", email))
+    const docRef = doc(db, "users", store.state.email)
+    const snapShot = await getDoc(docRef);
 
-    if (profile.exists()) {
-        const data = profile.data()
-
-        // Set user role
-        localStorage.setItem("role", data.role);
-        store.commit("setUserRole", data.role);
-
-        // Set user profile and dashboard links
-        store.commit("setUserProfile", data);
-        store.commit("setDashboardLinks", data.role);
-
-        // Update log in status
-        localStorage.setItem("loggedIn", "true");
-        store.commit("setLoggedIn", true);
-
-        return {
-            hasProfile: true,
-            role: data.role
-        }
-    } else {
-        return {
-            hasProfile: false,
-            role: undefined
-        }
+    return {
+        hasProfile: snapShot.exists(),
+        profile: snapShot.data()
     }
 }
 
@@ -135,6 +115,34 @@ function generateMeal(foods, mealTime) {
     }
 }
 
+async function getCounter(docString) {
+    // Get the counter of the specified document
+    const db = getFirestore();
+    const docRef = doc(db, `counters/${docString}`);
+    const snapshot = await getDoc(docRef);
+    const data = snapshot.data();
+    return data.last
+}
+
+async function updateCounter(docString, counterData) {
+    // Get the counter of the specified document
+    const db = getFirestore();
+    const docRef = doc(db, `counters/${docString}`);
+    await setDoc(docRef, counterData)
+}
+
+async function uploadImage(imageObject) {
+    const storage = getStorage();
+
+    // Upload the image to storage
+    const imageRef = ref(storage, `profileAvatars/${store.state.email}/avatar.jpg`)
+    const snapshot = await uploadBytes(imageRef, imageObject);
+
+    // Get the image url
+    const url = await getDownloadURL(snapshot.ref);
+    return url
+}
+
 const defaultImageUrl = "https://firebasestorage.googleapis.com/v0/b/demaplanner.appspot.com/o/profileAvatars%2Fdefault%2Fdefault-image.png?alt=media&token=c5fac7bb-ab08-4cf4-9e53-4560d08b60df"
 
 export {
@@ -143,5 +151,8 @@ export {
     defaultImageUrl,
     sortMessages,
     sortNotifications,
-    generateMeal
+    generateMeal,
+    getCounter,
+    updateCounter,
+    uploadImage
 }

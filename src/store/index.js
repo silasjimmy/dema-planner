@@ -24,17 +24,17 @@ export default new Vuex.Store({
     role: '',
     profile: {},
     settings: {},
-
+    meals: [],
+    eateries: [],
+    likedFoods: [],
     dashboardLinks: [],
+    availableFoods: [],
+
     allFoods: [],
     allUsers: [],
-    availableFoods: [],
     menu: [],
     notifications: [],
     messages: [],
-    eateries: [],
-    meals: [],
-    likedFoods: [],
     mealTimes: null,
   },
   mutations: {
@@ -56,7 +56,6 @@ export default new Vuex.Store({
     setSettings(state, settings) {
       state.settings = settings
     },
-
     setDashboardLinks(state, role) {
       switch (role) {
         case 'consumer':
@@ -87,6 +86,7 @@ export default new Vuex.Store({
           state.dashboardLinks = []
       }
     },
+
     setAllFoods(state, foods) {
       state.allFoods = foods
     },
@@ -162,18 +162,88 @@ export default new Vuex.Store({
     async getProfileAction({ commit, state }) {
       // Get the user profile from the database
       const db = getFirestore();
-      const docRef = doc(db, "users", state.email)
+      const docRef = doc(db, `users/${state.email}`)
       const snapShot = await getDoc(docRef);
       const profile = snapShot.data()
       commit('setProfile', profile)
     },
-    async getSettings({ commit, state }) {
+    async getSettingsAction({ commit, state }) {
       // Get the user settings
       const db = getFirestore()
       const docRef = doc(db, `users/${state.email}/settings/all`)
       const snapShot = await getDoc(docRef)
       const settings = snapShot.data()
       commit('setSettings', settings)
+    },
+    async uploadProfileAction({ commit, state }, profile) {
+      // Upload the user profile to the database
+      const db = getFirestore();
+      const docRef = doc(db, "users", state.email)
+      await setDoc(docRef, profile, { merge: true });
+      commit('setProfile', profile)
+    },
+    async uploadSettingsAction({ commit, state }, settings) {
+      // Upload the user settings to the database
+      const db = getFirestore();
+      const docRef = doc(db, `users/${state.email}/settings/all`)
+      await setDoc(docRef, settings, { merge: true });
+      commit('setSettings', settings)
+    },
+    async getMealsAction({ commit, state }) {
+      const db = getFirestore();
+      const docRef = collection(db, `users/${state.email}/meals`)
+      const snapShot = await getDocs(docRef)
+      const meals = snapShot.docs.map(doc => doc.data())
+      commit('setMeals', meals);
+    },
+    async getAvailableFoodsAction({ commit, state }) {
+      // Get the foods from the database
+      const db = getFirestore()
+      const docRef = collection(db, "foods")
+      const foodsQuery = query(docRef, where("regions", "array-contains", state.profile.country));
+      const snapShot = await getDocs(foodsQuery)
+      const availableFoods = snapShot.docs.map(doc => doc.data())
+      commit('setAvailableFoods', availableFoods);
+    },
+    async getLikedFoodsAction({ commit, state }) {
+      // Get user's liked foods from the database
+      const db = getFirestore();
+      const docRef = collection(db, `users/${state.email}/likedFoods`)
+      const snapShot = await getDocs(docRef)
+      const likedFoods = snapShot.docs.map(doc => doc.data())
+      commit('setLikedFoods', likedFoods);
+    },
+    async getEateriesAction({ commit }) {
+      // Get all registered eateries from the database
+      const db = getFirestore()
+      const eateriesRef = collection(db, "users");
+      const eateriesQuery = query(eateriesRef, where("role", "==", "eatery"));
+      const snapShot = await getDocs(eateriesQuery)
+      const eateries = snapShot.docs.map(doc => doc.data())
+      commit('setEateries', eateries);
+    },
+
+    async getMessagesAction({ commit, state }) {
+      // Get user messages
+      const db = getFirestore();
+      const docRef = doc(db, `users/${state.email}/messages/all`)
+      const snapshot = await getDoc(docRef)
+      const messages = snapshot.data()
+
+      // Sort the messages
+      const sortedMessages = sortMessages(messages)
+      commit('setMessages', sortedMessages)
+    },
+    async getNotificationsAction({ commit, state }) {
+      // Get user notifications
+      const db = getFirestore();
+      const docRef = doc(db, `users/${state.email}/notifications/all`)
+      const snapshot = await getDoc(docRef)
+      const notifications = snapshot.data()
+
+      // Sort the notifications according to created time
+      const sortedNotifications = sortNotifications(notifications)
+      commit('setNotifications', sortedNotifications)
     },
 
     async getAllFoodsAction({ commit }) {
@@ -229,16 +299,6 @@ export default new Vuex.Store({
       // Add the foods to the store
       commit('setAllUsers', users);
     },
-    async getAvailableFoodsAction({ commit, state }) {
-      // Get the foods from the database
-      const db = getFirestore()
-      const foodsQuery = query(collection(db, "foods"), where("regions", "array-contains", state.profile.country));
-      const snapShot = await getDocs(foodsQuery)
-      const availableFoods = snapShot.docs.map(doc => doc.data())
-
-      // Commit the foods to the available foods state
-      commit('setAvailableFoods', availableFoods);
-    },
     async getMenuAction({ commit, state }) {
       const db = getFirestore()
 
@@ -277,51 +337,13 @@ export default new Vuex.Store({
       // Delete from store
       commit('deleteMenuFood', food)
     },
-    async getNotificationsAction({ commit }) {
-      // Get user notifications
-      const db = getFirestore();
-      const snapshot = await getDoc(doc(db, 'notifications/jimmysilas17@gmail.com'))
-      const notifications = snapshot.data()
 
-      // Sort the notifications according to created time
-      const sortedNotifications = sortNotifications(notifications)
-
-      commit('setNotifications', sortedNotifications)
-    },
-    async getEateriesAction({ commit }) {
-      const db = getFirestore()
-      const eateriesRef = collection(db, "profiles");
-      const eateriesQuery = query(eateriesRef, where("role", "==", "eatery"));
-      const snapShot = await getDocs(eateriesQuery)
-      const eateries = snapShot.docs.map(doc => doc.data())
-
-      // Commit the eateries to the nearest eateries state
-      commit('setEateries', eateries);
-    },
-    async getMessagesAction({ commit }) {
-      // Get user messages
-      const db = getFirestore();
-      const snapshot = await getDoc(doc(db, 'messages/jimmysilas17@gmail.com'))
-      const messages = snapshot.data()
-
-      // Sort the messages
-      const sortedMessages = sortMessages(messages)
-
-      commit('setMessages', sortedMessages)
-    },
     async addMealAction({ commit, state }, meal) {
       // Add a single meal to the database
       const db = getFirestore();
       const docRef = doc(db, `profiles/${state.email}/meals/meal${meal.id}`)
       await setDoc(docRef, meal, { merge: true })
       commit('addMeal', meal)
-    },
-    async getMealsAction({ commit, state }) {
-      const db = getFirestore();
-      const docRef = collection(db, `profiles/${state.email}/meals`)
-      const snapShot = await getDocs(docRef)
-      const meals = snapShot.docs.map(doc => doc.data())
-      commit('setMeals', meals);
     },
     async updateMealAction({ commit, state }, meal) {
       const db = getFirestore()
@@ -342,15 +364,6 @@ export default new Vuex.Store({
 
       // Delete from store
       commit('deleteMeal', meal)
-    },
-    async getLikedFoodsAction({ commit, state }) {
-      const db = getFirestore();
-      const docRef = collection(db, `profiles/${state.email}/likedFoods`)
-      const snapShot = await getDocs(docRef)
-      const likedFoods = snapShot.docs.map(doc => doc.data())
-
-      // Commit the foods to the liked foods state
-      commit('setLikedFoods', likedFoods);
     },
     async addLikedFoodAction({ commit, state }, food) {
       // Add a single liked food to the database
