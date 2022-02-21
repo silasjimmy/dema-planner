@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import checkAuth from './routeGuards'
 
 import Users from '@/views/Users.vue';
 import Home from '@/views/Home.vue';
@@ -238,5 +239,7 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+router.beforeEach(checkAuth)
 
 export default router
