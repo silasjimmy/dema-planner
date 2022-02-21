@@ -19,22 +19,22 @@ import {
 export default new Vuex.Store({
   state: {
     pageTitle: 'Home',
-    loggedIn: null,
-    userEmail: null,
-    userRole: null,
+    loggedIn: false,
+    email: '',
+    role: '',
+    profile: {},
+    settings: {},
+
     dashboardLinks: [],
-    userProfile: {},
     allFoods: [],
     allUsers: [],
     availableFoods: [],
-    userSettings: {},
     menu: [],
     notifications: [],
     messages: [],
     eateries: [],
     meals: [],
     likedFoods: [],
-
     mealTimes: null,
   },
   mutations: {
@@ -44,12 +44,19 @@ export default new Vuex.Store({
     setLoggedIn(state, status) {
       state.loggedIn = status
     },
-    setUserEmail(state, email) {
-      state.userEmail = email
+    setEmail(state, email) {
+      state.email = email
     },
-    setUserRole(state, role) {
-      state.userRole = role
+    setRole(state, role) {
+      state.role = role
     },
+    setProfile(state, profile) {
+      state.profile = profile
+    },
+    setSettings(state, settings) {
+      state.settings = settings
+    },
+
     setDashboardLinks(state, role) {
       switch (role) {
         case 'consumer':
@@ -80,9 +87,6 @@ export default new Vuex.Store({
           state.dashboardLinks = []
       }
     },
-    setUserProfile(state, profile) {
-      state.userProfile = profile
-    },
     setAllFoods(state, foods) {
       state.allFoods = foods
     },
@@ -102,9 +106,6 @@ export default new Vuex.Store({
     },
     setAvailableFoods(state, foods) {
       state.availableFoods = foods
-    },
-    setUserSettings(state, settings) {
-      state.userSettings = settings
     },
     setMenu(state, menu) {
       state.menu = menu
@@ -158,12 +159,23 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    async getUserProfileAction({ commit }) {
+    async getProfileAction({ commit, state }) {
+      // Get the user profile from the database
       const db = getFirestore();
-      const profile = await getDoc(doc(db, "profiles", localStorage.getItem('email')));
-
-      commit('setUserProfile', profile.data())
+      const docRef = doc(db, "users", state.email)
+      const snapShot = await getDoc(docRef);
+      const profile = snapShot.data()
+      commit('setProfile', profile)
     },
+    async getSettings({ commit, state }) {
+      // Get the user settings
+      const db = getFirestore()
+      const docRef = doc(db, `users/${state.email}/settings/all`)
+      const snapShot = await getDoc(docRef)
+      const settings = snapShot.data()
+      commit('setSettings', settings)
+    },
+
     async getAllFoodsAction({ commit }) {
       // Create firestore database instance
       const db = getFirestore();
@@ -220,25 +232,18 @@ export default new Vuex.Store({
     async getAvailableFoodsAction({ commit, state }) {
       // Get the foods from the database
       const db = getFirestore()
-      const foodsQuery = query(collection(db, "foods"), where("regions", "array-contains", state.userProfile.country));
+      const foodsQuery = query(collection(db, "foods"), where("regions", "array-contains", state.profile.country));
       const snapShot = await getDocs(foodsQuery)
       const availableFoods = snapShot.docs.map(doc => doc.data())
 
       // Commit the foods to the available foods state
       commit('setAvailableFoods', availableFoods);
     },
-    async getUserSettingsAction({ commit, state }) {
-      const db = getFirestore()
-
-      const settings = await getDoc(doc(db, 'settings', state.userEmail))
-
-      commit('setUserSettings', settings.data())
-    },
     async getMenuAction({ commit, state }) {
       const db = getFirestore()
 
       // Fetch the menu foods from the database
-      const snapShot = await getDocs(collection(db, 'menus', state.userEmail, 'menu'))
+      const snapShot = await getDocs(collection(db, 'menus', state.email, 'menu'))
 
       // Map the foods to an array
       const menuFoods = snapShot.docs.map(doc => doc.data())
@@ -249,7 +254,7 @@ export default new Vuex.Store({
       const db = getFirestore()
 
       // Upload the food to the database
-      await setDoc(doc(db, 'menus', state.userEmail, 'menu', `food${food.food.id}`), food)
+      await setDoc(doc(db, 'menus', state.email, 'menu', `food${food.food.id}`), food)
 
       // Add to store
       commit('addMenuFood', food)
@@ -258,7 +263,7 @@ export default new Vuex.Store({
       const db = getFirestore()
 
       // Upload the food to the database
-      await setDoc(doc(db, 'menus', state.userEmail, 'menu', `food${food.food.id}`), food, { merge: true })
+      await setDoc(doc(db, 'menus', state.email, 'menu', `food${food.food.id}`), food, { merge: true })
 
       // Update in store
       commit('updateMenuFood', food)
@@ -267,7 +272,7 @@ export default new Vuex.Store({
       const db = getFirestore()
 
       // Delete from database
-      await deleteDoc(doc(db, "menus", state.userEmail, 'menu', `food${food.food.id}`));
+      await deleteDoc(doc(db, "menus", state.email, 'menu', `food${food.food.id}`));
 
       // Delete from store
       commit('deleteMenuFood', food)
@@ -307,13 +312,13 @@ export default new Vuex.Store({
     async addMealAction({ commit, state }, meal) {
       // Add a single meal to the database
       const db = getFirestore();
-      const docRef = doc(db, `profiles/${state.userEmail}/meals/meal${meal.id}`)
+      const docRef = doc(db, `profiles/${state.email}/meals/meal${meal.id}`)
       await setDoc(docRef, meal, { merge: true })
       commit('addMeal', meal)
     },
     async getMealsAction({ commit, state }) {
       const db = getFirestore();
-      const docRef = collection(db, `profiles/${state.userEmail}/meals`)
+      const docRef = collection(db, `profiles/${state.email}/meals`)
       const snapShot = await getDocs(docRef)
       const meals = snapShot.docs.map(doc => doc.data())
       commit('setMeals', meals);
@@ -325,7 +330,7 @@ export default new Vuex.Store({
       meal.servingsDialog = false
       meal.revealServings = false
 
-      await setDoc(doc(db, `profiles/${state.userEmail}/meals/meal${meal.id}`), meal, { merge: true })
+      await setDoc(doc(db, `profiles/${state.email}/meals/meal${meal.id}`), meal, { merge: true })
 
       commit('updateMeal', meal)
     },
@@ -333,14 +338,14 @@ export default new Vuex.Store({
       const db = getFirestore()
 
       // Delete from database
-      await deleteDoc(doc(db, `profiles/${state.userEmail}/meals/meal${meal.id}`));
+      await deleteDoc(doc(db, `profiles/${state.email}/meals/meal${meal.id}`));
 
       // Delete from store
       commit('deleteMeal', meal)
     },
     async getLikedFoodsAction({ commit, state }) {
       const db = getFirestore();
-      const docRef = collection(db, `profiles/${state.userEmail}/likedFoods`)
+      const docRef = collection(db, `profiles/${state.email}/likedFoods`)
       const snapShot = await getDocs(docRef)
       const likedFoods = snapShot.docs.map(doc => doc.data())
 
@@ -350,7 +355,7 @@ export default new Vuex.Store({
     async addLikedFoodAction({ commit, state }, food) {
       // Add a single liked food to the database
       const db = getFirestore();
-      const docRef = doc(db, `profiles/${state.userEmail}/likedFoods/food${food.id}`)
+      const docRef = doc(db, `profiles/${state.email}/likedFoods/food${food.id}`)
       await setDoc(docRef, food)
       commit('addLikedFood', food)
     },
@@ -358,7 +363,7 @@ export default new Vuex.Store({
       const db = getFirestore()
 
       // Delete from database
-      await deleteDoc(doc(db, `profiles/${state.userEmail}/likedFoods/food${food.id}`));
+      await deleteDoc(doc(db, `profiles/${state.email}/likedFoods/food${food.id}`));
 
       // Delete from store
       commit('removeLikedFood', food)
