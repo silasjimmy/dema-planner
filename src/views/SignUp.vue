@@ -1,19 +1,27 @@
 <template>
-  <v-row align="center" class="text-center fill-height">
-    <v-col cols="10" sm="8" md="6" lg="4" xl="3" class="mx-auto my-2">
-      <h1 class="text-h4 font-weight-medium my-4">Get started</h1>
-      <v-form ref="signUpForm" lazy-validation>
-        <!-- Log in error alert -->
-        <v-alert
-          outlined
-          dense
-          dismissible
-          transition="scale-transition"
-          v-model="errorAlert"
-          type="error"
-          >{{ errorMessage }}</v-alert
-        >
+  <v-card outlined class="rounded-lg mx-auto" width="50vw">
+    <v-card-title>Sign up</v-card-title>
+    <v-card-subtitle
+      >Create an account and get started right away</v-card-subtitle
+    >
 
+    <v-card-text class="text-center">
+      <!-- Action alert -->
+      <v-alert
+        text
+        dismissible
+        dense
+        v-model="showAlert"
+        transition="scale-transition"
+        :type="actionSuccess ? 'success' : 'error'"
+        :icon="actionSuccess ? 'mdi-account-check' : 'mdi-account-alert'"
+        class="rounded-lg"
+      >
+        {{ alertMessage }}
+      </v-alert>
+
+      <v-form ref="signUpForm" lazy-validation>
+        <!-- Email address field -->
         <v-text-field
           dense
           outlined
@@ -28,6 +36,8 @@
           label="Email address"
           type="email"
         ></v-text-field>
+
+        <!-- Password field -->
         <v-text-field
           dense
           outlined
@@ -43,28 +53,36 @@
           label="Password"
           :type="showPassword ? 'text' : 'password'"
         ></v-text-field>
+
+        <!-- Submit button -->
+        <v-btn
+          rounded
+          :loading="emailSignUpLoad"
+          @click="emailSignUp"
+          color="success"
+          class="text-none"
+          >Create account</v-btn
+        >
       </v-form>
+    </v-card-text>
+
+    <v-card-text class="text-center">
+      <p>Sign up with</p>
+
+      <!-- Google sign up button -->
       <v-btn
-        rounded
-        :loading="emailCreateLoad"
-        @click="emailSignUp"
-        color="success"
-        class="text-none my-4"
-        >Create account</v-btn
-      >
-      <div class="text-center">or</div>
-      <v-btn
-        outlined
-        rounded
-        :loading="googleCreateLoad"
+        small
+        fab
+        elevation="1"
+        color="red"
+        class="text-none"
+        :loading="googleSignUpLoad"
         @click="googleSignUp"
-        class="my-4 text-none"
       >
-        <v-icon left>mdi-google</v-icon>
-        sign up in with Google
+        <v-icon small color="white">mdi-google</v-icon>
       </v-btn>
-    </v-col>
-  </v-row>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>
@@ -73,24 +91,25 @@ import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
+  signOut,
 } from "firebase/auth";
-import { roleRedirect, checkUserProfile, defaultImageUrl } from "../utils";
 
 export default {
   name: "SignUp",
-  title: "Create account",
+  title: "Sign up",
   data() {
     return {
       email: "",
       password: "",
       showPassword: false,
-      emailCreateLoad: false,
-      googleCreateLoad: false,
+      emailSignUpLoad: false,
+      googleSignUpLoad: false,
       rules: {
         required: (value) => !!value || "This field is required!",
       },
-      errorAlert: false,
-      errorMessage: "",
+      showAlert: false,
+      actionSuccess: false,
+      alertMessage: "",
     };
   },
   methods: {
@@ -100,29 +119,34 @@ export default {
     async emailSignUp() {
       if (this.$refs.signUpForm.validate()) {
         try {
-          this.emailCreateLoad = true;
+          // Start loading
+          this.emailSignUpLoad = true;
+
+          const auth = getAuth();
 
           // Create the user account
-          const auth = getAuth();
-          const res = await createUserWithEmailAndPassword(
-            auth,
-            this.email,
-            this.password
-          );
+          await createUserWithEmailAndPassword(auth, this.email, this.password);
 
-          // Store user's email address
-          localStorage.setItem("email", res.user.email);
-          this.$store.commit("setUserEmail", res.user.email);
+          // Sign out the user
+          await signOut(auth);
 
-          // Store photo url in local storage
-          localStorage.setItem("imageUrl", defaultImageUrl);
+          // Show success message
+          this.actionSuccess = true;
+          this.alertMessage = "You will be redirected to log in";
+          this.showAlert = true;
 
-          // Redirect according to user profile existence
-          this.redirect();
+          setTimeout(() => {
+            // Direct to log in page
+            this.$router.replace({ name: "sign-in" });
+          }, 3000);
         } catch (error) {
-          this.emailCreateLoad = false;
-          this.errorAlert = true;
-          this.errorMessage = error.code;
+          // Stop loading
+          this.emailSignUpLoad = false;
+
+          // Show error message
+          this.actionSuccess = false;
+          this.alertMessage = error.code;
+          this.showAlert = true;
         }
       }
     },
@@ -131,53 +155,35 @@ export default {
      */
     async googleSignUp() {
       try {
-        this.googleCreateLoad = true;
+        // Start loading
+        this.googleSignUpLoad = true;
+
+        const auth = getAuth();
+        const provider = new GoogleAuthProvider();
 
         // Create user account
-        const provider = new GoogleAuthProvider();
-        const auth = getAuth();
-        const res = await signInWithPopup(auth, provider);
+        await signInWithPopup(auth, provider);
 
-        // Store user's email address
-        localStorage.setItem("email", res.user.email);
-        this.$store.commit("setUserEmail", res.user.email);
+        // Sign out the user
+        await signOut(auth);
 
-        // Store photo url in local storage
-        localStorage.setItem("imageUrl", res.user.photoURL);
+        // Show success message
+        this.actionSuccess = true;
+        this.alertMessage = "You will be redirected to log in";
+        this.showAlert = true;
 
-        // Redirect according to user profile existence
-        this.redirect();
+        setTimeout(() => {
+          // Direct to log in page
+          this.$router.replace({ name: "sign-in" });
+        }, 3000);
       } catch (error) {
-        this.googleCreateLoad = false;
-        this.errorAlert = true;
-        this.errorMessage = error.code;
-      }
-    },
-    /**
-     * Handles the profile checking after logging in
-     */
-    async redirect() {
-      try {
-        // Check if the user has a profile set up
-        const { ...res } = await checkUserProfile(
-          localStorage.getItem("email")
-        );
+        // Stop loading
+        this.googleSignUpLoad = false;
 
-        // Stop button loading
-        this.emailCreateLoad = false;
-        this.googleCreateLoad = false;
-
-        // Redirect according to role
-        if (res.hasProfile)
-          this.$router.replace({ name: roleRedirect(res.role) });
-        else this.$router.replace({ name: "create-profile" });
-      } catch (error) {
-        this.emailCreateLoad = false;
-        this.googleCreateLoad = false;
-
-        // Show the error
-        this.errorAlert = true;
-        this.errorMessage = error.code;
+        // Show error message
+        this.actionSuccess = false;
+        this.alertMessage = error.code;
+        this.showAlert = true;
       }
     },
   },

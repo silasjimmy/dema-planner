@@ -517,7 +517,7 @@
     </v-main>
 
     <!-- Footer -->
-    <v-footer app absolute padless v-if="!loggedIn">
+    <!-- <v-footer app absolute padless v-if="!loggedIn">
       <v-card flat tile width="100vw">
         <v-card-text class="text-center">
           <v-btn rounded link class="ma-2 text-none" elevation="0" to="/home"
@@ -590,7 +590,7 @@
           <span>{{ new Date().getFullYear() }} — <strong>Dema</strong></span>
         </v-card-text>
       </v-card>
-    </v-footer>
+    </v-footer> -->
 
     <!-- Page load overlay -->
     <v-overlay opacity="1" z-index="10" :value="pageLoadOverlay">
