@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-card outlined>
+    <v-card flat>
       <v-card-text class="text--primary">
         <v-container class="pa-0">
           <v-row no-gutters align="center">

@@ -18,7 +18,8 @@ import {
 
 export default new Vuex.Store({
   state: {
-    pageTitle: 'Home',
+    pageTitle: '',
+    pageLoading: false,
     loggedIn: false,
     email: undefined,
     role: undefined,
@@ -40,6 +41,9 @@ export default new Vuex.Store({
   mutations: {
     setPageTitle(state, title) {
       state.pageTitle = title
+    },
+    setPageLoading(state, status) {
+      state.pageLoading = status
     },
     setLoggedIn(state, status) {
       state.loggedIn = status

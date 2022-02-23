@@ -133,9 +133,6 @@ export default {
     },
   },
   methods: {
-    /**
-     * Signs up a user using email and password
-     */
     async emailSignUp() {
       if (this.$refs.signUpForm.validate()) {
         try {
@@ -155,10 +152,8 @@ export default {
           this.alertMessage = "You will be redirected to log in";
           this.showAlert = true;
 
-          setTimeout(() => {
-            // Direct to log in page
-            this.$router.replace({ name: "sign-in" });
-          }, 3000);
+          // Redirect to log in
+          setTimeout(() => this.$router.replace({ name: "sign-in" }), 1000);
         } catch (error) {
           // Stop loading
           this.emailSignUpLoad = false;
@@ -170,9 +165,6 @@ export default {
         }
       }
     },
-    /**
-     * Signs up a user using Google provider
-     */
     async googleSignUp() {
       try {
         // Start loading
@@ -192,10 +184,7 @@ export default {
         this.alertMessage = "You will be redirected to log in";
         this.showAlert = true;
 
-        setTimeout(() => {
-          // Direct to log in page
-          this.$router.replace({ name: "sign-in" });
-        }, 3000);
+        setTimeout(() => this.$router.replace({ name: "sign-in" }), 1000);
       } catch (error) {
         // Stop loading
         this.googleSignUpLoad = false;

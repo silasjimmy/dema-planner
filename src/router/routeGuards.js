@@ -9,6 +9,9 @@ import store from '../store'
  * @param {object} next Vue Router next object
  */
 function checkAuth(to, from, next) {
+    // Set the page title in the dashboard bar
+    store.commit('setPageTitle', to.meta.title)
+
     let init = new Promise(resolve => resolve(false))
 
     // Initialize firebase before routing
@@ -18,6 +21,7 @@ function checkAuth(to, from, next) {
 
             onAuthStateChanged(auth, user => {
                 if (user) {
+                    store.commit('setPageLoading', true)
                     store.commit('setEmail', user.email)
                     store.commit('setLoggedIn', true)
                     resolve(true)
@@ -46,6 +50,9 @@ function checkAuth(to, from, next) {
             store.commit('setDashboardLinks', store.state.profile.role)
         }
     }).finally(() => {
+        // Stop page laod
+        store.commit('setPageLoading', false)
+
         // 1. Check if it is a landing page
         if (to.meta.landingPage) {
             // 1.1 If it is , check user is logged in

@@ -578,14 +578,13 @@
     <!-- Page load overlay -->
     <v-overlay opacity="1" z-index="10" :value="pageLoadOverlay">
       <v-progress-circular
-        :rotate="360"
-        :size="250"
-        :width="12"
-        :value="pageLoadValue"
-        :color="pageLoadColor"
+        indeterminate
+        :size="200"
+        :width="4"
+        color="success"
         class="text-center"
       >
-        {{ pageLoadMessage }}
+        Loading...
       </v-progress-circular>
     </v-overlay>
   </v-app>
@@ -593,7 +592,7 @@
 
 <script>
 import { getAuth, signOut } from "firebase/auth";
-import { mapState, mapActions, mapGetters } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import MealsInfo from "./components/MealsInfo.vue";
 
 export default {
@@ -603,7 +602,6 @@ export default {
       scrollYPos: 0,
       unreadMessages: [],
       unreadNotifications: [],
-      pageLoadOverlay: false,
       pageLoadMessage: "",
       pageLoadColor: "",
       pageLoadValue: 0,
@@ -619,7 +617,6 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["getProfileAction", "getSettingsAction"]),
     lastReply(message) {
       return message.replies[message.replies.length - 1];
     },
@@ -664,6 +661,9 @@ export default {
     showFabBtn() {
       if (this.scrollYPos > 200) return true;
       return false;
+    },
+    pageLoadOverlay() {
+      return this.$store.state.pageLoading;
     },
   },
   components: { MealsInfo },
