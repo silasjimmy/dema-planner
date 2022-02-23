@@ -57,6 +57,12 @@ function sortNotifications(notifications) {
     return notificationsArray.sort((a, b) => b.created - a.created);
 }
 
+/**
+ * Generates a meal based on the provided foods
+ * @param {array} foods List of all available foods
+ * @param {object} mealTime Name and time of the meal
+ * @returns 
+ */
 function generateMeal(foods, mealTime) {
     const nutrients = ['protein', 'carbohydrate', 'vitamin']
     let mealFoods = []

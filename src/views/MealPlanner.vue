@@ -70,7 +70,8 @@
                   <v-btn
                     fab
                     small
-                    :disabled="!meals"
+                    :disabled="meals.length == 0"
+                    :loading="loadingRegenerate"
                     elevation="1"
                     color="success"
                     v-bind="attrs"
@@ -102,7 +103,7 @@
       {{ alertMessage }}
     </v-alert> -->
 
-      <v-card-text class="text-center" v-if="meals">
+      <v-card-text class="text-center" v-if="meals.length === 0">
         <p class="subtitle-1">
           It seems you don't have meals for today. Click generate to
           automatically create a meal plan. Don't worry, we know what you
@@ -119,8 +120,9 @@
         </v-btn>
       </v-card-text>
 
-      <v-card-text v-if="!meals">
+      <v-card-text v-if="meals.length > 0">
         <v-container class="pa-0">
+          <!-- Meal card -->
           <v-row>
             <v-col
               cols="12"
@@ -185,7 +187,7 @@
                   <v-checkbox
                     hide-details
                     dense
-                    @change="ateMeal(meal.id)"
+                    @change="ateMeal(meal)"
                     v-model="meal.ate"
                     label="I ate this meal"
                     color="green"
@@ -293,16 +295,28 @@
                     </v-card-actions>
                   </v-card>
                 </v-expand-transition>
+
+                <!-- Meal load overlay -->
+                <v-fade-transition>
+                  <v-overlay
+                    absolute
+                    z-index="0"
+                    :opacity="1"
+                    color="green lighten-5"
+                    :value="loadingRegenerate"
+                  >
+                    <v-progress-circular
+                      indeterminate
+                      size="64"
+                      width="3"
+                      color="success"
+                    ></v-progress-circular>
+                  </v-overlay>
+                </v-fade-transition>
               </v-card>
             </v-col>
           </v-row>
         </v-container>
-
-        <!-- Meal card skeleton loader -->
-        <!-- <v-skeleton-loader
-                  elevation="1"
-                  type="card-heading, list-item-avatar, card-heading"
-                ></v-skeleton-loader> -->
       </v-card-text>
     </v-card>
 
@@ -325,8 +339,8 @@ export default {
   title: "Meal planner",
   name: "MealPlanner",
   async created() {
-    // Fetch user meals for the day
     await this.getMealsAction();
+    await this.getAvailableFoodsAction();
   },
   data() {
     return {
@@ -334,6 +348,7 @@ export default {
       toastMessage: "",
       showToast: false,
       loadingMeals: false,
+      loadingRegenerate: false,
       datePickerMenu: false,
       mealsDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
@@ -362,10 +377,12 @@ export default {
   },
   methods: {
     ...mapActions([
+      "getAvailableFoodsAction",
       "getMealsAction",
       "deleteMealAction",
       "addMealAction",
       "updateMealAction",
+      "saveAteMealAction",
     ]),
     formatTime(timeString) {
       const date = new Date("1970-01-01 " + timeString);
@@ -391,7 +408,7 @@ export default {
           this.toastMessage = "Meals created successfully!";
           this.actionSuccess = true;
         } catch (error) {
-          this.toastMessage = error;
+          this.toastMessage = error.message;
           this.actionSuccess = false;
         } finally {
           this.loadingMeals = false;
@@ -400,6 +417,8 @@ export default {
       }
     },
     async regenerateMeals() {
+      this.loadingRegenerate = true;
+
       const mealsCopy = [...this.meals];
 
       // First delete all the meals that exists
@@ -407,6 +426,7 @@ export default {
         try {
           await this.deleteMealAction(mealsCopy[mealIndex]);
         } catch (error) {
+          this.loadingRegenerate = false;
           this.toastMessage = error.code;
           this.actionSuccess = false;
           this.showToast = true;
@@ -425,12 +445,13 @@ export default {
           // Uplaod the generated meal to the database
           await this.addMealAction(meal);
         } catch (error) {
-          this.toastMessage = error;
+          this.toastMessage = error.code;
           this.actionSuccess = false;
           return;
         }
       }
 
+      this.loadingRegenerate = false;
       this.toastMessage = "Meals regenerated successfully!";
       this.actionSuccess = true;
       this.showToast = true;
@@ -453,9 +474,17 @@ export default {
       const meal = this.meals.find((obj) => obj.id === id);
       console.log(meal.name);
     },
-    ateMeal(id) {
-      const meal = this.meals.find((obj) => obj.id === id);
-      console.log(meal.name);
+    async ateMeal(meal) {
+      try {
+        await this.saveAteMealAction(meal);
+        this.toastMessage = "Congrats! That's the spirit!";
+        this.actionSuccess = true;
+      } catch (error) {
+        this.toastMessage = error.message;
+        this.actionSuccess = false;
+      } finally {
+        this.showToast = true;
+      }
     },
   },
   components: {

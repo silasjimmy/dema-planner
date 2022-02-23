@@ -14,6 +14,7 @@ import {
   getDocs,
   query,
   where,
+  updateDoc,
 } from "firebase/firestore";
 
 export default new Vuex.Store({
@@ -23,7 +24,7 @@ export default new Vuex.Store({
     loggedIn: false,
     email: undefined,
     role: undefined,
-    meals: undefined,
+    meals: [],
     profile: undefined,
     settings: undefined,
     notifications: undefined,
@@ -226,6 +227,38 @@ export default new Vuex.Store({
       const eateries = snapShot.docs.map(doc => doc.data())
       commit('setEateries', eateries);
     },
+    async addMealAction({ commit, state }, meal) {
+      // Add a single meal to the database
+      const db = getFirestore();
+      const docRef = doc(db, `users/${state.email}/meals/meal${meal.id}`)
+      await setDoc(docRef, meal, { merge: true })
+      commit('addMeal', meal)
+    },
+    async deleteMealAction({ commit, state }, meal) {
+      const db = getFirestore()
+      const docRef = doc(db, `users/${state.email}/meals/meal${meal.id}`)
+      await deleteDoc(docRef);
+      commit('deleteMeal', meal)
+    },
+    async updateMealAction({ commit, state }, meal) {
+      const db = getFirestore()
+      const docRef = doc(db, `users/${state.email}/meals/meal${meal.id}`)
+
+      // Change the dialog variables to false
+      meal.servingsDialog = false
+      meal.revealServings = false
+
+      await setDoc(docRef, meal, { merge: true })
+      commit('updateMeal', meal)
+    },
+    async saveAteMealAction({ commit, state }, meal) {
+      const db = getFirestore()
+      const docRef = doc(db, `users/${state.email}/meals/meal${meal.id}`)
+      await updateDoc(docRef, {
+        ate: meal.ate
+      })
+      commit('updateMeal', meal)
+    },
 
     async getMessagesAction({ commit, state }) {
       // Get user messages
@@ -340,34 +373,6 @@ export default new Vuex.Store({
 
       // Delete from store
       commit('deleteMenuFood', food)
-    },
-
-    async addMealAction({ commit, state }, meal) {
-      // Add a single meal to the database
-      const db = getFirestore();
-      const docRef = doc(db, `profiles/${state.email}/meals/meal${meal.id}`)
-      await setDoc(docRef, meal, { merge: true })
-      commit('addMeal', meal)
-    },
-    async updateMealAction({ commit, state }, meal) {
-      const db = getFirestore()
-
-      // Change the dialog variables to false
-      meal.servingsDialog = false
-      meal.revealServings = false
-
-      await setDoc(doc(db, `profiles/${state.email}/meals/meal${meal.id}`), meal, { merge: true })
-
-      commit('updateMeal', meal)
-    },
-    async deleteMealAction({ commit, state }, meal) {
-      const db = getFirestore()
-
-      // Delete from database
-      await deleteDoc(doc(db, `profiles/${state.email}/meals/meal${meal.id}`));
-
-      // Delete from store
-      commit('deleteMeal', meal)
     },
     async addLikedFoodAction({ commit, state }, food) {
       // Add a single liked food to the database
