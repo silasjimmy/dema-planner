@@ -601,72 +601,12 @@
 </template>
 
 <script>
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { getAuth, signOut } from "firebase/auth";
 import { mapState, mapActions, mapGetters } from "vuex";
 import MealsInfo from "./components/MealsInfo.vue";
 
 export default {
   name: "App",
-  async created() {
-    // Initialize store with initial data
-    this.$store.commit(
-      "setLoggedIn",
-      localStorage.getItem("loggedIn") === "true"
-    );
-    this.$store.commit("setEmail", localStorage.getItem("email"));
-    this.$store.commit("setDashboardLinks", localStorage.getItem("role"));
-    this.$store.commit("setRole", localStorage.getItem("role"));
-
-    if (localStorage.getItem("loggedIn") === "true") {
-      // Show the page load overlay
-      this.pageLoadMessage = `Loading data: ${this.pageLoadValue}%`;
-      this.pageLoadColor = "success";
-      this.pageLoadOverlay = true;
-
-      try {
-        // Load user profile
-        await this.getProfileAction();
-        this.pageLoadValue += 50;
-        this.pageLoadMessage = `Loading data: ${this.pageLoadValue}%`;
-
-        // Load user settings
-        await this.getSettingsAction();
-        this.pageLoadValue += 50;
-        this.pageLoadMessage = `Loading data: ${this.pageLoadValue}%`;
-
-        setTimeout(() => {
-          // Hide overlay
-          this.pageLoadOverlay = false;
-        }, 1000);
-      } catch (error) {
-        this.pageLoadMessage = error.message;
-        this.pageLoadColor = "error";
-      }
-    }
-  },
-  mounted() {
-    // Monitor the user sign in activity
-    const auth = getAuth();
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // Update store data
-        this.$store.commit("setLoggedIn", true);
-        this.$store.commit("setEmail", user.email);
-        this.$store.commit("setDashboardLinks", localStorage.getItem("role"));
-      } else {
-        // Delete role, email and log in state from local storage
-        localStorage.removeItem("role");
-        localStorage.removeItem("email");
-        localStorage.removeItem("loggedIn");
-
-        // Update store data
-        this.$store.commit("setLoggedIn", false);
-        this.$store.commit("setEmail", "");
-        this.$store.commit("setRole", "");
-      }
-    });
-  },
   data() {
     return {
       scrollYPos: 0,

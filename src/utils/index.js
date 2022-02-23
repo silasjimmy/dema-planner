@@ -1,5 +1,6 @@
 import { getFirestore, getDoc, doc, setDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import store from '../store'
 
 /**
@@ -143,9 +144,34 @@ async function uploadImage(imageObject) {
     return url
 }
 
+/**
+ * Initializes firebase auth
+ * @returns {object} resolve A promise object
+ */
+function initFirebaseAuth() {
+    const auth = getAuth()
+
+    return new Promise(resolve => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                store.commit("setLoggedIn", true);
+                store.commit("setEmail", user.email);
+                store.dispatch('initAction')
+            } else {
+                store.commit("setLoggedIn", undefined);
+                store.commit("setEmail", undefined);
+                store.commit("setRole", undefined);
+            }
+
+            resolve()
+        });
+    })
+}
+
 const defaultImageUrl = "https://firebasestorage.googleapis.com/v0/b/demaplanner.appspot.com/o/profileAvatars%2Fdefault%2Fdefault-image.png?alt=media&token=c5fac7bb-ab08-4cf4-9e53-4560d08b60df"
 
 export {
+    initFirebaseAuth,
     roleRedirect,
     checkUserProfile,
     defaultImageUrl,

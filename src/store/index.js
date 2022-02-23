@@ -381,6 +381,16 @@ export default new Vuex.Store({
       // Delete from store
       commit('removeLikedFood', food)
     },
+
+    async initAction({ commit, state, dispatch }) {
+      // Fetches and stores the data
+      await dispatch('getProfileAction')
+
+      commit('setRole', state.profile.role)
+      commit('setDashboardLinks', state.profile.role)
+
+      await dispatch('getSettingsAction')
+    },
   },
   getters: {
     getEateryById: (state) => id => {
