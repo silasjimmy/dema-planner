@@ -92,7 +92,7 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { mapActions } from "vuex";
-import { roleRedirect, checkUserProfile } from "../utils";
+import { roleRedirect } from "../utils";
 
 export default {
   name: "SignIn",
@@ -131,14 +131,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions([
-      "getSettingsAction",
-      "getMessagesAction",
-      "getNotificationsAction",
-    ]),
-    /**
-     * Signs in a user with email and password.
-     */
+    ...mapActions(["getProfileAction"]),
     async emailSignIn() {
       if (this.$refs.loginForm.validate()) {
         try {
@@ -149,6 +142,9 @@ export default {
 
           // Log in the user
           await signInWithEmailAndPassword(auth, this.email, this.password);
+
+          // Stop loading
+          this.emailSignInLoad = false;
 
           // Redirect user to the dashboard
           await this.redirect();
@@ -163,9 +159,6 @@ export default {
         }
       }
     },
-    /**
-     * Signs in a user with google provider.
-     */
     async googleSignIn() {
       try {
         // Start loading
@@ -176,6 +169,9 @@ export default {
 
         // Log in the user
         await signInWithPopup(auth, provider);
+
+        // Stop loading
+        this.googleSignInLoad = false;
 
         // Redirect to dashboard
         await this.redirect();
@@ -189,44 +185,16 @@ export default {
         this.showAlert = true;
       }
     },
-    /**
-     * Redirects the user to the dashboard.
-     */
     async redirect() {
-      // Check if user profile exists
-      const { ...response } = await checkUserProfile();
+      // Fetch user profile
+      await this.getProfileAction();
 
-      // If it does, pull the required data from database
-      if (response.hasProfile) {
-        // Store user data in store
-        this.$store.commit("setProfile", response.profile);
-        this.$store.commit("setDashboardLinks", response.profile.role);
-
-        // Fetch user data
-        await this.getSettingsAction();
-        // await this.getMessagesAction();
-        // await this.getNotificationsAction();
-
-        // Save role, email and log in state in local storage
-        localStorage.setItem("role", response.profile.role);
-        localStorage.setItem("email", response.profile.email);
-        localStorage.setItem("loggedIn", "true");
-
-        // Stop loading
-        this.googleSignInLoad = false;
-
-        // Set user role
-        this.$store.commit("setRole", response.profile.role);
-
-        // 5. Redirect to dashboard
-        this.$router.replace({ name: roleRedirect(response.profile.role) });
-      } else {
-        // Stop loading
-        this.googleSignInLoad = false;
-
-        // If it does not exists, redirect to create profile page
-        this.$router.replace({ name: "create-profile" });
-      }
+      // Redirect based on if the profile exists
+      if (this.$store.state.profile) {
+        this.$router.replace({
+          name: roleRedirect(this.$store.state.profile.role),
+        });
+      } else this.$router.replace({ name: "create-profile" });
     },
   },
 };

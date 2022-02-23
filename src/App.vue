@@ -188,24 +188,20 @@
         </template>
 
         <v-tabs grow color="green">
+          <v-tabs-slider></v-tabs-slider>
           <v-tab class="text-none font-weight-medium">Notifications</v-tab>
           <v-tab class="text-none font-weight-medium">Messages</v-tab>
 
           <!-- Notifications tab -->
           <v-tab-item>
             <p
-              v-if="notifications.length === 0"
+              v-if="!notifications"
               class="text--secondary subtitle-1 text-center py-4 mb-0"
             >
               No notifications
             </p>
 
-            <v-list
-              two-line
-              v-if="notifications.length > 0"
-              class="py-0"
-              max-width="400"
-            >
+            <v-list two-line v-if="notifications" class="py-0" max-width="400">
               <v-list-item-group
                 multiple
                 v-model="unreadNotifications"
@@ -245,7 +241,7 @@
 
             <v-divider></v-divider>
 
-            <v-card v-if="notifications.length > 0" elevation="0">
+            <v-card v-if="notifications" elevation="0">
               <v-card-actions class="justify-center">
                 <v-btn
                   plain
@@ -261,18 +257,13 @@
           <!-- Messages tab -->
           <v-tab-item>
             <p
-              v-if="messages.length === 0"
+              v-if="!messages"
               class="text--secondary subtitle-1 text-center py-4 mb-0"
             >
               No messages
             </p>
 
-            <v-list
-              two-line
-              v-if="messages.length > 0"
-              class="py-0"
-              max-width="400"
-            >
+            <v-list two-line v-if="messages" class="py-0" max-width="400">
               <v-list-item-group
                 multiple
                 v-model="unreadMessages"
@@ -321,7 +312,7 @@
 
             <v-divider></v-divider>
 
-            <v-card v-if="messages.length > 0" elevation="0">
+            <v-card v-if="messages" elevation="0">
               <v-card-actions class="justify-center">
                 <v-btn
                   plain
@@ -664,7 +655,11 @@ export default {
     ...mapState(["dashboardLinks", "profile", "messages", "notifications"]),
     ...mapGetters(["getMessagesByRead", "getNotificationsByRead"]),
     viewDashboard() {
-      return this.$store.state.loggedIn && this.$store.state.role !== "";
+      return (
+        this.$store.state.loggedIn &&
+        this.$store.state.role &&
+        this.$store.state.profile
+      );
     },
     showFabBtn() {
       if (this.scrollYPos > 200) return true;

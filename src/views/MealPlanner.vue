@@ -29,7 +29,7 @@
                   <v-btn
                     icon
                     class="mx-1"
-                    :disabled="meals.length === 0"
+                    :disabled="!meals"
                     v-bind="attrs"
                     v-on="on"
                   >
@@ -70,7 +70,7 @@
                   <v-btn
                     fab
                     small
-                    :disabled="meals.length === 0"
+                    :disabled="!meals"
                     elevation="1"
                     color="success"
                     v-bind="attrs"
@@ -341,7 +341,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["meals", "availableFoods", "userSettings"]),
+    ...mapState(["meals", "availableFoods", "settings"]),
     ...mapGetters(["getFoodsByNutrient"]),
     monthAndYear() {
       return new Date(this.mealsDate).toLocaleDateString("en-US", {
@@ -377,12 +377,12 @@ export default {
     async generateMeals() {
       this.loadingMeals = true;
 
-      for (let index = 0; index < this.userSettings.mealTimes.length; index++) {
+      for (let index = 0; index < this.settings.mealTimes.length; index++) {
         try {
           // Create the meals
           const meal = generateMeal(
             this.availableFoods,
-            this.userSettings.mealTimes[index]
+            this.settings.mealTimes[index]
           );
 
           // Uplaod the generated meal to the database
@@ -415,11 +415,11 @@ export default {
       }
 
       // Then create new meals
-      for (let index = 0; index < this.userSettings.mealTimes.length; index++) {
+      for (let index = 0; index < this.settings.mealTimes.length; index++) {
         try {
           const meal = generateMeal(
             this.availableFoods,
-            this.userSettings.mealTimes[index]
+            this.settings.mealTimes[index]
           );
 
           // Uplaod the generated meal to the database

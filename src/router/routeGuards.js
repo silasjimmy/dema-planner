@@ -1,4 +1,5 @@
-import { roleRedirect, initFirebaseAuth } from '../utils'
+import { roleRedirect } from '../utils'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import store from '../store'
 
 /**
@@ -8,12 +9,35 @@ import store from '../store'
  * @param {object} next Vue Router next object
  */
 function checkAuth(to, from, next) {
-    let init = new Promise(resolve => resolve())
+    const initFirebaseAuth = new Promise(resolve => {
+        const auth = getAuth()
+        onAuthStateChanged(auth, user => resolve(user))
+    })
 
-    // Initialize store data
-    if (!store.state.email || !store.state.loggedIn || !store.state.role) init = initFirebaseAuth()
+    // Initialize firebase auth first
+    initFirebaseAuth.then(user => {
+        if (user) {
+            store.commit('setEmail', user.email)
+            store.commit('setLoggedIn', true)
 
-    init.then(() => {
+            // Fetch and store user data
+            return Promise.all([
+                store.dispatch('getProfileAction'),
+                store.dispatch('getSettingsAction')
+            ])
+        } else {
+            store.commit('setEmail', undefined)
+            store.commit('setLoggedIn', undefined)
+            store.commit('setRole', undefined)
+
+            return false
+        }
+    }).then(data => {
+        if (data) {
+            store.commit('setRole', store.state.profile.role)
+            store.commit('setDashboardLinks', store.state.profile.role)
+        }
+    }).finally(() => {
         // 1. Check if it is a landing page
         if (to.meta.landingPage) {
             // 1.1 If it is , check user is logged in

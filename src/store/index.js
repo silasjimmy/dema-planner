@@ -23,8 +23,10 @@ export default new Vuex.Store({
     email: undefined,
     role: undefined,
     meals: undefined,
-    profile: {},
-    settings: {},
+    profile: undefined,
+    settings: undefined,
+    notifications: undefined,
+    messages: undefined,
     eateries: [],
     likedFoods: [],
     dashboardLinks: [],
@@ -33,8 +35,6 @@ export default new Vuex.Store({
     allFoods: [],
     allUsers: [],
     menu: [],
-    notifications: [],
-    messages: [],
     mealTimes: null,
   },
   mutations: {
@@ -380,16 +380,6 @@ export default new Vuex.Store({
 
       // Delete from store
       commit('removeLikedFood', food)
-    },
-
-    async initAction({ commit, state, dispatch }) {
-      // Fetches and stores the data
-      await dispatch('getProfileAction')
-
-      commit('setRole', state.profile.role)
-      commit('setDashboardLinks', state.profile.role)
-
-      await dispatch('getSettingsAction')
     },
   },
   getters: {
