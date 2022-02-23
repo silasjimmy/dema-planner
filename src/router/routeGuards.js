@@ -45,7 +45,7 @@ function checkAuth(to, from, next) {
             ])
         } else return false
     }).then(data => {
-        if (data) {
+        if (data.length > 0 && store.state.profile) {
             store.commit('setRole', store.state.profile.role)
             store.commit('setDashboardLinks', store.state.profile.role)
         }
@@ -55,7 +55,7 @@ function checkAuth(to, from, next) {
 
         // 1. Check if it is a landing page
         if (to.meta.landingPage) {
-            // 1.1 If it is , check user is logged in
+            // 1.1 If it is, check user is logged in
             if (store.state.loggedIn) {
                 // 1.1.1 If he is, check if he has a role
                 if (store.state.role) {

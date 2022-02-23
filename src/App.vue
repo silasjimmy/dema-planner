@@ -411,7 +411,9 @@
       :permanent="$vuetify.breakpoint.smAndUp"
       v-model="rightSidenav"
     >
-      <meals-info v-if="$store.state.role === 'consumer'"></meals-info>
+      <meals-info
+        v-if="$store.state.role === 'consumer' && $store.state.meals"
+      ></meals-info>
     </v-navigation-drawer>
 
     <!-- Dashboard bottom navigation -->

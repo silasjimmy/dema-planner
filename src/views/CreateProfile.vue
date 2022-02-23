@@ -473,7 +473,7 @@
               <v-btn
                 rounded
                 text
-                color="success"
+                class="text-none"
                 :disabled="consumerWindowStep === 1"
                 v-if="consumerWindowStep > 1"
                 @click="consumerWindowStep--"
@@ -487,7 +487,7 @@
               <v-btn
                 rounded
                 text
-                color="success"
+                class="text-none"
                 :disabled="consumerWindowStep === 2"
                 v-if="consumerWindowStep < 2"
                 @click="consumerNext"
@@ -503,6 +503,7 @@
                 :disabled="!agreeTermsAndConditions"
                 :loading="consumerLoading"
                 color="success"
+                class="text-none"
               >
                 <v-icon left>mdi-check-all</v-icon>
                 <span class="mr-2">Finish</span>
@@ -1312,8 +1313,12 @@ export default {
         // Delete local storage data
         localStorage.removeItem("imageUrl");
 
+        // Set the user role and dashboard links
+        this.$store.commit("setRole", profile.role);
+        this.$store.commit("setDashboardLinks", profile.role);
+
         // Redirect to dashboard
-        this.$router.replace({ name: roleRedirect(this.$store.state.role) });
+        this.$router.replace({ name: roleRedirect(profile.role) });
       } catch (error) {
         // Stop loading
         this.consumerLoading = false;
