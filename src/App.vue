@@ -457,46 +457,36 @@
     <!-- Main section -->
     <v-main>
       <!-- Internet connection banner -->
-      <v-container fluid>
-        <v-row>
-          <v-col cols="12">
-            <v-banner
-              app
-              outlined
-              v-model="showBanner"
-              class="rounded-lg"
-              transition="slide-y-transition"
-            >
-              <v-icon
-                slot="icon"
-                :color="isOnline ? 'success' : 'error'"
-                size="24"
-              >
-                {{ isOnline ? "mdi-wifi" : "mdi-wifi-alert" }}
-              </v-icon>
+      <v-banner
+        app
+        outlined
+        v-model="showBanner"
+        class="rounded-lg"
+        transition="slide-y-transition"
+      >
+        <v-icon slot="icon" :color="isOnline ? 'success' : 'error'" size="24">
+          {{ isOnline ? "mdi-wifi" : "mdi-wifi-alert" }}
+        </v-icon>
 
-              <span>
-                {{
-                  isOnline
-                    ? "You are now connected!"
-                    : "You have no internet connection!"
-                }}
-              </span>
+        <span>
+          {{
+            isOnline
+              ? "You are now connected!"
+              : "You have no internet connection!"
+          }}
+        </span>
 
-              <template v-slot:actions="{ dismiss }">
-                <v-btn
-                  rounded
-                  text
-                  :color="isOnline ? 'success' : 'error'"
-                  @click="dismiss"
-                >
-                  {{ isOnline ? "dismiss" : "connect" }}
-                </v-btn>
-              </template>
-            </v-banner>
-          </v-col>
-        </v-row>
-      </v-container>
+        <template v-slot:actions="{ dismiss }">
+          <v-btn
+            rounded
+            text
+            :color="isOnline ? 'success' : 'error'"
+            @click="dismiss"
+          >
+            {{ isOnline ? "dismiss" : "connect" }}
+          </v-btn>
+        </template>
+      </v-banner>
 
       <!-- Router view -->
       <router-view />

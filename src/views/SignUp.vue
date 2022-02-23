@@ -1,88 +1,90 @@
 <template>
-  <v-card outlined class="rounded-lg mx-auto" width="50vw">
-    <v-card-title>Sign up</v-card-title>
-    <v-card-subtitle
-      >Create an account and get started right away</v-card-subtitle
-    >
-
-    <v-card-text class="text-center">
-      <!-- Action alert -->
-      <v-alert
-        text
-        dismissible
-        dense
-        v-model="showAlert"
-        transition="scale-transition"
-        :type="actionSuccess ? 'success' : 'error'"
-        :icon="actionSuccess ? 'mdi-account-check' : 'mdi-account-alert'"
-        class="rounded-lg"
+  <v-sheet class="d-flex flex-column align-center justify-center" height="100%">
+    <v-card outlined class="rounded-lg mx-auto" :width="cardWidth">
+      <v-card-title class="justify-center">Sign up</v-card-title>
+      <v-card-subtitle class="text-center"
+        >Create an account to get started</v-card-subtitle
       >
-        {{ alertMessage }}
-      </v-alert>
 
-      <v-form ref="signUpForm" lazy-validation>
-        <!-- Email address field -->
-        <v-text-field
+      <v-card-text class="text-center pt-4">
+        <!-- Action alert -->
+        <v-alert
+          text
+          dismissible
           dense
-          outlined
-          clearable
-          single-line
-          rounded
-          :rules="[rules.required]"
-          placeholder="example@domain.com"
-          color="success"
-          prepend-icon="mdi-email"
-          v-model="email"
-          label="Email address"
-          type="email"
-        ></v-text-field>
-
-        <!-- Password field -->
-        <v-text-field
-          dense
-          outlined
-          clearable
-          rounded
-          single-line
-          :rules="[rules.required]"
-          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-          @click:append="() => (showPassword = !showPassword)"
-          color="success"
-          prepend-icon="mdi-lock"
-          v-model="password"
-          label="Password"
-          :type="showPassword ? 'text' : 'password'"
-        ></v-text-field>
-
-        <!-- Submit button -->
-        <v-btn
-          rounded
-          :loading="emailSignUpLoad"
-          @click="emailSignUp"
-          color="success"
-          class="text-none"
-          >Create account</v-btn
+          v-model="showAlert"
+          transition="scale-transition"
+          :type="actionSuccess ? 'success' : 'error'"
+          :icon="actionSuccess ? 'mdi-account-check' : 'mdi-account-alert'"
+          class="rounded-lg"
         >
-      </v-form>
-    </v-card-text>
+          {{ alertMessage }}
+        </v-alert>
 
-    <v-card-text class="text-center">
-      <p>Sign up with</p>
+        <v-form ref="signUpForm" lazy-validation>
+          <!-- Email address field -->
+          <v-text-field
+            dense
+            outlined
+            clearable
+            single-line
+            rounded
+            :rules="[rules.required]"
+            placeholder="example@domain.com"
+            color="success"
+            prepend-icon="mdi-email"
+            v-model="email"
+            label="Email address"
+            type="email"
+          ></v-text-field>
 
-      <!-- Google sign up button -->
-      <v-btn
-        small
-        fab
-        elevation="1"
-        color="red"
-        class="text-none"
-        :loading="googleSignUpLoad"
-        @click="googleSignUp"
-      >
-        <v-icon small color="white">mdi-google</v-icon>
-      </v-btn>
-    </v-card-text>
-  </v-card>
+          <!-- Password field -->
+          <v-text-field
+            dense
+            outlined
+            clearable
+            rounded
+            single-line
+            :rules="[rules.required]"
+            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append="() => (showPassword = !showPassword)"
+            color="success"
+            prepend-icon="mdi-lock"
+            v-model="password"
+            label="Password"
+            :type="showPassword ? 'text' : 'password'"
+          ></v-text-field>
+
+          <!-- Submit button -->
+          <v-btn
+            rounded
+            :loading="emailSignUpLoad"
+            @click="emailSignUp"
+            color="success"
+            class="text-none"
+            >Create account</v-btn
+          >
+        </v-form>
+      </v-card-text>
+
+      <v-card-text class="text-center">
+        <p>Sign up with</p>
+
+        <!-- Google sign up button -->
+        <v-btn
+          small
+          fab
+          elevation="1"
+          color="red"
+          class="text-none"
+          :loading="googleSignUpLoad"
+          @click="googleSignUp"
+        >
+          <v-icon small color="white">mdi-google</v-icon>
+        </v-btn>
+      </v-card-text>
+    </v-card>
+  </v-sheet>
 </template>
 
 <script>
@@ -111,6 +113,24 @@ export default {
       actionSuccess: false,
       alertMessage: "",
     };
+  },
+  computed: {
+    cardWidth() {
+      switch (this.$vuetify.breakpoint.name) {
+        case "xl":
+          return "30vw";
+        case "lg":
+          return "40vw";
+        case "md":
+          return "50vw";
+        case "sm":
+          return "70vw";
+        case "xs":
+          return "90vw";
+        default:
+          return "100vw";
+      }
+    },
   },
   methods: {
     /**
