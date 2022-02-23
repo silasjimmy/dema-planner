@@ -1,77 +1,94 @@
 <template>
   <v-container>
-    <div class="pa-3 d-flex justify-space-between align-center">
-      <div class="d-flex flex-column align-center">
-        <h2 class="text-h6 text-uppercase font-weight-light">
-          {{ weekday }}
-        </h2>
-        <h2 class="text-h2 font-weight-bold">{{ day }}</h2>
-      </div>
-      <div class="d-flex align-center">
-        <h2 class="subtitle-1 mr-2">
-          {{ monthAndYear }}
-        </h2>
-        <v-menu
-          offset-y
-          v-model="datePickerMenu"
-          transition="scale-transition"
-          ref="dateMenu"
-          :return-value.sync="mealsDate"
-          :close-on-content-click="false"
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn icon :disabled="meals.length === 0" v-bind="attrs" v-on="on">
-              <v-icon>mdi-calendar</v-icon>
-            </v-btn>
-          </template>
-          <v-date-picker
-            v-if="datePickerMenu"
-            v-model="mealsDate"
-            header-color="blue-grey"
-            color="green"
-            show-current="false"
-          >
-            <v-btn
-              text
-              color="red"
-              class="font-weight-bold"
-              @click="datePickerMenu = false"
-            >
-              Cancel
-            </v-btn>
-            <v-spacer></v-spacer>
-            <v-btn
-              text
-              color="orange"
-              class="font-weight-bold"
-              @click="$refs.dateMenu.save(mealsDate)"
-            >
-              Ok
-            </v-btn>
-          </v-date-picker>
-        </v-menu>
-      </div>
-      <v-tooltip left color="black">
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            fab
-            small
-            :disabled="meals.length === 0"
-            elevation="1"
-            color="success"
-            v-bind="attrs"
-            v-on="on"
-            @click="regenerateMeals"
-          >
-            <v-icon>mdi-rotate-right</v-icon>
-          </v-btn>
-        </template>
-        <span>Regenerate all meals</span>
-      </v-tooltip>
-    </div>
+    <v-card outlined>
+      <v-card-text class="text--primary">
+        <v-container class="pa-0">
+          <v-row no-gutters align="center">
+            <v-col cols="12" sm="4" class="d-flex">
+              <div class="text-center">
+                <h1 class="text-h6 text-uppercase font-weight-light">
+                  {{ weekday }}
+                </h1>
+                <h1 class="text-h2 font-weight-bold">{{ day }}</h1>
+              </div>
+              <v-spacer></v-spacer>
+            </v-col>
+            <v-col cols="12" sm="4" class="d-flex align-center justify-center">
+              <h2 class="subtitle-1 mx-1">
+                {{ monthAndYear }}
+              </h2>
+              <v-menu
+                offset-y
+                v-model="datePickerMenu"
+                transition="scale-transition"
+                ref="dateMenu"
+                :return-value.sync="mealsDate"
+                :close-on-content-click="false"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    icon
+                    class="mx-1"
+                    :disabled="meals.length === 0"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    <v-icon>mdi-calendar</v-icon>
+                  </v-btn>
+                </template>
 
-    <!-- Alert for anything that happens in the page -->
-    <!-- <v-alert
+                <v-date-picker
+                  v-if="datePickerMenu"
+                  v-model="mealsDate"
+                  header-color="blue-grey"
+                  color="green"
+                  show-current="false"
+                >
+                  <v-btn
+                    text
+                    color="red"
+                    class="font-weight-bold"
+                    @click="datePickerMenu = false"
+                  >
+                    Cancel
+                  </v-btn>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    text
+                    color="orange"
+                    class="font-weight-bold"
+                    @click="$refs.dateMenu.save(mealsDate)"
+                  >
+                    Ok
+                  </v-btn>
+                </v-date-picker>
+              </v-menu>
+            </v-col>
+            <v-col cols="12" sm="4" class="text-right">
+              <v-tooltip left color="black">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    fab
+                    small
+                    :disabled="meals.length === 0"
+                    elevation="1"
+                    color="success"
+                    v-bind="attrs"
+                    v-on="on"
+                    @click="regenerateMeals"
+                  >
+                    <v-icon>mdi-rotate-right</v-icon>
+                  </v-btn>
+                </template>
+                <span>Regenerate all meals</span>
+              </v-tooltip>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-text>
+
+      <!-- Alert for anything that happens in the page -->
+      <!-- <v-alert
       text
       dense
       dismissible
@@ -85,27 +102,25 @@
       {{ alertMessage }}
     </v-alert> -->
 
-    <v-row no-gutters>
-      <v-col cols="12" lg="8" class="mx-auto py-4" v-if="meals.length === 0">
-        <div class="text-center">
-          <p class="text--secondary">
-            It seems you don't have meals for today. Click generate to
-            automatically create a meal plan. Don't worry, we know what you
-            like...
-          </p>
-          <v-btn
-            rounded
-            :loading="loadingMeals"
-            @click="generateMeals"
-            color="success"
-          >
-            <v-icon left>mdi-rotate-right</v-icon>
-            Generate
-          </v-btn>
-        </div>
-      </v-col>
-      <v-col cols="12" v-if="meals.length > 0">
-        <v-container>
+      <v-card-text class="text-center" v-if="!meals">
+        <p class="subtitle-1">
+          It seems you don't have meals for today. Click generate to
+          automatically create a meal plan. Don't worry, we know what you
+          like...
+        </p>
+        <v-btn
+          rounded
+          :loading="loadingMeals"
+          @click="generateMeals"
+          color="success"
+        >
+          <v-icon left>mdi-rotate-right</v-icon>
+          Generate
+        </v-btn>
+      </v-card-text>
+
+      <v-card-text v-if="meals">
+        <v-container class="pa-0">
           <v-row>
             <v-col
               cols="12"
@@ -288,8 +303,8 @@
                   elevation="1"
                   type="card-heading, list-item-avatar, card-heading"
                 ></v-skeleton-loader> -->
-      </v-col>
-    </v-row>
+      </v-card-text>
+    </v-card>
 
     <!-- Action toast -->
     <toast
