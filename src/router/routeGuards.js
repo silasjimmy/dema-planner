@@ -9,29 +9,37 @@ import store from '../store'
  * @param {object} next Vue Router next object
  */
 function checkAuth(to, from, next) {
-    const initFirebaseAuth = new Promise(resolve => {
-        const auth = getAuth()
-        onAuthStateChanged(auth, user => resolve(user))
-    })
+    let init = new Promise(resolve => resolve(false))
+
+    // Initialize firebase before routing
+    if (!store.state.email || !store.state.loggedIn || !store.state.role) {
+        init = new Promise(resolve => {
+            const auth = getAuth()
+
+            onAuthStateChanged(auth, user => {
+                if (user) {
+                    store.commit('setEmail', user.email)
+                    store.commit('setLoggedIn', true)
+                    resolve(true)
+                } else {
+                    store.commit('setEmail', undefined)
+                    store.commit('setLoggedIn', undefined)
+                    store.commit('setRole', undefined)
+                    resolve(false)
+                }
+            })
+        })
+    }
 
     // Initialize firebase auth first
-    initFirebaseAuth.then(user => {
-        if (user) {
-            store.commit('setEmail', user.email)
-            store.commit('setLoggedIn', true)
-
+    init.then(status => {
+        if (status) {
             // Fetch and store user data
             return Promise.all([
                 store.dispatch('getProfileAction'),
                 store.dispatch('getSettingsAction')
             ])
-        } else {
-            store.commit('setEmail', undefined)
-            store.commit('setLoggedIn', undefined)
-            store.commit('setRole', undefined)
-
-            return false
-        }
+        } else return false
     }).then(data => {
         if (data) {
             store.commit('setRole', store.state.profile.role)
