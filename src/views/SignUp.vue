@@ -174,7 +174,10 @@ export default {
         const provider = new GoogleAuthProvider();
 
         // Create user account
-        await signInWithPopup(auth, provider);
+        const res = await signInWithPopup(auth, provider);
+
+        // Save the photo url
+        localStorage.setItem("imageUrl", res.user.photoURL);
 
         // Sign out the user
         await signOut(auth);

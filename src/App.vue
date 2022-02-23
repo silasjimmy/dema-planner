@@ -597,6 +597,9 @@ import MealsInfo from "./components/MealsInfo.vue";
 
 export default {
   name: "App",
+  // created() {
+  //   console.log(this.$store.state.role);
+  // },
   data() {
     return {
       scrollYPos: 0,

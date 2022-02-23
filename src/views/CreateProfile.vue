@@ -1,15 +1,21 @@
 <template>
-  <v-card flat width="60vw" class="mx-auto">
+  <v-card flat :width="cardWidth" class="mx-auto">
     <v-card-title class="justify-center">Create your profile</v-card-title>
     <v-card-subtitle class="text-center"
       >This will help us know you better</v-card-subtitle
     >
 
     <v-card-text>
-      <v-tabs fixed-tabs v-model="tab" color="success">
+      <v-tabs fixed-tabs icons-and-text v-model="tab" color="success">
         <v-tabs-slider></v-tabs-slider>
-        <v-tab class="text-capitalize">Consumer</v-tab>
-        <v-tab disabled class="text-capitalize">Eatery</v-tab>
+        <v-tab class="text-capitalize">
+          <span v-if="$vuetify.breakpoint.smAndUp">Consumer</span>
+          <v-icon>mdi-account-details</v-icon>
+        </v-tab>
+        <v-tab class="text-capitalize">
+          <span v-if="$vuetify.breakpoint.smAndUp">Eatery</span>
+          <v-icon>mdi-table-chair</v-icon>
+        </v-tab>
       </v-tabs>
     </v-card-text>
 
@@ -34,6 +40,8 @@
             <v-card-title>{{ currentConsumerTitle }}</v-card-title>
             <v-card-subtitle>{{ currentConsumerSubtitle }}</v-card-subtitle>
 
+            <v-divider></v-divider>
+
             <v-window v-model="consumerWindowStep">
               <v-window-item :value="1">
                 <v-subheader>Primary</v-subheader>
@@ -41,9 +49,8 @@
                   <v-container>
                     <v-row>
                       <!-- Name -->
-                      <v-col cols="12" sm="6">
+                      <v-col cols="12" sm="6" class="pb-0">
                         <v-text-field
-                          hide-details
                           dense
                           outlined
                           :rules="[rules.required]"
@@ -55,12 +62,11 @@
                         ></v-text-field>
                       </v-col>
                       <!-- Date of birth -->
-                      <v-col cols="12" sm="6">
+                      <v-col cols="12" sm="6" class="pb-0">
                         <v-text-field
-                          hide-details
                           dense
                           outlined
-                          :rules="[rules.required]"
+                          :rules="[rules.required, rules.age]"
                           v-model="consumerProfile.dateOfBirth"
                           label="Date of birth"
                           color="success"
@@ -69,10 +75,9 @@
                         ></v-text-field>
                       </v-col>
                       <!-- Gender -->
-                      <v-col cols="12" sm="6">
+                      <v-col cols="12" sm="6" class="pb-0">
                         <v-select
                           outlined
-                          hide-details
                           dense
                           :rules="[rules.required]"
                           v-model="consumerProfile.gender"
@@ -84,9 +89,8 @@
                         ></v-select>
                       </v-col>
                       <!-- Town -->
-                      <v-col cols="12" sm="6">
+                      <v-col cols="12" sm="6" class="pb-0">
                         <v-text-field
-                          hide-details
                           dense
                           outlined
                           readonly
@@ -99,9 +103,8 @@
                         ></v-text-field>
                       </v-col>
                       <!-- Country -->
-                      <v-col cols="12" sm="6">
+                      <v-col cols="12" sm="6" class="pb-0">
                         <v-text-field
-                          hide-details
                           dense
                           outlined
                           readonly
@@ -464,6 +467,8 @@
               </v-window-item>
             </v-window>
 
+            <v-divider></v-divider>
+
             <v-card-actions>
               <v-btn
                 rounded
@@ -507,19 +512,21 @@
         </v-tab-item>
 
         <v-tab-item>
-          <v-card outlined class="rounded-lg ma-2">
+          <v-card outlined class="rounded-lg">
             <v-card-title>{{ currentEateryTitle }}</v-card-title>
             <v-card-subtitle>{{ currentEaterySubtitle }}</v-card-subtitle>
 
+            <v-divider></v-divider>
+
             <v-window v-model="eateryWindowStep">
               <v-window-item :value="1">
+                <v-subheader>Primary</v-subheader>
                 <v-form lazy-validation ref="eateryOne">
                   <v-container>
                     <v-row>
                       <!-- Name -->
-                      <v-col cols="12" sm="6">
+                      <v-col cols="12" sm="6" class="pb-0">
                         <v-text-field
-                          hide-details
                           dense
                           outlined
                           :rules="[rules.required]"
@@ -531,23 +538,21 @@
                         ></v-text-field>
                       </v-col>
                       <!-- Town -->
-                      <v-col cols="12" sm="6">
+                      <v-col cols="12" sm="6" class="pb-0">
                         <v-text-field
-                          hide-details
                           dense
                           outlined
                           readonly
                           v-model="eateryProfile.town"
-                          label="City"
+                          label="Town"
                           color="success"
                           type="text"
                           prepend-icon="mdi-map-marker"
                         ></v-text-field>
                       </v-col>
                       <!-- Country -->
-                      <v-col cols="12" sm="6">
+                      <v-col cols="12" sm="6" class="pb-0">
                         <v-text-field
-                          hide-details
                           dense
                           outlined
                           readonly
@@ -559,9 +564,8 @@
                         ></v-text-field>
                       </v-col>
                       <!-- Website -->
-                      <v-col cols="12" sm="6">
+                      <v-col cols="12" sm="6" class="pb-0">
                         <v-text-field
-                          hide-details
                           dense
                           outlined
                           :rules="[rules.required]"
@@ -573,9 +577,8 @@
                         ></v-text-field>
                       </v-col>
                       <!-- Phone number -->
-                      <v-col cols="12" sm="6">
+                      <v-col cols="12" sm="6" class="pb-0">
                         <v-text-field
-                          hide-details
                           dense
                           outlined
                           :rules="[rules.required]"
@@ -587,12 +590,11 @@
                         ></v-text-field>
                       </v-col>
                       <!-- Bio -->
-                      <v-col cols="12">
+                      <v-col cols="12" class="pb-0">
                         <v-textarea
                           outlined
                           auto-grow
                           dense
-                          hide-details
                           :rules="[rules.required]"
                           v-model="eateryProfile.bio"
                           rows="1"
@@ -952,6 +954,8 @@
               </v-window-item>
             </v-window>
 
+            <v-divider></v-divider>
+
             <v-card-actions>
               <v-btn
                 rounded
@@ -1000,6 +1004,7 @@
 
 <script>
 import { mapActions } from "vuex";
+import { differenceInYears } from "date-fns";
 import {
   defaultImageUrl,
   roleRedirect,
@@ -1010,8 +1015,15 @@ import {
 export default {
   name: "CreateProfile",
   title: "Create profile",
-  mounted() {
+  created() {
+    // Get the user's location
     this.getUserLocation();
+
+    // Set the user's image url
+    if (localStorage.getItem("imageUrl")) {
+      this.consumerProfile.imageUrl = localStorage.getItem("imageUrl");
+      this.eateryProfile.imageUrl = localStorage.getItem("imageUrl");
+    }
   },
   data() {
     return {
@@ -1103,6 +1115,7 @@ export default {
       },
       rules: {
         required: (value) => !!value || "This field is required!",
+        age: (dob) => this.validateAge(dob),
       },
       geoLocationOptions: {
         enableHighAccuracy: true,
@@ -1152,9 +1165,32 @@ export default {
           return "Just one more thing...";
       }
     },
+    cardWidth() {
+      switch (this.$vuetify.breakpoint.name) {
+        case "xl":
+          return "40vw";
+        case "lg":
+          return "50vw";
+        case "md":
+          return "60vw";
+        case "sm":
+          return "80vw";
+        case "xs":
+          return "95vw";
+        default:
+          return "100vw";
+      }
+    },
   },
   methods: {
     ...mapActions(["uploadProfileAction", "uploadSettingsAction"]),
+    validateAge(dob) {
+      const age = differenceInYears(new Date(), new Date(dob));
+
+      if (age === 18 || age > 18) return true;
+
+      return "You are not 18+ years!";
+    },
     getUserLocation() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -1257,7 +1293,7 @@ export default {
 
         // Show success message
         this.actionSuccess = true;
-        this.alertMessage = "Setting up a few things... please wait";
+        this.alertMessage = "Setting up your profile... please wait";
         this.showAlert = true;
 
         // Add user profile
@@ -1269,20 +1305,12 @@ export default {
         // Add user settings
         await this.uploadSettingsAction(settings);
 
-        // Save role, email and log in state in local storage
-        localStorage.setItem("role", profile.role);
-        localStorage.setItem("email", profile.email);
-        localStorage.setItem("loggedIn", "true");
-
         // Stop loading
         this.consumerLoading = false;
         this.eateryLoading = false;
 
-        // Set the dashboard links
-        this.$store.commit("setDashboardLinks", profile.role);
-
-        // Set user role
-        this.$store.commit("setRole", profile.role);
+        // Delete local storage data
+        localStorage.removeItem("imageUrl");
 
         // Redirect to dashboard
         this.$router.replace({ name: roleRedirect(this.$store.state.role) });

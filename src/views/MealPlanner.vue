@@ -102,7 +102,7 @@
       {{ alertMessage }}
     </v-alert> -->
 
-      <v-card-text class="text-center" v-if="!meals">
+      <v-card-text class="text-center" v-if="meals">
         <p class="subtitle-1">
           It seems you don't have meals for today. Click generate to
           automatically create a meal plan. Don't worry, we know what you
@@ -119,7 +119,7 @@
         </v-btn>
       </v-card-text>
 
-      <v-card-text v-if="meals">
+      <v-card-text v-if="!meals">
         <v-container class="pa-0">
           <v-row>
             <v-col

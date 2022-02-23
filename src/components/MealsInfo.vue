@@ -1,10 +1,10 @@
 <template>
   <div>
-    <p class="text-center my-4 text--secondary" v-if="!meals">
+    <p class="text-center my-4 text--secondary" v-if="meals">
       No data available.
     </p>
 
-    <v-card elevation="0" min-height="100vh" v-if="meals">
+    <v-card elevation="0" min-height="100vh" v-if="!meals">
       <v-card-title class="justify-center">Meals summary</v-card-title>
 
       <v-card-subtitle class="text-center pb-0"
