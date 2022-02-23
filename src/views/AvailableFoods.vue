@@ -27,13 +27,9 @@
         </template>
 
         <template v-slot:[`item.favorite`]="{ item }">
-          <v-item-group multiple v-model="favorites" @change="favoriteChange">
-            <v-item v-slot="{ active, toggle }" :value="item">
-              <v-icon @click="toggle" :color="active ? 'success' : ''">{{
-                likeFood(active)
-              }}</v-icon>
-            </v-item>
-          </v-item-group>
+          <v-btn icon color="success">
+            <v-icon @click="like(item)"> mdi-heart </v-icon>
+          </v-btn>
         </template>
       </v-data-table>
     </v-card>
@@ -56,7 +52,6 @@ export default {
   title: "Available foods",
   name: "AvailableFoods",
   async created() {
-    // Fetch the available foods and user's liked foods
     await this.getAvailableFoodsAction();
     await this.getLikedFoodsAction();
     this.favorites = [...this.likedFoods];
@@ -92,11 +87,11 @@ export default {
       "getAvailableFoodsAction",
       "getLikedFoodsAction",
       "addLikedFoodAction",
-      "removeLikedFoodAction",
+      "updateLikedFoodAction",
     ]),
-    likeFood(liked) {
-      if (liked) return "mdi-heart";
-      else return "mdi-heart-outline";
+    like(food) {
+      const index = this.favorites.indexOf(food);
+      console.log(index);
     },
     async favoriteChange() {
       // Get the added food
@@ -105,39 +100,48 @@ export default {
       );
 
       if (newLikedFoods.length > 0) {
-        // Update the store
-        try {
-          await this.addLikedFoodAction(newLikedFoods[0]);
+        console.log("Food liked!");
+        console.log(this.likedFoods);
+        console.log(this.favorites);
+        // try {
+        //   await this.addLikedFoodAction(newLikedFoods[0]);
 
-          this.toastMessage = "Food added successfully!";
-          this.actionSuccess = true;
-        } catch (error) {
-          this.toastMessage = error.code;
-          this.actionSuccess = false;
-        } finally {
-          this.showToast = true;
-        }
+        //   this.toastMessage = "Food added successfully!";
+        //   this.actionSuccess = true;
+        // } catch (error) {
+        //   this.toastMessage = error.code;
+        //   this.actionSuccess = false;
+        // } finally {
+        //   this.showToast = true;
+        // }
       } else {
-        // Get the removed food
-        const removedLikedFoods = this.likedFoods.filter(
-          (f) => !this.favorites.includes(f)
-        );
+        console.log("Food unliked!");
+        console.log(this.likedFoods);
+        console.log(this.favorites);
+        // // Get the removed food
+        // const removedLikedFoods = this.likedFoods.filter(
+        //   (f) => !this.favorites.includes(f)
+        // );
 
-        // Update the store
-        try {
-          await this.removeLikedFoodAction(removedLikedFoods[0]);
+        // try {
+        //   await this.updateLikedFoodAction(removedLikedFoods[0]);
 
-          this.toastMessage = "Food removed successfully!";
-          this.actionSuccess = true;
-        } catch (error) {
-          this.toastMessage = error.code;
-          this.actionSuccess = false;
-        } finally {
-          this.showToast = true;
-        }
+        //   this.toastMessage = "Food removed successfully!";
+        //   this.actionSuccess = true;
+        // } catch (error) {
+        //   this.toastMessage = error.code;
+        //   this.actionSuccess = false;
+        // } finally {
+        //   this.showToast = true;
+        // }
       }
     },
   },
+  // watch: {
+  //   favorites(newValue) {
+  //     console.log(newValue);
+  //   }
+  // },
   components: {
     Toast,
   },

@@ -91,6 +91,14 @@ export default new Vuex.Store({
           state.dashboardLinks = []
       }
     },
+    addLikedFood(state, food) {
+      state.likedFoods.push(food)
+    },
+    updateLikedFood(state, food) {
+      const index = state.availableFoods.findIndex(f => f.id === food.id);
+      state.likedFoods.splice(index, 1);
+      state.likedFoods = [...state.likedFoods];
+    },
 
     setAllFoods(state, foods) {
       state.allFoods = foods
@@ -149,9 +157,7 @@ export default new Vuex.Store({
     setLikedFoods(state, foods) {
       state.likedFoods = foods
     },
-    addLikedFood(state, food) {
-      state.likedFoods.push(food)
-    },
+
     removeLikedFood(state, food) {
       state.likedFoods.splice(food, 1);
     },
@@ -258,6 +264,20 @@ export default new Vuex.Store({
         ate: meal.ate
       })
       commit('updateMeal', meal)
+    },
+    async addLikedFoodAction({ commit, state }, food) {
+      // Add a single liked food to the database
+      const db = getFirestore();
+      const docRef = doc(db, `users/${state.email}/likedFoods/food${food.id}`)
+      await setDoc(docRef, food)
+      commit('addLikedFood', food)
+    },
+    async updateLikedFoodAction({ commit, state }, food) {
+      // Update the liked foods in the database
+      const db = getFirestore();
+      const docRef = doc(db, `users/${state.email}/likedFoods/food${food.id}`)
+      await deleteDoc(docRef)
+      commit('updateLikedFood', food)
     },
 
     async getMessagesAction({ commit, state }) {
@@ -373,13 +393,6 @@ export default new Vuex.Store({
 
       // Delete from store
       commit('deleteMenuFood', food)
-    },
-    async addLikedFoodAction({ commit, state }, food) {
-      // Add a single liked food to the database
-      const db = getFirestore();
-      const docRef = doc(db, `profiles/${state.email}/likedFoods/food${food.id}`)
-      await setDoc(docRef, food)
-      commit('addLikedFood', food)
     },
     async removeLikedFoodAction({ commit, state }, food) {
       const db = getFirestore()
