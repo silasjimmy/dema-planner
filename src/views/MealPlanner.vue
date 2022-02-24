@@ -332,15 +332,17 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
-import { generateMeal } from "../utils";
+import { generateMeal, suggestEatery } from "../utils";
 import Toast from "@/components/Toast.vue";
 
 export default {
   title: "Meal planner",
   name: "MealPlanner",
   async created() {
-    await this.getMealsAction();
-    await this.getAvailableFoodsAction();
+    if (this.$store.state.eateries.length === 0) await this.getEateriesAction();
+    if (this.meals.length === 0) await this.getMealsAction();
+    if (this.availableFoods.length === 0) await this.getAvailableFoodsAction();
+    if (this.allMenus.length === 0) await this.setAllMenusAction();
   },
   data() {
     return {
@@ -356,7 +358,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["meals", "availableFoods", "settings"]),
+    ...mapState(["meals", "availableFoods", "settings", "allMenus"]),
     ...mapGetters(["getFoodsByNutrient"]),
     monthAndYear() {
       return new Date(this.mealsDate).toLocaleDateString("en-US", {
@@ -383,6 +385,10 @@ export default {
       "addMealAction",
       "updateMealAction",
       "saveAteMealAction",
+      "setAllMenusAction",
+      "getEateriesAction",
+      "addSuggestedEatery",
+      "deleteSuggestedEateryAction",
     ]),
     formatTime(timeString) {
       const date = new Date("1970-01-01 " + timeString);
@@ -405,6 +411,12 @@ export default {
           // Uplaod the generated meal to the database
           await this.addMealAction(meal);
 
+          // Search for eatery
+          const findEatery = suggestEatery(meal, this.allMenus);
+
+          // Save the search details if found
+          if (findEatery) await this.addSuggestedEatery(findEatery);
+
           this.toastMessage = "Meals created successfully!";
           this.actionSuccess = true;
         } catch (error) {
@@ -425,6 +437,7 @@ export default {
       for (let mealIndex = 0; mealIndex < mealsCopy.length; mealIndex++) {
         try {
           await this.deleteMealAction(mealsCopy[mealIndex]);
+          // await this.deleteSuggestedEateryAction(mealsCopy[mealIndex]);
         } catch (error) {
           this.loadingRegenerate = false;
           this.toastMessage = error.code;
@@ -444,6 +457,10 @@ export default {
 
           // Uplaod the generated meal to the database
           await this.addMealAction(meal);
+
+          // Find an eatery
+          const findEatery = suggestEatery(meal, this.allMenus);
+          if (findEatery) await this.addSuggestedEatery(findEatery);
         } catch (error) {
           this.toastMessage = error.code;
           this.actionSuccess = false;

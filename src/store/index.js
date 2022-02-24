@@ -35,6 +35,7 @@ export default new Vuex.Store({
     availableFoods: [],
     menu: [],
     allMenus: [],
+    suggestedEateries: [],
 
     allFoods: [],
     allUsers: [],
@@ -115,6 +116,17 @@ export default new Vuex.Store({
     },
     addMenu(state, menu) {
       state.allMenus.push(menu)
+    },
+    addSuggestedEatery(state, eatery) {
+      state.suggestedEateries.push(eatery)
+    },
+    setSuggestedEateries(state, eateries) {
+      state.suggestedEateries = eateries
+    },
+    deleteSuggestedEatery(state, meal) {
+      const index = state.suggestedEateries.findIndex(e => e.mealId === meal.id);
+      state.suggestedEateries.splice(index, 1);
+      state.suggestedEateries = [...state.suggestedEateries]
     },
 
     setAllFoods(state, foods) {
@@ -332,6 +344,25 @@ export default new Vuex.Store({
         // Add to the list of menus
         commit('addMenu', menuObj)
       }
+    },
+    async getSuggestedEateries({ commit, state }) {
+      const db = getFirestore()
+      const collectionRef = collection(db, `users/${state.email}/suggestedEateries`)
+      const snapShot = await getDocs(collectionRef)
+      const suggestedEateries = snapShot.docs.map(doc => doc.data())
+      commit('setSuggstedEateries', suggestedEateries)
+    },
+    async addSuggestedEatery({ commit, state }, eatery) {
+      const db = getFirestore()
+      const docRef = doc(db, `users/${state.email}/suggestedEateries/meal${eatery.mealId}`)
+      await setDoc(docRef, eatery)
+      commit('addSuggestedEatery', eatery)
+    },
+    async deleteSuggestedEateryAction({ commit, state }, meal) {
+      const db = getFirestore()
+      const docRef = doc(db, `users/${state.email}/suggestedEateries/meal${meal.id}`)
+      await deleteDoc(docRef)
+      commit('deleteSuggestedEatery', meal)
     },
 
     async getMessagesAction({ commit, state }) {

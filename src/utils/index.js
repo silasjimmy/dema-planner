@@ -106,6 +106,56 @@ function generateMeal(foods, mealTime) {
     }
 }
 
+/**
+ * Searches for eateries that offer the generated meal
+ * @param {object} meal Consumer's meal
+ * @param {array} menus Menus of the nearest eateries
+ * @returns 
+ */
+function suggestEatery(meal, menus) {
+    let eateryFound = false
+    let suggestedEatery = {
+        eateryName: '',
+        eateryId: '',
+        mealId: '',
+        mealName: '',
+        mealTime: '',
+        reservedSeat: false,
+        foods: []
+    }
+
+    menus.forEach(menu => {
+        meal.foods.forEach(food => {
+            const search = menu.foods.find(f => f.id === food.id)
+
+            // If food in menu, add in foods list
+            if (search) suggestedEatery.foods.push(search)
+            else {
+                // Clear the foods list
+                suggestedEatery.foods = []
+                return
+            }
+        });
+
+        if (suggestedEatery.foods.length > 0) {
+            eateryFound = true
+
+            // Set suggested eatery details
+            suggestedEatery.eateryName = menu.name
+            suggestedEatery.eateryId = menu.id
+            suggestedEatery.mealId = meal.id
+            suggestedEatery.mealName = meal.name
+            suggestedEatery.mealTime = meal.time
+
+            // Stop searching
+            return
+        } else eateryFound = false
+    });
+
+    if (eateryFound) return suggestedEatery
+    else return eateryFound
+}
+
 async function getCounter(docString) {
     // Get the counter of the specified document
     const db = getFirestore();
@@ -137,6 +187,7 @@ async function uploadImage(imageObject) {
 const defaultImageUrl = "https://firebasestorage.googleapis.com/v0/b/demaplanner.appspot.com/o/profileAvatars%2Fdefault%2Fdefault-image.png?alt=media&token=c5fac7bb-ab08-4cf4-9e53-4560d08b60df"
 
 export {
+    suggestEatery,
     roleRedirect,
     defaultImageUrl,
     sortMessages,
