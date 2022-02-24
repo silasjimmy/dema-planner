@@ -354,12 +354,12 @@
         v-if="$store.state.role === 'eatery'"
         class="white--text align-end"
         height="200px"
-        src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+        :src="profile.imageUrl"
         gradient="to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7)"
       >
         <v-list-item two-line>
           <v-list-item-content>
-            <v-list-item-title class="text-h5 white--text">{{
+            <v-list-item-title class="text-h5 text-capitalize white--text">{{
               profile.name
             }}</v-list-item-title>
             <v-list-item-subtitle class="grey--text text--lighten-2"
@@ -373,6 +373,22 @@
           </v-list-item-action>
         </v-list-item>
       </v-img>
+
+      <v-list subheader two-line v-if="$store.state.role === 'eatery'">
+        <!-- Location -->
+        <v-list-item>
+          <v-list-item-avatar>
+            <v-icon> mdi-map-marker </v-icon>
+          </v-list-item-avatar>
+
+          <v-list-item-content>
+            <v-list-item-title>Location</v-list-item-title>
+            <v-list-item-subtitle
+              >{{ profile.town }}, {{ profile.country }}</v-list-item-subtitle
+            >
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
     </v-card>
 
     <!-- Consumer edit profile form -->
@@ -622,48 +638,61 @@
       width="500"
     >
       <v-card>
-        <v-card-title class="d-flex justify-space-between align-center">
+        <v-card-title>
           <span>Edit profile</span>
+          <v-spacer></v-spacer>
           <v-btn icon @click="editProfile = false">
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-card-title>
 
-        <v-card-text class="text-center">
-          <div class="avatar-upload mb-4">
-            <v-img
-              width="100px"
-              height="100px"
-              class="rounded-circle mx-auto d-flex align-center"
-              src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-              gradient="to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)"
-            >
-              <label id="avatar-label" for="avatar">
-                <v-icon class="icon" color="white">mdi-camera</v-icon>
-              </label>
-            </v-img>
+        <v-divider></v-divider>
 
-            <input id="avatar" type="file" accept="image/*" />
-          </div>
-          <v-text-field
-            outlined
-            dense
-            clearable
-            type="text"
-            color="success"
-            prepend-icon="mdi-account"
-            label="Name"
-            v-model="profile.name"
-          ></v-text-field>
+        <v-card-text
+          class="text-center"
+          style="max-height: 70vh"
+          :class="$vuetify.breakpoint.xs ? 'px-0' : ''"
+        >
+          <v-form ref="profileForm">
+            <v-container>
+              <v-row>
+                <!-- Avatar field -->
+                <v-col cols="12">
+                  <avatar-field
+                    :src="profile.imageUrl"
+                    @imageChange="updateImageUrl"
+                  ></avatar-field>
+                </v-col>
+                <!-- Name field -->
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    outlined
+                    dense
+                    clearable
+                    hide-details
+                    :rules="[rules.required]"
+                    type="text"
+                    color="success"
+                    prepend-icon="mdi-account"
+                    label="Name"
+                    v-model="profile.name"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-form>
         </v-card-text>
+
+        <v-divider></v-divider>
 
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
             rounded
+            text
             color="success"
-            class="text-none"
-            @click="editProfile = false"
+            :loading="loadingProfile"
+            @click="saveProfile()"
           >
             Save
           </v-btn>

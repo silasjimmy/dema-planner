@@ -14,11 +14,10 @@
           <v-row>
             <!-- Eatery image -->
             <v-col cols="12" lg="5">
-              <!-- <v-img :src="eatery.image" class="rounded-lg" height="200px"></v-img> -->
               <v-img
+                :src="eatery.imageUrl"
                 class="rounded-lg"
                 height="200px"
-                src="https://images.unsplash.com/photo-1608495368297-de9ff48e6997?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=871&q=80"
               ></v-img>
             </v-col>
 
@@ -67,7 +66,7 @@
                   <v-list-item-content>
                     <v-list-item-title>Location</v-list-item-title>
                     <v-list-item-subtitle class="text-capitalize"
-                      >{{ eatery.city }},
+                      >{{ eatery.town }},
                       {{ eatery.country }}</v-list-item-subtitle
                     >
                   </v-list-item-content>
@@ -120,8 +119,8 @@
                 <v-divider></v-divider>
 
                 <!-- Send message button -->
-                <v-list-item>
-                  <v-btn block text rounded color="success">
+                <v-list-item class="justify-center">
+                  <v-btn text rounded color="success">
                     <v-icon left>mdi-message-text</v-icon>
                     Send a message
                   </v-btn>
@@ -129,15 +128,47 @@
               </v-list>
             </v-col>
 
-            <!-- <v-col cols="12" lg="7">
-        <div class="b">
-          <h1>Menu</h1>
-        </div>
-        <div class="b text-center">
-          <p>You have meals today in this restaurant</p>
-          <v-btn>Reserve a seat</v-btn>
-        </div>
-      </v-col> -->
+            <v-col cols="12" lg="7">
+              <v-data-table
+                divider
+                class="elevation-1"
+                :items="menu.foods"
+                :items-per-page="3"
+                :search="searchFood"
+                sort-by="name"
+                :headers="headers"
+              >
+                <template v-slot:top>
+                  <v-toolbar flat class="rounded-lg">
+                    <v-toolbar-title>Menu</v-toolbar-title>
+
+                    <v-spacer></v-spacer>
+
+                    <v-text-field
+                      hide-details
+                      outlined
+                      dense
+                      single-line
+                      class="shrink"
+                      v-model="searchFood"
+                      append-icon="mdi-magnify"
+                      label="Search for food..."
+                      color="green"
+                    ></v-text-field>
+                  </v-toolbar>
+                </template>
+              </v-data-table>
+
+              <div class="pt-4 text-center d-none">
+                <p>You have meals today in this eatery</p>
+                <v-list-item class="justify-center">
+                  <v-btn text rounded color="success">
+                    <v-icon left>mdi-phone</v-icon>
+                    Reserve a seat
+                  </v-btn>
+                </v-list-item>
+              </div>
+            </v-col>
           </v-row>
         </v-container>
       </v-card-text>
@@ -152,22 +183,29 @@ export default {
   name: "EateryDetails",
   title: "Eatery details",
   async created() {
-    // Load the eateries to the store first if list is empty
     if (this.$store.state.eateries.length === 0) await this.getEateriesAction();
+    if (this.$store.state.allMenus.length === 0) await this.setAllMenusAction();
 
     // Retrieve the eatery with the specified id
     this.eatery = this.getEateryById(this.id);
+    this.menu = this.getMenuById(this.eatery.id);
   },
   data() {
     return {
-      eatery: "",
+      eatery: {},
+      menu: {},
+      searchFood: "",
+      headers: [
+        { text: "Name", value: "name", align: "center" },
+        { text: "Cost", value: "cost", align: "center", sortable: false },
+      ],
     };
   },
   computed: {
-    ...mapGetters(["getEateryById"]),
+    ...mapGetters(["getEateryById", "getMenuById"]),
   },
   methods: {
-    ...mapActions(["getEateriesAction"]),
+    ...mapActions(["getEateriesAction", "setAllMenusAction"]),
   },
   props: {
     id: {

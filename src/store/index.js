@@ -33,10 +33,11 @@ export default new Vuex.Store({
     likedFoods: [],
     dashboardLinks: [],
     availableFoods: [],
+    menu: [],
+    allMenus: [],
 
     allFoods: [],
     allUsers: [],
-    menu: [],
     mealTimes: null,
   },
   mutations: {
@@ -99,6 +100,22 @@ export default new Vuex.Store({
       state.likedFoods.splice(index, 1);
       state.likedFoods = [...state.likedFoods];
     },
+    addMenuFood(state, food) {
+      state.menu.push(food)
+    },
+    updateMenuFood(state, food) {
+      const index = state.menu.findIndex(f => f.id === food.id);
+      state.menu.splice(index, 1, food);
+      state.menu = [...state.menu];
+    },
+    deleteMenuFood(state, food) {
+      const index = state.menu.findIndex(f => f.id === food.id);
+      state.menu.splice(index, 1);
+      state.menu = [...state.menu]
+    },
+    addMenu(state, menu) {
+      state.allMenus.push(menu)
+    },
 
     setAllFoods(state, foods) {
       state.allFoods = foods
@@ -122,17 +139,6 @@ export default new Vuex.Store({
     },
     setMenu(state, menu) {
       state.menu = menu
-    },
-    addMenuFood(state, food) {
-      state.menu.push(food)
-    },
-    updateMenuFood(state, food) {
-      const index = state.menu.findIndex(f => f.id === food.id);
-      state.menu.splice(index, 1, food);
-      state.menu = [...state.menu];
-    },
-    deleteMenuFood(state, food) {
-      state.menu.splice(food, 1);
     },
     setNotifications(state, notifications) {
       state.notifications = notifications
@@ -279,6 +285,54 @@ export default new Vuex.Store({
       await deleteDoc(docRef)
       commit('updateLikedFood', food)
     },
+    async addMenuFoodAction({ commit, state }, food) {
+      const db = getFirestore()
+      const docRef = doc(db, `users/${state.email}/menu/food${food.id}`)
+      await setDoc(docRef, food)
+      commit('addMenuFood', food)
+    },
+    async getMenuAction({ commit, state }) {
+      const db = getFirestore()
+      const collectionRef = collection(db, `users/${state.email}/menu`)
+      const snapShot = await getDocs(collectionRef)
+      const menuFoods = snapShot.docs.map(doc => doc.data())
+      commit('setMenu', menuFoods)
+    },
+    async updateMenuFoodAction({ commit, state }, food) {
+      const db = getFirestore()
+      const docRef = doc(db, `users/${state.email}/menu/food${food.id}`)
+      await setDoc(docRef, food, { merge: true })
+      commit('updateMenuFood', food)
+    },
+    async deleteMenuFoodAction({ commit, state }, food) {
+      const db = getFirestore()
+      const docRef = doc(db, `users/${state.email}/menu/food${food.id}`)
+      await deleteDoc(docRef);
+      commit('deleteMenuFood', food)
+    },
+    async setAllMenusAction({ commit, state }) {
+      for (let index = 0; index < state.eateries.length; index++) {
+        // Get the email of the eatery
+        const eatery = state.eateries[index]
+        const email = eatery.email
+
+        // Fetch the menu
+        const db = getFirestore()
+        const collectionRef = collection(db, `users/${email}/menu`)
+        const snapShot = await getDocs(collectionRef)
+        const menuFoods = snapShot.docs.map(doc => doc.data())
+
+        // Create an object
+        const menuObj = {
+          name: eatery.name,
+          id: eatery.id,
+          foods: menuFoods
+        }
+
+        // Add to the list of menus
+        commit('addMenu', menuObj)
+      }
+    },
 
     async getMessagesAction({ commit, state }) {
       // Get user messages
@@ -356,44 +410,6 @@ export default new Vuex.Store({
       // Add the foods to the store
       commit('setAllUsers', users);
     },
-    async getMenuAction({ commit, state }) {
-      const db = getFirestore()
-
-      // Fetch the menu foods from the database
-      const snapShot = await getDocs(collection(db, 'menus', state.email, 'menu'))
-
-      // Map the foods to an array
-      const menuFoods = snapShot.docs.map(doc => doc.data())
-
-      commit('setMenu', menuFoods)
-    },
-    async addMenuFoodAction({ commit, state }, food) {
-      const db = getFirestore()
-
-      // Upload the food to the database
-      await setDoc(doc(db, 'menus', state.email, 'menu', `food${food.food.id}`), food)
-
-      // Add to store
-      commit('addMenuFood', food)
-    },
-    async updateMenuFoodAction({ commit, state }, food) {
-      const db = getFirestore()
-
-      // Upload the food to the database
-      await setDoc(doc(db, 'menus', state.email, 'menu', `food${food.food.id}`), food, { merge: true })
-
-      // Update in store
-      commit('updateMenuFood', food)
-    },
-    async deleteMenuFoodAction({ commit, state }, food) {
-      const db = getFirestore()
-
-      // Delete from database
-      await deleteDoc(doc(db, "menus", state.email, 'menu', `food${food.food.id}`));
-
-      // Delete from store
-      commit('deleteMenuFood', food)
-    },
     async removeLikedFoodAction({ commit, state }, food) {
       const db = getFirestore()
 
@@ -407,6 +423,9 @@ export default new Vuex.Store({
   getters: {
     getEateryById: (state) => id => {
       return state.eateries.find(e => e.id === id)
+    },
+    getMenuById: (state) => id => {
+      return state.allMenus.find(m => m.id === id)
     },
     getMessageById: (state) => id => {
       return state.messages.find(m => m.id === id)

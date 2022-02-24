@@ -2,8 +2,6 @@
   <v-container fluid>
     <v-card outlined class="rounded-lg">
       <v-data-table
-        :loading="menu.length === 0"
-        loading-text="Fetching menu... please wait"
         :items-per-page="5"
         :headers="headers"
         :items="menu"
@@ -67,6 +65,8 @@
           </v-btn>
         </v-card-title>
 
+        <v-divider></v-divider>
+
         <v-card-text>
           <v-form ref="foodForm">
             <v-container>
@@ -78,7 +78,7 @@
                     dense
                     hide-details
                     :rules="[rules.required]"
-                    v-model="selectedFood.food.name"
+                    v-model="selectedFood.name"
                     :items="foodNames()"
                     type="text"
                     label="Food name"
@@ -106,6 +106,8 @@
           </v-form>
         </v-card-text>
 
+        <v-divider></v-divider>
+
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
@@ -123,40 +125,31 @@
     </v-dialog>
 
     <!-- Action toast -->
-    <v-snackbar
-      :transition="
-        showToast ? 'scroll-x-reverse-transition' : 'scroll-x-transition'
-      "
-      :timeout="3000"
-      v-model="showToast"
-    >
-      <div class="d-flex align-center">
-        <v-icon color="success">mdi-check-circle</v-icon>
-        <span class="ml-2">{{ toastMessage }}</span>
-      </div>
-
-      <template v-slot:action>
-        <v-btn color="success" text @click="showToast = false"> Close </v-btn>
-      </template>
-    </v-snackbar>
+    <toast
+      :show="showToast"
+      :message="toastMessage"
+      :success="actionSuccess"
+      @close="showToast = false"
+    ></toast>
   </v-container>
 </template>
 
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
 import QuestionPrompt from "../components/QuestionPrompt.vue";
+import Toast from "@/components/Toast.vue";
 
 export default {
   title: "Menu",
   name: "Menu",
   async created() {
-    await this.getAllFoodsAction();
+    await this.getAvailableFoodsAction();
     await this.getMenuAction();
   },
   data() {
     return {
       headers: [
-        { text: "Name", value: "food.name", align: "center" },
+        { text: "Name", value: "name", align: "center" },
         { text: "Cost", value: "cost", align: "center" },
         { text: "Actions", value: "actions", align: "center", sortable: false },
       ],
@@ -164,6 +157,7 @@ export default {
       searchFood: "",
       showToast: false,
       toastMessage: "",
+      actionSuccess: true,
       foodAction: "new",
       foodFormDialog: false,
       deleteFoodPrompt: false,
@@ -172,75 +166,19 @@ export default {
         required: (value) => !!value || "This field is required!",
       },
       selectedFood: {
-        food: {
-          id: "",
-          imageUrl: "",
-          name: "",
-          nutrient: {
-            name: "",
-            amount: "",
-            units: "g",
-          },
-          group: "",
-          form: "",
-          calories: {
-            amount: "",
-            units: "cal",
-          },
-          ingredients: [
-            {
-              amount: "",
-              unit: "",
-              name: "",
-            },
-          ],
-          regions: [],
-          instructions: [
-            {
-              step: "",
-              description: "",
-            },
-          ],
-        },
+        id: "",
+        name: "",
         cost: "",
       },
       defaultFood: {
-        food: {
-          id: "",
-          imageUrl: "",
-          name: "",
-          nutrient: {
-            name: "",
-            amount: "",
-            units: "g",
-          },
-          group: "",
-          form: "",
-          calories: {
-            amount: "",
-            units: "cal",
-          },
-          ingredients: [
-            {
-              amount: "",
-              unit: "",
-              name: "",
-            },
-          ],
-          regions: [],
-          instructions: [
-            {
-              step: "",
-              description: "",
-            },
-          ],
-        },
+        id: "",
+        name: "",
         cost: "",
       },
     };
   },
   computed: {
-    ...mapState(["menu", "allFoods"]),
+    ...mapState(["menu", "availableFoods"]),
     ...mapGetters(["getFoodByName"]),
     formTitle() {
       return this.editedIndex === -1 ? "Add food" : "Edit food details";
@@ -249,13 +187,13 @@ export default {
   methods: {
     ...mapActions([
       "getMenuAction",
-      "getAllFoodsAction",
+      "getAvailableFoodsAction",
       "addMenuFoodAction",
       "updateMenuFoodAction",
       "deleteMenuFoodAction",
     ]),
     foodNames() {
-      return this.allFoods.map((food) => food.name);
+      return this.availableFoods.map((food) => food.name);
     },
     addNewFood() {
       this.selectedFood = JSON.parse(JSON.stringify(this.defaultFood));
@@ -277,8 +215,10 @@ export default {
       try {
         await this.deleteMenuFoodAction(this.selectedFood);
         this.toastMessage = "Food deleted successfully!";
+        this.actionSuccess = true;
       } catch (error) {
         this.toastMessage = error.code;
+        this.actionSuccess = false;
       } finally {
         this.promptOverlay = false;
         this.deleteFoodPrompt = false;
@@ -293,19 +233,28 @@ export default {
       if (this.$refs.foodForm.validate()) {
         this.loadingFood = true;
 
+        const foodObj = this.availableFoods.find(
+          (f) => f.name === this.selectedFood.name
+        );
+
+        this.selectedFood.id = foodObj.id;
+
         try {
           if (this.foodAction === "new") {
             // Add the food to menu
             this.addMenuFoodAction(this.selectedFood);
 
             this.toastMessage = "Food added successfully!";
+            this.actionSuccess = true;
           } else {
             // // Edit food
             await this.updateMenuFoodAction(this.selectedFood);
             this.toastMessage = "Food updated successfully!";
+            this.actionSuccess = true;
           }
         } catch (error) {
           this.toastMessage = error.code;
+          this.actionSuccess = false;
         } finally {
           // Stop button loading
           this.loadingFood = false;
@@ -320,6 +269,7 @@ export default {
   },
   components: {
     QuestionPrompt,
+    Toast,
   },
 };
 </script>
