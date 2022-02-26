@@ -1,142 +1,181 @@
 <template>
-  <v-container fluid>
-    <v-row class="my-8 px-4" align="center">
-      <v-col cols="12" md="6">
-        <div class="text-center text-md-left">
-          <h1 class="text-h4 font-weight-medium green--text">
-            Your path to a better lifestyle
+  <v-container fluid class="py-10 px-4 px-sm-8">
+    <v-row align="center" class="py-sm-4">
+      <v-col cols="12" sm="6">
+        <div class="text-center text-sm-left">
+          <h1 class="text-h5 text-md-h4 font-weight-bold success--text">
+            Your journey to a healthy lifestyle
           </h1>
-          <p class="mt-2">
-            Whatever you do, being healthy is important to live a comfortable
-            life. It is amazing how something as simple as food can tranform you
-            life in ways you never imagined. A healthy meal however, is crucial
-            if you want to live long. All that matters to us is that you get to
-            live longer and happier everyday.
+          <p class="my-2 subtitle-2 text-md-subtitle-1 font-weight-regular">
+            Live longer and happier by planning healthy meals everyday. Explore
+            the vast variety of foods and meals which you never knew about in
+            your region.
           </p>
-          <v-btn rounded link to="/about-us" color="success" class="text-none"
-            >Learn more</v-btn
+          <v-btn rounded link to="/sign-up" color="success" class="text-none"
+            >Get started</v-btn
           >
         </div>
       </v-col>
-      <v-col cols="12" md="6">
+      <v-col cols="12" sm="6">
         <v-img
           class="rounded-lg mx-auto"
           src="../assets/images/home-1.jpg"
-          height="400px"
-          width="500px"
+          :height="imgHeight"
         ></v-img>
       </v-col>
     </v-row>
-    <v-row class="my-8 px-4">
-      <v-col cols="12">
-        <h1 class="text-h4 font-weight-medium text-center">What we offer</h1>
-      </v-col>
-      <v-col cols="12" sm="4">
-        <div class="d-flex flex-column align-center text-center">
-          <v-icon size="80px" color="green">mdi-food-variant</v-icon>
-          <h2 class="text-h5 my-3">Balanced diet meals</h2>
-          <p>
-            It is not just about a meal but a healthy meal. Your body needs all
-            the nutrients in order to perform effectively and a balanced diet
-            meal contains all the vital nutrients.
-          </p>
-        </div>
-      </v-col>
-      <v-col cols="12" sm="4">
-        <div class="d-flex flex-column align-center text-center">
-          <v-icon color="green" size="80px">mdi-noodles</v-icon>
-          <h2 class="text-h5 my-3">Locally available foods</h2>
-          <p>
-            What is the point of a healthy meal suggestion if you can't find the
-            ingredients in your local market? With Dema, All your meals will be
-            composed of locally available foods.
-          </p>
-        </div>
-      </v-col>
-      <v-col cols="12" sm="4">
-        <div class="d-flex flex-column align-center text-center">
-          <v-icon size="80px" color="green">mdi-home-group</v-icon>
-          <h2 class="text-h5 my-3">Nearest eateries</h2>
-          <p>
-            You don't have time to prepare the meal? No problem. We make it
-            possible by finding eateries near you which provide the meal and at
-            an affordable price.
-          </p>
-        </div>
-      </v-col>
-    </v-row>
-    <v-row class="my-8 px-4">
-      <v-col cols="12">
-        <h1 class="text-h4 font-weight-medium text-center">
+    <v-row class="py-sm-4">
+      <v-col cols="12" class="pb-0">
+        <h1 class="text-h5 text-md-h4 font-weight-bold text-center">
           Eat <strong class="orange--text">healthier</strong> with
-          <strong class="green--text">Dema</strong>
+          <strong class="success--text">Dema</strong>
         </h1>
       </v-col>
       <v-col cols="12" sm="10" md="8" lg="6" class="mx-auto">
-        <p class="my-0 text-justify">
-          It is a well known fact that nutrition plays a crucial role in our
-          lives. Whatever stage you are, whether childhood, adulthood or older
-          age, nutrition will always be important. It is at the center of human
-          development. Despite the massive research done on health and
-          nutrition, chronic diet-related diseases continue to rise by each day.
-          Levels of physical activity, which by the way, is vital to the human
-          health, remains low. We realized that reversing these trends will
-          require tactical strategies and technology is one of the many tools we
-          can use to promote health and help in reducing the risk of chronic
-          diseases. We are but just young innovators trying to provide a
-          solution to a problem facing the whole world. The objective is not to
-          reinvent the wheel, but to add on what is already available and make
-          it easier for people to live healthy lives. We focus on prevention,
-          not treatment because we believe that prevention is better than cure.
-          So what are you waiting for? It is time you took your first step
-          towards changing your life and those around you.
+        <p
+          class="
+            ma-0
+            subtitle-2
+            text-md-subtitle-1
+            font-weight-regular
+            text-center
+          "
+        >
+          Nutrition plays a major role in our lives, despite the stage of life
+          you are in. It is the center of human development, that is why we have
+          put our interest in this field. Diet-related diseases continue to
+          occur every day while the level of physical activity drops. As
+          motivated students, we realized we could change the situation with the
+          use of technology. We decided that prevention measures are much better
+          and it was about time to start educating people on the importance of
+          healthy diets. If you are here that means you want to do something
+          about your health. Before you do, maybe get to know us better.
         </p>
       </v-col>
-      <v-col cols="12" class="text-center">
-        <v-btn rounded link to="/sign-in" color="success" class="text-none"
-          >Log in</v-btn
+      <v-col cols="12" class="text-center pt-0">
+        <v-btn rounded link to="/about-us" color="success" class="text-none"
+          >Learn more</v-btn
         >
       </v-col>
     </v-row>
-    <v-row class="my-8 px-4">
-      <v-col cols="12">
-        <h1 class="text-h4 font-weight-medium text-center">Start now</h1>
+    <v-row class="py-sm-4">
+      <v-col cols="12" class="pb-0">
+        <h1 class="text-h5 text-md-h4 font-weight-bold text-center">
+          Why <strong class="success--text">Dema</strong>?
+        </h1>
       </v-col>
-      <v-col cols="12" lg="8" class="mx-auto d-flex flex-column flex-md-row">
-        <v-card outlined width="400px" class="rounded-lg mx-auto my-2">
-          <v-card-title>Consumer</v-card-title>
-          <v-card-subtitle>Start planning your meals</v-card-subtitle>
-          <v-card-text>
-            <div class="mb-2 d-flex align-center">
-              <v-icon color="green lighten-1">mdi-check</v-icon>
-              <span class="ml-2 font-weight-light grey--text text--darken-4"
-                >Automatically create balanced diet meals</span
-              >
-            </div>
-          </v-card-text>
-        </v-card>
-        <v-card outlined width="400px" class="rounded-lg mx-auto my-2">
-          <v-card-title>Eatery</v-card-title>
-          <v-card-subtitle
-            >Advertize your business to consumers</v-card-subtitle
+      <v-col cols="12" sm="4">
+        <div class="d-flex flex-column align-center text-center">
+          <v-icon :size="iconSize" color="success">mdi-food-variant</v-icon>
+          <h2 class="text-h6 text-md-h5 font-weight-medium my-1">
+            Balanced diets
+          </h2>
+          <p class="ma-0 subtitle-2 text-md-subtitle-1 font-weight-regular">
+            Your body needs different types of nutrients in order to function
+            optimally. With a balanced diet, you get all the nutrients necessary
+            for good health.
+          </p>
+        </div>
+      </v-col>
+      <v-col cols="12" sm="4">
+        <div class="d-flex flex-column align-center text-center">
+          <v-icon :size="iconSize" color="success">mdi-noodles</v-icon>
+          <h2 class="text-h6 text-md-h5 font-weight-medium my-1">
+            Local foods
+          </h2>
+          <p class="ma-0 subtitle-2 text-md-subtitle-1 font-weight-regular">
+            Get a chance to taste and enjoy all the foods in your region. We
+            make sure that all meals generated are easily available in your
+            area.
+          </p>
+        </div>
+      </v-col>
+      <v-col cols="12" sm="4">
+        <div class="d-flex flex-column align-center text-center">
+          <v-icon :size="iconSize" color="success">mdi-home-group</v-icon>
+          <h2 class="text-h6 text-md-h5 font-weight-medium my-1">
+            Nearest eateries
+          </h2>
+          <p class="ma-0 subtitle-2 text-md-subtitle-1 font-weight-regular">
+            You don't have time to prepare the meal? Don't worry, we got you.
+            With our eatery suggestions, you can book a seat for any meal in any
+            eatery near you with ease.
+          </p>
+        </div>
+      </v-col>
+    </v-row>
+    <v-row class="py-sm-4">
+      <v-col cols="12" class="pb-0">
+        <h1 class="text-h5 text-md-h4 font-weight-bold text-center">
+          What we offer
+        </h1>
+      </v-col>
+      <v-col cols="12" sm="6">
+        <v-card outlined width="400px" class="rounded-lg mx-auto">
+          <v-card-title
+            class="
+              justify-center justify-sm-start
+              text-h6 text-md-h5
+              font-weight-medium
+            "
+            >For consumers</v-card-title
           >
-          <v-card-text>
-            <div class="mb-2 d-flex align-center">
-              <v-icon color="green lighten-1">mdi-check</v-icon>
-              <span class="ml-2 font-weight-light grey--text text--darken-4"
-                >Display your menu to attract customers</span
+          <v-card-text
+            class="
+              text--primary
+              subtitle-2
+              text-md-subtitle-1
+              font-weight-regular
+            "
+          >
+            <div class="d-flex align-center">
+              <v-icon size="18px" color="success">mdi-check</v-icon>
+              <span class="ml-2">Plan your daily meals</span>
+            </div>
+            <div class="d-flex align-center">
+              <v-icon size="18px" color="success">mdi-check</v-icon>
+              <span class="ml-2">Track your nutrient and caloric intake</span>
+            </div>
+            <div class="d-flex align-center">
+              <v-icon size="18px" color="success">mdi-check</v-icon>
+              <span class="ml-2"
+                >Book a seat for a meal in an eatery near you</span
               >
             </div>
           </v-card-text>
         </v-card>
       </v-col>
-      <v-col cols="12" class="text-center">
-        <v-btn rounded link to="/sign-up" color="success" class="text-none"
-          >Get started</v-btn
-        >
+      <v-col cols="12" sm="6">
+        <v-card outlined width="400px" class="rounded-lg mx-auto">
+          <v-card-title
+            class="
+              justify-center justify-sm-start
+              text-h6 text-md-h5
+              font-weight-medium
+            "
+            >For eateries</v-card-title
+          >
+          <v-card-text
+            class="
+              text--primary
+              subtitle-2
+              text-md-subtitle-1
+              font-weight-regular
+            "
+          >
+            <div class="d-flex align-center">
+              <v-icon size="18px" color="success">mdi-check</v-icon>
+              <span class="ml-2">Share your menu with consumers</span>
+            </div>
+            <div class="d-flex align-center">
+              <v-icon size="18px" color="success">mdi-check</v-icon>
+              <span class="ml-2">Receive and arrange bookings</span>
+            </div>
+          </v-card-text>
+        </v-card>
       </v-col>
     </v-row>
-    <v-row class="my-8 px-4">
+    <!-- <v-row class="b py-4">
       <v-col cols="12">
         <h1 class="text-h4 font-weight-medium text-center">What they say</h1>
       </v-col>
@@ -202,16 +241,25 @@
           </v-window>
         </v-card>
       </v-col>
-    </v-row>
-    <v-row class="my-8 px-4">
+    </v-row> -->
+    <v-row class="py-sm-4">
       <v-col cols="12">
-        <h1 class="text-h4 font-weight-medium text-center">Get in touch</h1>
+        <h1 class="text-h5 text-md-h4 font-weight-bold text-center">
+          Any questions?
+        </h1>
       </v-col>
       <v-col cols="12" sm="8" md="6" xl="4" class="mx-auto">
-        <p class="my-0 text-center">
-          Have any questions for us? We are glad that you want to know more
-          about Dema. You can ask or tell us anything and we will reply
-          immediately.
+        <p
+          class="
+            ma-0
+            subtitle-2
+            text-md-subtitle-1
+            font-weight-regular
+            text-center
+          "
+        >
+          If you have any questions or just want to know more, don't hesitate to
+          get in touch.
         </p>
       </v-col>
       <v-col cols="12" class="text-center">
@@ -257,9 +305,32 @@ export default {
       ],
     };
   },
-  methods: {},
+  computed: {
+    imgHeight() {
+      switch (this.$vuetify.breakpoint.name) {
+        case "xl":
+          return "500px";
+        case "lg":
+          return "450px";
+        case "md":
+          return "400px";
+        default:
+          return "100%";
+      }
+    },
+    iconSize() {
+      switch (this.$vuetify.breakpoint.name) {
+        case "xl":
+          return "100px";
+        case "lg":
+          return "80px";
+        case "md":
+          return "60px";
+        default:
+          return "50px";
+      }
+    },
+  },
 };
 </script>
 
-<style scoped>
-</style>

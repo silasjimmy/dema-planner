@@ -2,77 +2,21 @@
   <v-app v-cloak>
     <!-- Home app bar -->
     <v-app-bar app elevate-on-scroll v-if="!viewDashboard">
-      <v-app-bar-nav-icon
-        class="d-flex d-sm-none"
-        @click="homeSidenav = true"
-      ></v-app-bar-nav-icon>
-
-      <v-toolbar-title>Dema</v-toolbar-title>
+      <v-toolbar-title class="font-weight-bold">Dema</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
-      <div class="d-none d-sm-block">
-        <v-btn plain rounded link class="text-none" to="/sign-up"
-          >Create account</v-btn
-        >
-        <v-btn plain rounded link class="text-none" to="/sign-in">Log in</v-btn>
-      </div>
+      <v-btn
+        outlined
+        rounded
+        link
+        :small="$vuetify.breakpoint.smAndDown"
+        to="/sign-in"
+        color="success"
+        class="text-none"
+        >Log in</v-btn
+      >
     </v-app-bar>
-
-    <!-- Home side navigation -->
-    <v-navigation-drawer
-      temporary
-      app
-      v-model="homeSidenav"
-      v-if="!viewDashboard"
-    >
-      <!-- Navigation links -->
-      <v-list rounded subheader>
-        <v-list-item-group>
-          <v-subheader>Navigation links</v-subheader>
-          <v-list-item link to="/home">
-            <v-list-item-icon>
-              <v-icon>mdi-home</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>Home</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item link to="/about-us">
-            <v-list-item-icon>
-              <v-icon>mdi-information</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>About</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item link to="/sign-in">
-            <v-list-item-icon>
-              <v-icon>mdi-login</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>Log in</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item link to="/sign-up">
-            <v-list-item-icon>
-              <v-icon>mdi-pencil</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>Create account</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item link to="/contact-us">
-            <v-list-item-icon>
-              <v-icon>mdi-message</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>Contact us</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-    </v-navigation-drawer>
 
     <!-- Dashboard app bar -->
     <v-app-bar app elevate-on-scroll v-if="viewDashboard">
@@ -491,8 +435,8 @@
           fixed
           bottom
           right
-          color="success"
           v-if="!viewDashboard"
+          color="success"
           v-show="showFabBtn"
           @click="$vuetify.goTo(0, scrollOptions)"
         >
@@ -502,37 +446,63 @@
     </v-main>
 
     <!-- Footer -->
-    <!-- <v-footer app absolute padless v-if="!viewDashboard">
-      <v-card flat tile width="100vw">
-        <v-card-text class="text-center">
-          <v-btn rounded link class="ma-2 text-none" elevation="0" to="/home"
-            >Home</v-btn
-          >
+    <v-footer app absolute padless v-if="!viewDashboard">
+      <v-card flat tile color="success" class="white--text" width="100vw">
+        <v-card-text v-if="$vuetify.breakpoint.smAndDown" class="text-center">
+          <v-btn icon plain rounded link class="mx-2" to="/home" color="white">
+            <v-icon>mdi-home</v-icon>
+          </v-btn>
+          <v-btn plain rounded link class="mx-2" to="/about-us" color="white">
+            <v-icon>mdi-information</v-icon>
+          </v-btn>
           <v-btn
+            icon
+            plain
             rounded
             link
-            class="ma-2 text-none"
-            elevation="0"
-            to="/about-us"
-            >About us</v-btn
-          >
-          <v-btn rounded link class="ma-2 text-none" elevation="0" to="/sign-up"
-            >Create account</v-btn
-          >
-          <v-btn rounded link class="ma-2 text-none" elevation="0" to="/sign-in"
-            >Log in</v-btn
-          >
-          <v-btn
-            rounded
-            link
-            class="ma-2 text-none"
-            elevation="0"
+            class="mx-2"
             to="/contact-us"
-            >Contact us</v-btn
+            color="white"
           >
+            <v-icon>mdi-phone-hangup</v-icon>
+          </v-btn>
+          <v-btn
+            icon
+            plain
+            rounded
+            link
+            class="mx-2"
+            to="/sign-in"
+            color="white"
+          >
+            <v-icon>mdi-login</v-icon>
+          </v-btn>
+          <v-btn
+            icon
+            plain
+            rounded
+            link
+            class="mx-2"
+            to="/sign-up"
+            color="white"
+          >
+            <v-icon>mdi-account-plus</v-icon>
+          </v-btn>
         </v-card-text>
 
-        <v-card-text>
+        <v-card-text v-if="$vuetify.breakpoint.mdAndUp" class="text-center">
+          <v-btn plain rounded link to="/home" color="white">Home</v-btn>
+          <v-btn plain rounded link to="/about-us" color="white"
+            >About us</v-btn
+          >
+          <v-btn plain rounded link to="/contact-us" color="white"
+            >Contact us</v-btn
+          >
+          <v-btn plain rounded link to="/sign-in" color="white">Log in</v-btn>
+          <v-btn plain rounded link to="/sign-up" color="white">Sign up</v-btn>
+        </v-card-text>
+
+        <!-- <v-card-text>
           <v-row class="text-center">
             <v-col cols="12" md="6">
               <h3 class="subtitle-1 text--secondary">Find us in:</h3>
@@ -567,15 +537,25 @@
               </v-btn>
             </v-col>
           </v-row>
-        </v-card-text>
+        </v-card-text> -->
 
         <v-divider></v-divider>
 
-        <v-card-text class="text-center">
-          <span>{{ new Date().getFullYear() }} — <strong>Dema</strong></span>
-        </v-card-text>
+        <v-card-actions
+          class="
+            px-4 px-sm-8
+            text-center
+            subtitle-2
+            text-md-subtitle-1
+            font-weight-regular
+          "
+        >
+          <span>All rights reserved.</span>
+          <v-spacer></v-spacer>
+          <span><strong>Dema</strong>, {{ new Date().getFullYear() }}</span>
+        </v-card-actions>
       </v-card>
-    </v-footer> -->
+    </v-footer>
 
     <!-- Page load overlay -->
     <v-overlay opacity="1" z-index="10" :value="pageLoadOverlay">
@@ -599,9 +579,11 @@ import MealsInfo from "./components/MealsInfo.vue";
 
 export default {
   name: "App",
-  // created() {
-  //   console.log(this.$store.state.role);
-  // },
+  created() {
+    window.addEventListener("scroll", () => {
+      this.scrollYPos = window.scrollY;
+    });
+  },
   data() {
     return {
       scrollYPos: 0,
@@ -610,7 +592,6 @@ export default {
       pageLoadMessage: "",
       pageLoadColor: "",
       pageLoadValue: 0,
-      homeSidenav: false,
       rightSidenav: false,
       notificationsMenu: false,
       isOnline: true,

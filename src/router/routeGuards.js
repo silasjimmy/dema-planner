@@ -12,6 +12,9 @@ function checkAuth(to, from, next) {
     // Set the page title in the dashboard bar
     store.commit('setPageTitle', to.meta.title)
 
+    // Start loading page
+    store.commit('setPageLoading', true)
+
     let init = new Promise(resolve => resolve(false))
 
     // Initialize firebase before routing
@@ -21,7 +24,6 @@ function checkAuth(to, from, next) {
 
             onAuthStateChanged(auth, user => {
                 if (user) {
-                    store.commit('setPageLoading', true)
                     store.commit('setEmail', user.email)
                     store.commit('setLoggedIn', true)
                     resolve(true)
@@ -55,6 +57,9 @@ function checkAuth(to, from, next) {
 
         // 1. Check if it is a landing page
         if (to.meta.landingPage) {
+            // Scroll to top
+            window.scroll(0, 0)
+
             // 1.1 If it is, check user is logged in
             if (store.state.loggedIn) {
                 // 1.1.1 If he is, check if he has a role

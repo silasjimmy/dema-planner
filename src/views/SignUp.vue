@@ -1,8 +1,11 @@
 <template>
   <v-sheet class="d-flex flex-column align-center justify-center" height="100%">
-    <v-card outlined class="rounded-lg mx-auto" :width="cardWidth">
-      <v-card-title class="justify-center">Sign up</v-card-title>
-      <v-card-subtitle class="text-center"
+    <v-card flat class="rounded-lg mx-auto" :width="cardWidth">
+      <v-card-title class="justify-center text-h5 text-md-h4 font-weight-bold"
+        >Sign up</v-card-title
+      >
+      <v-card-subtitle
+        class="text-center subtitle-2 text-md-subtitle-1 font-weight-regular"
         >Create an account to get started</v-card-subtitle
       >
 
@@ -68,7 +71,9 @@
       </v-card-text>
 
       <v-card-text class="text-center">
-        <p>Sign up with</p>
+        <p class="subtitle-2 text-md-subtitle-1 font-weight-regular">
+          Sign up with
+        </p>
 
         <!-- Google sign up button -->
         <v-btn
