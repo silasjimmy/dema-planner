@@ -1224,9 +1224,9 @@ export default {
         })
         .then((data) => {
           // Set the user location details
-          this.consumerProfile.town = data.address.town;
+          this.consumerProfile.town = data.address.town || data.address.city;
           this.consumerProfile.country = data.address.country;
-          this.eateryProfile.town = data.address.town;
+          this.eateryProfile.town = data.address.town || data.address.city;
           this.eateryProfile.country = data.address.country;
         })
         .catch((error) => {

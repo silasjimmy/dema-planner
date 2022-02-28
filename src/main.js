@@ -11,7 +11,7 @@ import VueGoogleCharts from 'vue-google-charts'
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAc_ClA6u_XdAQ4Mw8ZLwQ1IfS2UNbvXs4",
-  authDomain: "demaplanner.firebaseapp.com",
+  authDomain: "demaplanner.app",
   projectId: "demaplanner",
   storageBucket: "demaplanner.appspot.com",
   messagingSenderId: "725807988259",
