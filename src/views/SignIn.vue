@@ -153,6 +153,9 @@ export default {
           // Stop loading
           this.emailSignInLoad = false;
 
+          // Start loading page
+          this.$store.commit("setPageLoading", true);
+
           // Redirect user to the dashboard
           await this.redirect();
         } catch (error) {
@@ -179,6 +182,9 @@ export default {
 
         // Stop loading
         this.googleSignInLoad = false;
+
+        // Start loading page
+        this.$store.commit("setPageLoading", true);
 
         // Redirect to dashboard
         await this.redirect();

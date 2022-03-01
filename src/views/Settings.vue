@@ -357,8 +357,7 @@ export default {
   title: "Settings",
   name: "Settings",
   async created() {
-    // Fetch user's settings
-    await this.getSettingsAction();
+    if (!this.settings) await this.getSettingsAction();
   },
   data() {
     return {
@@ -387,31 +386,27 @@ export default {
     };
   },
   watch: {
-    // settings: {
-    //   handler(newValue) {
-    //     console.log(newValue);
-    //     // try {
-    //     //   // Update the setting in database
-    //     //   await this.uploadSettingsAction(newValue);
-    //     //   // Show success message
-    //     //   this.toastMessage = "Settings updated successfully!";
-    //     //   this.actionSuccess = true;
-    //     //   this.showToast = true;
-    //     // } catch (error) {
-    //     //   // Show error message
-    //     //   this.toastMessage = error.code;
-    //     //   this.actionSuccess = false;
-    //     //   this.showToast = true;
-    //     // }
-    //   },
-    //   deep: true,
-    // },
+    settings: {
+      async handler(newValue) {
+        try {
+          await this.updateSettingsAction(newValue);
+          this.toastMessage = "Settings updated successfully!";
+          this.actionSuccess = true;
+          this.showToast = true;
+        } catch (error) {
+          this.toastMessage = error.code;
+          this.actionSuccess = false;
+          this.showToast = true;
+        }
+      },
+      deep: true,
+    },
   },
   computed: {
     ...mapState(["settings"]),
   },
   methods: {
-    ...mapActions(["getSettingsAction", "uploadSettingsAction"]),
+    ...mapActions(["getSettingsAction", "updateSettingsAction"]),
     formatTime(time) {
       return format(new Date("1970-1-1 " + time), "HH:mm a");
     },

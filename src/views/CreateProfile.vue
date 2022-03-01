@@ -1292,10 +1292,8 @@ export default {
         const userId = await getCounter("users");
         profile.id = userId;
 
-        // Show success message
-        this.actionSuccess = true;
-        this.alertMessage = "Setting up your profile... please wait";
-        this.showAlert = true;
+        // Start loading page
+        this.$store.commit("setPageLoading", true);
 
         // Add user profile
         await this.uploadProfileAction(profile);

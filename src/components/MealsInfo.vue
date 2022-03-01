@@ -1,64 +1,62 @@
 <template>
-  <div>
-    <p class="text-center my-4 text--secondary" v-if="meals.length == 0">
-      No data available.
-    </p>
+  <v-card flat>
+    <v-card-subtitle v-if="meals.length === 0"
+      >No data available</v-card-subtitle
+    >
 
-    <v-card elevation="0" min-height="100vh" v-if="meals.length > 0">
-      <v-card-title class="justify-center">Meals summary</v-card-title>
+    <v-card-title class="justify-center" v-if="meals.length > 0"
+      >Summary</v-card-title
+    >
+    <v-card-subtitle class="text-center pb-0" v-if="meals.length > 0"
+      >Nutritional content</v-card-subtitle
+    >
 
-      <v-card-subtitle class="text-center pb-0"
-        >Nutritional content</v-card-subtitle
-      >
-      <!-- Nutrient chart -->
-      <v-card-text>
-        <GChart type="PieChart" :data="chartData" :options="chartOptions" />
+    <!-- Chart -->
+    <v-card-text v-if="meals.length > 0">
+      <GChart type="PieChart" :data="chartData" :options="chartOptions" />
 
-        <div class="d-flex align-center green--text font-weight-medium">
-          <span>Proteins</span>
-          <v-spacer></v-spacer>
-          <span>{{ proteins }}g</span>
-        </div>
+      <div class="d-flex align-center green--text font-weight-medium">
+        <span>Proteins</span>
+        <v-spacer></v-spacer>
+        <span>{{ proteins }}g</span>
+      </div>
 
-        <div
-          class="d-flex align-center my-1 blue-grey--text font-weight-medium"
-        >
-          <span>Carbohydrates</span>
-          <v-spacer></v-spacer>
-          <span>{{ carbohydrates }}g</span>
-        </div>
+      <div class="d-flex align-center my-1 blue-grey--text font-weight-medium">
+        <span>Carbohydrates</span>
+        <v-spacer></v-spacer>
+        <span>{{ carbohydrates }}g</span>
+      </div>
 
-        <div class="d-flex align-center orange--text font-weight-medium">
-          <span>Vitamins</span>
-          <v-spacer></v-spacer>
-          <span>{{ vitamins }}g</span>
-        </div>
+      <div class="d-flex align-center orange--text font-weight-medium">
+        <span>Vitamins</span>
+        <v-spacer></v-spacer>
+        <span>{{ vitamins }}g</span>
+      </div>
 
-        <div class="d-flex align-center mt-2 text--primary font-weight-bold">
-          <span>Calories</span>
-          <v-spacer></v-spacer>
-          <span>{{ calories }} cal</span>
-        </div>
-      </v-card-text>
+      <div class="d-flex align-center mt-2 text--primary font-weight-bold">
+        <span>Calories</span>
+        <v-spacer></v-spacer>
+        <span>{{ calories }} cal</span>
+      </div>
+    </v-card-text>
 
-      <v-divider></v-divider>
+    <v-divider></v-divider>
 
-      <v-card-subtitle class="text-center">Suggested eateries</v-card-subtitle>
-      <!-- Eateries suggestions -->
-      <v-card-text>
-        <div class="d-flex align-center font-weight-medium">
-          <span>Meal name</span>
-          <v-spacer></v-spacer>
-          <v-tooltip left>
-            <template v-slot:activator="{ on, attrs }">
-              <span v-bind="attrs" v-on="on">Eatery name</span>
-            </template>
-            <span>Meal details</span>
-          </v-tooltip>
-        </div>
-      </v-card-text>
-    </v-card>
-  </div>
+    <!-- Eateries suggestions -->
+    <v-card-subtitle class="text-center">Suggested eateries</v-card-subtitle>
+    <v-card-text>
+      <div class="d-flex align-center font-weight-medium">
+        <span>Meal name</span>
+        <v-spacer></v-spacer>
+        <v-tooltip left>
+          <template v-slot:activator="{ on, attrs }">
+            <span v-bind="attrs" v-on="on">Eatery name</span>
+          </template>
+          <span>Meal details</span>
+        </v-tooltip>
+      </div>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>

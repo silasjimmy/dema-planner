@@ -1,13 +1,26 @@
 <template>
   <v-container fluid>
     <v-card outlined class="rounded-lg">
+      <v-card-title
+        class="justify-center subtitle-2 text-md-subtitle-1 font-weight-regular"
+        v-if="loadingData"
+        >{{ loadingDataMessage }}</v-card-title
+      >
+      <v-card-text v-if="loadingData">
+        <v-progress-linear
+          :color="loadingDataSuccess ? 'success' : 'error'"
+          :indeterminate="loadingData"
+          rounded
+          height="4"
+        ></v-progress-linear>
+      </v-card-text>
+
       <v-data-table
+        v-if="!loadingData"
         :headers="headers"
         :items="availableFoods"
         :search="searchFood"
         item-key="name"
-        :loading="loadingFoods"
-        loading-text="Loading foods... Please wait"
         :items-per-page="5"
       >
         <template v-slot:top>
@@ -27,9 +40,9 @@
         </template>
 
         <template v-slot:[`item.favorite`]="{ item }">
-          <v-btn icon color="success">
-            <v-icon @click="like(item)"> mdi-heart </v-icon>
-          </v-btn>
+          <v-icon color="success" @click="likeFood(item)">{{
+            foodIcon(item)
+          }}</v-icon>
         </template>
       </v-data-table>
     </v-card>
@@ -38,32 +51,42 @@
     <toast
       :show="showToast"
       :message="toastMessage"
-      :success="actionSuccess"
+      :success="toastActionSuccess"
       @close="showToast = false"
     ></toast>
   </v-container>
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 import Toast from "@/components/Toast.vue";
 
 export default {
   title: "Available foods",
   name: "AvailableFoods",
   async created() {
-    await this.getAvailableFoodsAction();
-    await this.getLikedFoodsAction();
-    this.favorites = [...this.likedFoods];
+    this.loadingData = true;
+
+    try {
+      if (this.availableFoods.length === 0)
+        await this.getAvailableFoodsAction();
+      if (this.likedFoods.length === 0) await this.getLikedFoodsAction();
+    } catch (error) {
+      this.loadingDataMessage = error.code;
+      this.loadingDataSuccess = false;
+    } finally {
+      setTimeout(() => (this.loadingData = false), 1000);
+    }
   },
   data() {
     return {
-      actionSuccess: false,
+      loadingData: true,
+      loadingDataMessage: "Loading foods...",
+      loadingDataSuccess: true,
+      toastActionSuccess: false,
       toastMessage: "",
       showToast: false,
-      loadingFoods: false,
       searchFood: "",
-      favorites: [],
       headers: [
         {
           text: "Name",
@@ -81,67 +104,44 @@ export default {
   },
   computed: {
     ...mapState(["availableFoods", "likedFoods"]),
+    ...mapGetters(["getLikedFoodById"]),
   },
   methods: {
     ...mapActions([
       "getAvailableFoodsAction",
       "getLikedFoodsAction",
       "addLikedFoodAction",
-      "updateLikedFoodAction",
+      "removeLikedFoodAction",
     ]),
-    like(food) {
-      const index = this.favorites.indexOf(food);
-      console.log(index);
-    },
-    async favoriteChange() {
-      // Get the added food
-      const newLikedFoods = this.favorites.filter(
-        (f) => !this.likedFoods.includes(f)
-      );
+    async likeFood(food) {
+      const foodLiked = this.getLikedFoodById(food.id);
 
-      if (newLikedFoods.length > 0) {
-        console.log("Food liked!");
-        console.log(this.likedFoods);
-        console.log(this.favorites);
-        // try {
-        //   await this.addLikedFoodAction(newLikedFoods[0]);
+      try {
+        if (foodLiked) {
+          await this.removeLikedFoodAction(food);
 
-        //   this.toastMessage = "Food added successfully!";
-        //   this.actionSuccess = true;
-        // } catch (error) {
-        //   this.toastMessage = error.code;
-        //   this.actionSuccess = false;
-        // } finally {
-        //   this.showToast = true;
-        // }
-      } else {
-        console.log("Food unliked!");
-        console.log(this.likedFoods);
-        console.log(this.favorites);
-        // // Get the removed food
-        // const removedLikedFoods = this.likedFoods.filter(
-        //   (f) => !this.favorites.includes(f)
-        // );
+          this.toastMessage = "Food removed successfully!";
+        } else {
+          await this.addLikedFoodAction(food);
 
-        // try {
-        //   await this.updateLikedFoodAction(removedLikedFoods[0]);
+          this.toastMessage = "Food added successfully!";
+        }
 
-        //   this.toastMessage = "Food removed successfully!";
-        //   this.actionSuccess = true;
-        // } catch (error) {
-        //   this.toastMessage = error.code;
-        //   this.actionSuccess = false;
-        // } finally {
-        //   this.showToast = true;
-        // }
+        this.toastActionSuccess = true;
+      } catch (error) {
+        this.toastMessage = error.code;
+        this.toastActionSuccess = false;
+      } finally {
+        this.showToast = true;
       }
     },
+    foodIcon(food) {
+      const foodLiked = this.getLikedFoodById(food.id);
+
+      if (foodLiked) return "mdi-heart";
+      else return "mdi-heart-outline";
+    },
   },
-  // watch: {
-  //   favorites(newValue) {
-  //     console.log(newValue);
-  //   }
-  // },
   components: {
     Toast,
   },
