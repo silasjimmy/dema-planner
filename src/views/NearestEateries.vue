@@ -22,7 +22,7 @@
                 >{{ eatery.name }}</v-list-item-title
               >
               <v-list-item-subtitle class="text-capitalize"
-                >{{ eatery.city }}, {{ eatery.country }}</v-list-item-subtitle
+                >{{ eatery.town }}, {{ eatery.country }}</v-list-item-subtitle
               >
               <v-list-item-subtitle class="d-flex align-center">
                 <v-rating
@@ -45,10 +45,7 @@
               width="80px"
               height="70px"
             >
-              <!-- <v-img :src="eatery.imageUrl"></v-img> -->
-              <v-img
-                src="https://images.unsplash.com/photo-1608495368297-de9ff48e6997?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=871&q=80"
-              ></v-img>
+              <v-img :src="eatery.imageUrl"></v-img>
             </v-list-item-avatar>
           </v-list-item>
 
@@ -75,13 +72,14 @@ export default {
   title: "Nearest eateries",
   name: "NearestEateries",
   async created() {
-    if (this.eateries.length === 0) await this.getEateriesAction();
+    await this.getEateriesAction();
+    await this.setAllMenusAction();
   },
   computed: {
     ...mapState(["eateries"]),
   },
   methods: {
-    ...mapActions(["getEateriesAction"]),
+    ...mapActions(["getEateriesAction", "setAllMenusAction"]),
   },
 };
 </script>

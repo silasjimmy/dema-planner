@@ -1,78 +1,95 @@
 <template>
   <v-container>
-    <div class="pa-3 d-flex justify-space-between align-center">
-      <div class="d-flex flex-column justify-center">
-        <h2 class="text-h6 text-uppercase font-weight-light">
-          {{ weekday }}
-        </h2>
-        <h2 class="text-h2 font-weight-bold">{{ day }}</h2>
-      </div>
-      <div class="d-flex align-center">
-        <h2 class="subtitle-1 mr-2">
-          {{ monthAndYear }}
-        </h2>
-        <v-menu
-          offset-y
-          v-model="datePickerMenu"
-          transition="scale-transition"
-          ref="dateMenu"
-          :return-value.sync="mealsDate"
-          :close-on-content-click="false"
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn icon :disabled="meals.length === 0" v-bind="attrs" v-on="on">
-              <v-icon>mdi-calendar</v-icon>
-            </v-btn>
-          </template>
-          <v-date-picker
-            v-if="datePickerMenu"
-            v-model="mealsDate"
-            header-color="blue-grey"
-            color="green"
-            show-current="false"
-          >
-            <v-btn
-              text
-              color="red"
-              class="font-weight-bold"
-              @click="datePickerMenu = false"
-            >
-              Cancel
-            </v-btn>
-            <v-spacer></v-spacer>
-            <v-btn
-              text
-              color="orange"
-              class="font-weight-bold"
-              @click="$refs.dateMenu.save(mealsDate)"
-            >
-              Ok
-            </v-btn>
-          </v-date-picker>
-        </v-menu>
-      </div>
-      <v-tooltip left color="black">
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            fab
-            small
-            elevation="1"
-            color="success"
-            :loading="!showMeals"
-            :disabled="meals.length === 0"
-            v-bind="attrs"
-            v-on="on"
-            @click="regenerateMeals"
-          >
-            <v-icon>mdi-rotate-right</v-icon>
-          </v-btn>
-        </template>
-        <span>Regenerate all meals</span>
-      </v-tooltip>
-    </div>
+    <v-card flat>
+      <v-card-text class="text--primary">
+        <v-container class="pa-0">
+          <v-row no-gutters align="center">
+            <v-col cols="12" sm="4" class="d-flex">
+              <div class="text-center">
+                <h1 class="text-h6 text-uppercase font-weight-light">
+                  {{ weekday }}
+                </h1>
+                <h1 class="text-h2 font-weight-bold">{{ day }}</h1>
+              </div>
+              <v-spacer></v-spacer>
+            </v-col>
+            <v-col cols="12" sm="4" class="d-flex align-center justify-center">
+              <h2 class="subtitle-1 mx-1">
+                {{ monthAndYear }}
+              </h2>
+              <v-menu
+                offset-y
+                v-model="datePickerMenu"
+                transition="scale-transition"
+                ref="dateMenu"
+                :return-value.sync="mealsDate"
+                :close-on-content-click="false"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    icon
+                    class="mx-1"
+                    :disabled="!meals"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    <v-icon>mdi-calendar</v-icon>
+                  </v-btn>
+                </template>
 
-    <!-- Alert for anything that happens in the page -->
-    <v-alert
+                <v-date-picker
+                  v-if="datePickerMenu"
+                  v-model="mealsDate"
+                  header-color="blue-grey"
+                  color="green"
+                  show-current="false"
+                >
+                  <v-btn
+                    text
+                    color="red"
+                    class="font-weight-bold"
+                    @click="datePickerMenu = false"
+                  >
+                    Cancel
+                  </v-btn>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    text
+                    color="orange"
+                    class="font-weight-bold"
+                    @click="$refs.dateMenu.save(mealsDate)"
+                  >
+                    Ok
+                  </v-btn>
+                </v-date-picker>
+              </v-menu>
+            </v-col>
+            <v-col cols="12" sm="4" class="text-right">
+              <v-tooltip left color="black">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    fab
+                    small
+                    :disabled="meals.length == 0"
+                    :loading="loadingRegenerate"
+                    elevation="1"
+                    color="success"
+                    v-bind="attrs"
+                    v-on="on"
+                    @click="regenerateMeals"
+                  >
+                    <v-icon>mdi-rotate-right</v-icon>
+                  </v-btn>
+                </template>
+                <span>Regenerate all meals</span>
+              </v-tooltip>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-text>
+
+      <!-- Alert for anything that happens in the page -->
+      <!-- <v-alert
       text
       dense
       dismissible
@@ -84,74 +101,59 @@
       transition="scale-transition"
     >
       {{ alertMessage }}
-    </v-alert>
+    </v-alert> -->
 
-    <v-row no-gutters>
-      <v-col cols="12" lg="8" class="mx-auto py-4" v-if="meals.length === 0">
-        <div class="text-center">
-          <p class="text--secondary">
-            It seems you don't have meals for today. Click generate to
-            automatically create a meal plan. Don't worry, we know what you
-            like...
-          </p>
-          <v-btn
-            rounded
-            disabled
-            :loading="loadingMeals"
-            @click="generateMeals"
-            color="success"
-            class="text-none"
-          >
-            <v-icon left>mdi-rotate-right</v-icon>
-            Generate
-          </v-btn>
-        </div>
-      </v-col>
-      <v-col cols="12" v-if="meals.length > 0">
-        <div class="meal-cards" v-if="showMeals">
-          <v-container>
-            <v-row>
-              <v-col
-                cols="12"
-                sm="6"
-                md="12"
-                lg="6"
-                xl="4"
-                v-for="meal in meals"
-                :key="meal.id"
-              >
-                <v-card outlined class="rounded-lg">
-                  <v-card-text class="py-3 px-4">
-                    <div class="d-flex justify-space-between align-center">
-                      <div class="d-flex flex-column">
-                        <span
-                          class="
-                            text-h6 text--primary
-                            font-weight-bold
-                            text-capitalize
-                            jost-font-family
-                          "
-                        >
-                          {{ meal.name }}
-                        </span>
-                        <span
-                          class="
-                            subtitle-2
-                            text--secondary
-                            font-weight-light
-                            text-uppercase
-                          "
-                        >
-                          {{ meal.time }}
-                        </span>
-                      </div>
-                      <!-- Dropdown menu -->
-                      <v-menu offset-x bottom transition="slide-y-transition">
+      <v-card-text class="text-center" v-if="meals.length === 0">
+        <p class="subtitle-1">
+          It seems you don't have meals for today. Click generate to
+          automatically create a meal plan. Don't worry, we know what you
+          like...
+        </p>
+        <v-btn
+          rounded
+          :loading="loadingMeals"
+          @click="generateMeals"
+          color="success"
+        >
+          <v-icon left>mdi-rotate-right</v-icon>
+          Generate
+        </v-btn>
+      </v-card-text>
+
+      <v-card-text v-if="meals.length > 0">
+        <v-container class="pa-0">
+          <!-- Meal card -->
+          <v-row>
+            <v-col
+              cols="12"
+              sm="6"
+              md="12"
+              lg="6"
+              xl="4"
+              v-for="meal in meals"
+              :key="meal.id"
+            >
+              <v-card outlined class="rounded-lg">
+                <div class="d-flex align-center justify-space-between pr-4">
+                  <!-- Meal name and time -->
+                  <div>
+                    <v-card-title class="pt-2">{{ meal.name }}</v-card-title>
+                    <v-card-subtitle class="pb-2">{{
+                      formatTime(meal.time)
+                    }}</v-card-subtitle>
+                  </div>
+
+                  <!-- Dropdown menu -->
+                  <v-btn icon>
+                    <v-icon>mdi-dots-vertical</v-icon>
+                  </v-btn>
+                  <!-- <v-menu offset-x left transition="slide-y-transition">
                         <template v-slot:activator="{ on, attrs }">
                           <v-btn icon v-bind="attrs" v-on="on">
                             <v-icon>mdi-dots-vertical</v-icon>
                           </v-btn>
                         </template>
+
                         <v-list>
                           <v-list-item link @click="regenerateMeal(meal.id)">
                             <v-list-item-title class="font-weight-light"
@@ -159,212 +161,196 @@
                             >
                           </v-list-item>
                         </v-list>
-                      </v-menu>
-                    </div>
-                    <div class="my-3 d-flex align-center">
-                      <v-img
-                        class="rounded-lg mr-2"
-                        width="50"
-                        max-width="50"
-                        height="50"
-                        :src="meal.image"
-                      ></v-img>
-                      <div
-                        class="
-                          food-names
-                          text--primary
-                          subtitle-1
-                          font-weight-light
-                          text-capitalize
-                        "
+                      </v-menu> -->
+                </div>
+
+                <v-card-text class="d-flex align-center py-2">
+                  <!-- Meal image -->
+                  <v-img
+                    class="rounded-lg mr-2"
+                    width="50"
+                    max-width="50"
+                    height="50"
+                    :src="meal.image"
+                  ></v-img>
+
+                  <!-- Meal foods -->
+                  <div class="food-names subtitle-1 text-capitalize">
+                    <span v-for="food in meal.foods" :key="food.name">{{
+                      food.name
+                    }}</span>
+                  </div>
+                </v-card-text>
+
+                <v-card-actions class="px-4">
+                  <!-- Ate meal checkbox -->
+                  <v-checkbox
+                    hide-details
+                    dense
+                    @change="ateMeal(meal)"
+                    v-model="meal.ate"
+                    label="I ate this meal"
+                    color="green"
+                    class="pt-0"
+                  ></v-checkbox>
+
+                  <v-spacer></v-spacer>
+
+                  <!-- View servings button -->
+                  <v-btn icon @click="meal.revealServings = true">
+                    <v-icon>mdi-chevron-up</v-icon>
+                  </v-btn>
+                </v-card-actions>
+
+                <v-expand-transition>
+                  <v-card
+                    v-if="meal.revealServings"
+                    class="
+                      transition-fast-in-fast-out
+                      v-card--revealServings
+                      rounded-lg
+                      overflow-auto
+                    "
+                    height="100%"
+                    elevation="0"
+                  >
+                    <v-card-title class="py-2">
+                      <span>Servings</span>
+                      <v-spacer></v-spacer>
+                      <v-btn icon @click="meal.revealServings = false"
+                        ><v-icon>mdi-chevron-down</v-icon></v-btn
                       >
-                        <span v-for="food in meal.foods" :key="food.name">{{
-                          food.name
-                        }}</span>
+                    </v-card-title>
+
+                    <v-card-text class="overflow-auto py-0">
+                      <div
+                        v-for="food in meal.foods"
+                        :key="food.name"
+                        class="d-flex align-center my-1 px-4"
+                      >
+                        <span class="text-capitalize">{{ food.name }}</span>
+                        <v-spacer></v-spacer>
+                        <span class="">{{ food.serving }}</span>
                       </div>
-                    </div>
-                    <div class="d-flex justify-space-between align-center">
-                      <div>
-                        <v-checkbox
-                          hide-details
-                          dense
-                          @change="ateMeal(meal.id)"
-                          v-model="meal.ate"
-                          label="I ate this meal"
-                          color="green"
-                        ></v-checkbox>
-                      </div>
-                      <!-- Open food servings view -->
-                      <v-tooltip top color="black">
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-btn
-                            v-bind="attrs"
-                            v-on="on"
-                            icon
-                            @click="meal.revealServings = true"
-                          >
-                            <v-icon>mdi-chevron-up</v-icon>
-                          </v-btn>
-                        </template>
-                        <span>View food servings</span>
-                      </v-tooltip>
-                    </div>
-                  </v-card-text>
-                  <!-- Food servings view -->
-                  <v-expand-transition>
-                    <v-card
-                      v-if="meal.revealServings"
-                      class="transition-fast-in-fast-out v-card--revealServings"
-                      style="height: 100%"
-                    >
-                      <v-card-text class="py-3 px-4">
-                        <p class="mb-2 d-flex justify-space-between">
-                          <strong class="text-h6 text--primary font-weight-bold"
-                            >Servings</strong
-                          >
-                          <v-btn icon @click="meal.revealServings = false"
-                            ><v-icon>mdi-chevron-down</v-icon></v-btn
-                          >
-                        </p>
-                        <div class="px-8">
-                          <div
-                            v-for="food in meal.foods"
-                            :key="food.name"
-                            class="d-flex justify-space-between my-1"
-                          >
-                            <span
-                              class="
-                                subtitle-2
-                                text--primary
-                                font-weight-medium
-                                text-capitalize
-                              "
-                              >{{ food.name }}</span
-                            ><span
-                              class="
-                                subtitle-2
-                                text--secondary
-                                font-weight-medium
-                              "
-                              >{{ food.serving }}</span
+                    </v-card-text>
+
+                    <v-card-actions class="justify-center">
+                      <!-- Edit servings button -->
+                      <v-btn
+                        text
+                        rounded
+                        @click="meal.servingsDialog = true"
+                        color="success"
+                      >
+                        Edit
+                      </v-btn>
+
+                      <!-- Servings edit form -->
+                      <v-dialog
+                        v-model="meal.servingsDialog"
+                        persistent
+                        width="400"
+                      >
+                        <v-card>
+                          <v-card-title>
+                            <span>Edit food servings</span>
+                            <v-spacer></v-spacer>
+                            <v-btn icon @click="meal.servingsDialog = false">
+                              <v-icon>mdi-close</v-icon>
+                            </v-btn>
+                          </v-card-title>
+
+                          <v-divider></v-divider>
+
+                          <v-card-text class="py-0">
+                            <v-text-field
+                              outlined
+                              dense
+                              hide-spin-buttons
+                              hide-details
+                              class="my-4"
+                              v-for="food in meal.foods"
+                              :key="food.name"
+                              :label="food.name"
+                              v-model="food.serving"
+                              color="green"
+                              type="number"
+                            ></v-text-field>
+                          </v-card-text>
+
+                          <v-divider></v-divider>
+
+                          <v-card-actions class="justify-center">
+                            <v-btn
+                              text
+                              rounded
+                              color="success"
+                              @click="saveServings(meal)"
                             >
-                          </div>
-                        </div>
-                        <div class="text-center mt-2">
-                          <!-- Food servings edit form -->
-                          <v-dialog
-                            v-model="meal.servingsDialog"
-                            persistent
-                            max-width="400"
-                          >
-                            <template v-slot:activator="{ on, attrs }">
-                              <v-btn
-                                text
-                                color="success"
-                                v-bind="attrs"
-                                v-on="on"
-                                class="text-none"
-                              >
-                                Edit
-                              </v-btn>
-                            </template>
-                            <v-card>
-                              <v-card-title
-                                class="d-flex justify-space-between"
-                              >
-                                <span class="text-h6 text--primary"
-                                  >Edit food servings</span
-                                >
-                                <v-btn
-                                  icon
-                                  @click="meal.servingsDialog = false"
-                                >
-                                  <v-icon>mdi-close</v-icon>
-                                </v-btn>
-                              </v-card-title>
-                              <v-card-text class="mt-2">
-                                <v-container class="text-center">
-                                  <v-row>
-                                    <v-col
-                                      v-for="food in meal.foods"
-                                      :key="food.name"
-                                      cols="6"
-                                    >
-                                      <v-text-field
-                                        hide-details
-                                        outlined
-                                        dense
-                                        hide-spin-buttons
-                                        :label="food.name"
-                                        :value="food.serving"
-                                        color="green"
-                                        type="number"
-                                      ></v-text-field>
-                                    </v-col>
-                                    <v-col cols="12">
-                                      <v-btn
-                                        color="success"
-                                        @click="saveServings(meal.id)"
-                                      >
-                                        save
-                                      </v-btn>
-                                    </v-col>
-                                  </v-row>
-                                </v-container>
-                              </v-card-text>
-                            </v-card>
-                          </v-dialog>
-                        </div>
-                      </v-card-text>
-                    </v-card>
-                  </v-expand-transition>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-container>
-        </div>
-        <div class="meal-card-loaders" v-if="!showMeals">
-          <v-container>
-            <v-row>
-              <v-col
-                cols="12"
-                sm="6"
-                md="12"
-                lg="6"
-                xl="4"
-                v-for="meal in meals"
-                :key="meal.id"
-              >
-                <v-skeleton-loader
-                  elevation="1"
-                  type="card-heading, list-item-avatar, card-heading"
-                ></v-skeleton-loader>
-              </v-col>
-            </v-row>
-          </v-container>
-        </div>
-      </v-col>
-    </v-row>
+                              save
+                            </v-btn>
+                          </v-card-actions>
+                        </v-card>
+                      </v-dialog>
+                    </v-card-actions>
+                  </v-card>
+                </v-expand-transition>
+
+                <!-- Meal load overlay -->
+                <v-fade-transition>
+                  <v-overlay
+                    absolute
+                    z-index="0"
+                    :opacity="1"
+                    color="green lighten-5"
+                    :value="loadingRegenerate"
+                  >
+                    <v-progress-circular
+                      indeterminate
+                      size="64"
+                      width="3"
+                      color="success"
+                    ></v-progress-circular>
+                  </v-overlay>
+                </v-fade-transition>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-text>
+    </v-card>
+
+    <!-- Action toast -->
+    <toast
+      :show="showToast"
+      :message="toastMessage"
+      :success="actionSuccess"
+      @close="showToast = false"
+    ></toast>
   </v-container>
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
+import { generateMeal, suggestEatery } from "../utils";
+import Toast from "@/components/Toast.vue";
 
 export default {
   title: "Meal planner",
   name: "MealPlanner",
-  created() {
-    // this.getMealsAction();
+  async created() {
+    if (this.$store.state.eateries.length === 0) await this.getEateriesAction();
+    if (this.meals.length === 0) await this.getMealsAction();
+    if (this.availableFoods.length === 0) await this.getAvailableFoodsAction();
+    if (this.allMenus.length === 0) await this.setAllMenusAction();
   },
   data() {
     return {
-      showMeals: true,
-      alertIcon: "mdi-cloud-alert",
-      alertType: "error",
-      alertMessage: "Something..",
-      alertShow: false,
+      actionSuccess: false,
+      toastMessage: "",
+      showToast: false,
       loadingMeals: false,
+      loadingRegenerate: false,
       datePickerMenu: false,
       mealsDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
@@ -372,7 +358,8 @@ export default {
     };
   },
   computed: {
-    ...mapState(["meals"]),
+    ...mapState(["meals", "availableFoods", "settings", "allMenus"]),
+    ...mapGetters(["getFoodsByNutrient"]),
     monthAndYear() {
       return new Date(this.mealsDate).toLocaleDateString("en-US", {
         year: "numeric",
@@ -391,36 +378,134 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["getMealsAction"]),
-    generateMeals() {
+    ...mapActions([
+      "getAvailableFoodsAction",
+      "getMealsAction",
+      "deleteMealAction",
+      "addMealAction",
+      "updateMealAction",
+      "saveAteMealAction",
+      "setAllMenusAction",
+      "getEateriesAction",
+      "addSuggestedEatery",
+      "deleteSuggestedEateryAction",
+    ]),
+    formatTime(timeString) {
+      const date = new Date("1970-01-01 " + timeString);
+      return date.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    },
+    async generateMeals() {
       this.loadingMeals = true;
 
-      // Create the meals and save them in database
-      setTimeout(() => {
-        this.loadingMeals = false;
-        this.showMeals = true;
-      }, 3000);
-    },
-    regenerateMeals() {
-      this.showMeals = false;
+      for (let index = 0; index < this.settings.mealTimes.length; index++) {
+        try {
+          // Create the meals
+          const meal = generateMeal(
+            this.availableFoods,
+            this.settings.mealTimes[index]
+          );
 
-      // Regenerate meals and save them in database
-      setTimeout(() => {
-        this.showMeals = true;
-      }, 3000);
+          // Uplaod the generated meal to the database
+          await this.addMealAction(meal);
+
+          // Search for eatery
+          const findEatery = suggestEatery(meal, this.allMenus);
+
+          // Save the search details if found
+          if (findEatery) await this.addSuggestedEatery(findEatery);
+
+          this.toastMessage = "Meals created successfully!";
+          this.actionSuccess = true;
+        } catch (error) {
+          this.toastMessage = error.message;
+          this.actionSuccess = false;
+        } finally {
+          this.loadingMeals = false;
+          this.showToast = true;
+        }
+      }
     },
-    saveServings(id) {
-      const meal = this.meals.find((obj) => obj.id === id);
-      meal.servingsDialog = false;
+    async regenerateMeals() {
+      this.loadingRegenerate = true;
+
+      const mealsCopy = [...this.meals];
+
+      // First delete all the meals that exists
+      for (let mealIndex = 0; mealIndex < mealsCopy.length; mealIndex++) {
+        try {
+          await this.deleteMealAction(mealsCopy[mealIndex]);
+          // await this.deleteSuggestedEateryAction(mealsCopy[mealIndex]);
+        } catch (error) {
+          this.loadingRegenerate = false;
+          this.toastMessage = error.code;
+          this.actionSuccess = false;
+          this.showToast = true;
+          return;
+        }
+      }
+
+      // Then create new meals
+      for (let index = 0; index < this.settings.mealTimes.length; index++) {
+        try {
+          const meal = generateMeal(
+            this.availableFoods,
+            this.settings.mealTimes[index]
+          );
+
+          // Uplaod the generated meal to the database
+          await this.addMealAction(meal);
+
+          // Find an eatery
+          const findEatery = suggestEatery(meal, this.allMenus);
+          if (findEatery) await this.addSuggestedEatery(findEatery);
+        } catch (error) {
+          this.toastMessage = error.code;
+          this.actionSuccess = false;
+          return;
+        }
+      }
+
+      this.loadingRegenerate = false;
+      this.toastMessage = "Meals regenerated successfully!";
+      this.actionSuccess = true;
+      this.showToast = true;
+    },
+    async saveServings(meal) {
+      try {
+        await this.updateMealAction(meal);
+
+        this.toastMessage = "Servings saved successfully!";
+        this.actionSuccess = true;
+      } catch (error) {
+        this.toastMessage = error.code;
+        this.actionSuccess = false;
+      } finally {
+        this.showToast = true;
+        meal.servingsDialog = false;
+      }
     },
     regenerateMeal(id) {
       const meal = this.meals.find((obj) => obj.id === id);
       console.log(meal.name);
     },
-    ateMeal(id) {
-      const meal = this.meals.find((obj) => obj.id === id);
-      console.log(meal.name);
+    async ateMeal(meal) {
+      try {
+        await this.saveAteMealAction(meal);
+        this.toastMessage = "Congrats! That's the spirit!";
+        this.actionSuccess = true;
+      } catch (error) {
+        this.toastMessage = error.message;
+        this.actionSuccess = false;
+      } finally {
+        this.showToast = true;
+      }
     },
+  },
+  components: {
+    Toast,
   },
 };
 </script>

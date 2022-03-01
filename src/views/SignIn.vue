@@ -1,26 +1,37 @@
 <template>
-  <v-container>
-    <v-row align="center" class="text-center">
-      <v-col cols="10" sm="8" md="6" lg="4" xl="3" class="mx-auto my-2">
-        <h1 class="text-h4 font-weight-medium my-4">Welcome back!</h1>
+  <v-sheet class="d-flex flex-column align-center justify-center" height="100%">
+    <v-card flat class="rounded-lg mx-auto" :width="cardWidth">
+      <v-card-title class="justify-center text-h5 text-md-h4 font-weight-bold"
+        >Welcome back!</v-card-title
+      >
+      <v-card-subtitle
+        class="text-center subtitle-2 text-md-subtitle-1 font-weight-regular"
+        >Log in to continue</v-card-subtitle
+      >
+
+      <v-card-text class="text-center pt-4">
+        <!-- Action alert -->
+        <v-alert
+          text
+          dismissible
+          dense
+          v-model="showAlert"
+          transition="scale-transition"
+          :type="actionSuccess ? 'success' : 'error'"
+          :icon="actionSuccess ? 'mdi-account-check' : 'mdi-account-alert'"
+          class="rounded-lg"
+        >
+          {{ alertMessage }}
+        </v-alert>
+
         <v-form ref="loginForm" lazy-validation>
-          <!-- Log in error alert -->
-          <v-alert
-            outlined
-            dense
-            dismissible
-            transition="scale-transition"
-            v-model="errorAlert"
-            type="error"
-            >{{ errorMessage }}</v-alert
-          >
           <!-- Email address field -->
           <v-text-field
             dense
             outlined
             clearable
-            rounded
             single-line
+            rounded
             :rules="[rules.required]"
             placeholder="example@domain.com"
             color="success"
@@ -29,6 +40,7 @@
             label="Email address"
             type="email"
           ></v-text-field>
+
           <!-- Password field -->
           <v-text-field
             dense
@@ -45,31 +57,38 @@
             label="Password"
             :type="showPassword ? 'text' : 'password'"
           ></v-text-field>
+
+          <!-- Submit button -->
+          <v-btn
+            rounded
+            :loading="emailSignInLoad"
+            @click="emailSignIn"
+            color="success"
+            class="text-none"
+            >Log in</v-btn
+          >
         </v-form>
-        <!-- Email log in button -->
+      </v-card-text>
+
+      <v-card-text class="text-center">
+        <p class="subtitle-2 text-md-subtitle-1 font-weight-regular">
+          Log in with
+        </p>
+
+        <!-- Google sign up button -->
         <v-btn
-          rounded
-          :loading="emailAuthLoad"
-          @click="emailSignIn"
-          color="success"
-          class="text-none my-4"
-          >Log in</v-btn
-        >
-        <div class="text-center">or</div>
-        <!-- Google log in button -->
-        <v-btn
-          outlined
-          rounded
-          :loading="googleAuthLoad"
+          small
+          fab
+          color="red"
+          class="text-none"
+          :loading="googleSignInLoad"
           @click="googleSignIn"
-          class="my-4 text-none"
         >
-          <v-icon left>mdi-google</v-icon>
-          continue in with Google
+          <v-icon small color="white">mdi-google</v-icon>
         </v-btn>
-      </v-col>
-    </v-row>
-  </v-container>
+      </v-card-text>
+    </v-card>
+  </v-sheet>
 </template>
 
 <script>
@@ -79,7 +98,8 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
-import { roleRedirect, checkUserProfile } from "../utils";
+import { mapActions } from "vuex";
+import { roleRedirect } from "../utils";
 
 export default {
   name: "SignIn",
@@ -89,95 +109,99 @@ export default {
       email: "",
       password: "",
       showPassword: false,
-      emailAuthLoad: false,
-      googleAuthLoad: false,
+      emailSignInLoad: false,
+      googleSignInLoad: false,
       rules: {
         required: (value) => !!value || "This field is required!",
       },
-      errorAlert: false,
-      errorMessage: "",
+      showAlert: false,
+      actionSuccess: false,
+      alertMessage: "",
     };
   },
+  computed: {
+    cardWidth() {
+      switch (this.$vuetify.breakpoint.name) {
+        case "xl":
+          return "30vw";
+        case "lg":
+          return "40vw";
+        case "md":
+          return "50vw";
+        case "sm":
+          return "70vw";
+        case "xs":
+          return "90vw";
+        default:
+          return "100vw";
+      }
+    },
+  },
   methods: {
-    /**
-     * Signs in a user by their email and password
-     */
+    ...mapActions(["getProfileAction"]),
     async emailSignIn() {
       if (this.$refs.loginForm.validate()) {
         try {
-          this.emailAuthLoad = true;
+          // Start loading
+          this.emailSignInLoad = true;
+
+          const auth = getAuth();
 
           // Log in the user
-          const auth = getAuth();
-          const res = await signInWithEmailAndPassword(
-            auth,
-            this.email,
-            this.password
-          );
+          await signInWithEmailAndPassword(auth, this.email, this.password);
 
-          // Store user's email address
-          this.$store.commit("setUserEmail", res.user.email);
-          localStorage.setItem("email", res.user.email);
+          // Stop loading
+          this.emailSignInLoad = false;
 
-          // Redirect the user to the dashboard
+          // Redirect user to the dashboard
           await this.redirect();
         } catch (error) {
-          this.emailAuthLoad = false;
-          this.errorAlert = true;
-          this.errorMessage = error.code;
+          // Stop loading
+          this.emailSignInLoad = false;
+
+          // Show error message
+          this.alertMessage = error.code;
+          this.actionSuccess = false;
+          this.showAlert = true;
         }
       }
     },
-    /**
-     * Signs in a user using Google provider
-     */
     async googleSignIn() {
       try {
-        this.googleAuthLoad = true;
+        // Start loading
+        this.googleSignInLoad = true;
 
-        // Log in the user
         const auth = getAuth();
         const provider = new GoogleAuthProvider();
-        const res = await signInWithPopup(auth, provider);
 
-        // Store user's email address
-        this.$store.commit("setUserEmail", res.user.email);
-        localStorage.setItem("email", res.user.email);
+        // Log in the user
+        await signInWithPopup(auth, provider);
 
-        // Redirect the user to the dashboard
+        // Stop loading
+        this.googleSignInLoad = false;
+
+        // Redirect to dashboard
         await this.redirect();
       } catch (error) {
-        this.googleAuthLoad = false;
-        this.errorAlert = true;
-        this.errorMessage = error.code;
+        // Stop loading
+        this.googleSignInLoad = false;
+
+        // Show error message
+        this.alertMessage = error;
+        this.actionSuccess = false;
+        this.showAlert = true;
       }
     },
-    /**
-     * Handles the profile checking after logging in
-     */
     async redirect() {
-      try {
-        // Check if the user has a profile set up
-        const { ...res } = await checkUserProfile(
-          localStorage.getItem("email")
-        );
+      // Fetch user profile
+      await this.getProfileAction();
 
-        // Stop button loading
-        this.emailAuthLoad = false;
-        this.googleAuthLoad = false;
-
-        // Redirect to dashboard or create profile page
-        if (res.hasProfile)
-          this.$router.replace({ name: roleRedirect(res.role) });
-        else this.$router.replace({ name: "create-profile" });
-      } catch (error) {
-        this.emailAuthLoad = false;
-        this.googleAuthLoad = false;
-
-        // Show the error
-        this.errorAlert = true;
-        this.errorMessage = error.code;
-      }
+      // Redirect based on if the profile exists
+      if (this.$store.state.profile) {
+        this.$router.replace({
+          name: roleRedirect(this.$store.state.profile.role),
+        });
+      } else this.$router.replace({ name: "create-profile" });
     },
   },
 };

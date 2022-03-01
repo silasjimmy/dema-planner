@@ -36,7 +36,7 @@ const routes = [
     name: 'home',
     component: Home,
     meta: {
-      preventLandingView: true,
+      landingPage: true,
       title: 'Home'
     }
   },
@@ -45,7 +45,7 @@ const routes = [
     name: 'sign-in',
     component: SignIn,
     meta: {
-      preventLandingView: true,
+      landingPage: true,
       title: 'Log in'
     }
   },
@@ -54,7 +54,7 @@ const routes = [
     name: 'sign-up',
     component: SignUp,
     meta: {
-      preventLandingView: true,
+      landingPage: true,
       title: 'Create account'
     }
   },
@@ -63,7 +63,7 @@ const routes = [
     name: 'about-us',
     component: AboutUs,
     meta: {
-      preventLandingView: true,
+      landingPage: true,
       title: 'About us'
     }
   },
@@ -72,7 +72,7 @@ const routes = [
     name: 'contact-us',
     component: ContactUs,
     meta: {
-      preventLandingView: true,
+      landingPage: true,
       title: 'Contact us'
     }
   },

@@ -31,12 +31,8 @@
             <v-spacer></v-spacer>
 
             <!-- Add food button -->
-            <v-btn
-              rounded
-              color="success"
-              @click="addNewFood"
-              class="text-none"
-            >
+            <v-btn rounded text color="success" @click="addNewFood">
+              <v-icon left>mdi-plus</v-icon>
               Add food
             </v-btn>
           </v-toolbar>
@@ -72,6 +68,7 @@
         @setUnits="setUnits"
         @save="saveFood"
         @close="foodFormDialog = false"
+        @uploadFoodImg="uploadFoodImg"
       ></food-form>
 
       <!-- Food delete dialog -->
@@ -95,6 +92,7 @@
     <toast
       :show="showToast"
       :message="toastMessage"
+      :success="actionSuccess"
       @close="showToast = false"
     ></toast>
   </v-container>
@@ -102,6 +100,7 @@
 
 <script>
 import FoodForm from "@/components/FoodForm.vue";
+import Toast from "@/components/Toast.vue";
 import FoodDetails from "../components/FoodDetails.vue";
 import QuestionPrompt from "../components/QuestionPrompt.vue";
 import { mapState, mapActions } from "vuex";
@@ -109,11 +108,12 @@ import { mapState, mapActions } from "vuex";
 export default {
   title: "Foods",
   name: "Foods",
-  created() {
-    this.getAllFoodsAction();
+  async created() {
+    if (this.allFoods.length === 0) await this.getAllFoodsAction();
   },
   data() {
     return {
+      foodImg: undefined,
       foodFormDialog: false,
       foodAction: "new",
       promptOverlay: false,
@@ -123,6 +123,7 @@ export default {
       loadingFood: false,
       showToast: false,
       toastMessage: "",
+      actionSuccess: true,
       selectedFood: {
         id: "",
         imageUrl: "",
@@ -197,6 +198,21 @@ export default {
       "updateFoodAction",
       "deleteFoodAction",
     ]),
+    uploadFoodImg(e) {
+      let reader = new FileReader();
+
+      reader.onloadend = () => {
+        this.selectedFood.imageUrl = reader.result;
+      };
+
+      let images = e.target.files || e.dataTransfer.files;
+
+      if (!images.length) return;
+      else {
+        this.foodImg = images[0];
+        this.selectedFood.imageUrl = reader.readAsDataURL(images[0]);
+      }
+    },
     addNewFood() {
       this.selectedFood = JSON.parse(JSON.stringify(this.defaultFood));
       this.foodAction = "new";
@@ -252,13 +268,16 @@ export default {
             // Add new food
             this.addFoodAction(this.selectedFood);
             this.toastMessage = "Food added successfully!";
+            this.actionSuccess = true;
           } else {
             // Edit food
             await this.updateFoodAction(this.selectedFood);
             this.toastMessage = "Food updated successfully!";
+            this.actionSuccess = true;
           }
         } catch (error) {
-          this.toastMessage = error;
+          this.toastMessage = error.code;
+          this.actionSuccess = false;
         } finally {
           // Stop button loading
           this.loadingFood = false;
@@ -300,6 +319,7 @@ export default {
     QuestionPrompt,
     FoodDetails,
     FoodForm,
+    Toast,
   },
 };
 </script>

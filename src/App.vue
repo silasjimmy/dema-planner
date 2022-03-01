@@ -1,76 +1,25 @@
 <template>
   <v-app v-cloak>
     <!-- Home app bar -->
-    <v-app-bar app elevate-on-scroll v-if="!loggedIn">
-      <v-app-bar-nav-icon
-        class="d-flex d-sm-none"
-        @click="homeSidenav = true"
-      ></v-app-bar-nav-icon>
-
-      <v-toolbar-title>Dema</v-toolbar-title>
+    <v-app-bar app elevate-on-scroll v-if="!viewDashboard">
+      <v-toolbar-title class="font-weight-bold">Dema</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
-      <div class="d-none d-sm-block">
-        <v-btn plain rounded link class="text-none" to="/sign-up"
-          >Create account</v-btn
-        >
-        <v-btn plain rounded link class="text-none" to="/sign-in">Log in</v-btn>
-      </div>
+      <v-btn
+        outlined
+        rounded
+        link
+        :small="$vuetify.breakpoint.smAndDown"
+        to="/sign-in"
+        color="success"
+        class="text-none"
+        >Log in</v-btn
+      >
     </v-app-bar>
 
-    <!-- Home side navigation -->
-    <v-navigation-drawer temporary app v-model="homeSidenav" v-if="!loggedIn">
-      <!-- Navigation links -->
-      <v-list rounded subheader>
-        <v-list-item-group>
-          <v-subheader>Navigation links</v-subheader>
-          <v-list-item link to="/home">
-            <v-list-item-icon>
-              <v-icon>mdi-home</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>Home</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item link to="/about-us">
-            <v-list-item-icon>
-              <v-icon>mdi-information</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>About</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item link to="/sign-in">
-            <v-list-item-icon>
-              <v-icon>mdi-login</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>Log in</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item link to="/sign-up">
-            <v-list-item-icon>
-              <v-icon>mdi-pencil</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>Create account</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item link to="/contact-us">
-            <v-list-item-icon>
-              <v-icon>mdi-message</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>Contact us</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-    </v-navigation-drawer>
-
     <!-- Dashboard app bar -->
-    <v-app-bar app elevate-on-scroll v-if="loggedIn">
+    <v-app-bar app elevate-on-scroll v-if="viewDashboard">
       <v-app-bar-nav-icon
         class="d-sm-none"
         @click="rightSidenav = true"
@@ -81,11 +30,86 @@
 
       <v-spacer></v-spacer>
 
-      <!-- Notifications dropdown -->
+      <!-- Extra links menu -->
+      <v-menu
+        bottom
+        offset-y
+        min-width="200px"
+        transition="slide-y-transition"
+        v-if="$vuetify.breakpoint.xs"
+      >
+        <template v-slot:activator="{ on }">
+          <v-btn icon class="mr-1" v-on="on">
+            <v-badge bordered overlap dot color="success">
+              <v-avatar size="36">
+                <img :src="profile.imageUrl" :alt="profile.name" />
+              </v-avatar>
+            </v-badge>
+          </v-btn>
+        </template>
+
+        <v-card>
+          <!-- Links -->
+          <v-list class="py-0">
+            <v-list-item link to="/messages">
+              <v-list-item-avatar>
+                <v-icon>mdi-message</v-icon>
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title>Messages</v-list-item-title>
+                <!-- <v-list-item-title>
+                  <v-badge color="success" content="1">Messages</v-badge>
+                </v-list-item-title> -->
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item link to="/notifications">
+              <v-list-item-avatar>
+                <v-icon>mdi-bell</v-icon>
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title>Notifications</v-list-item-title>
+                <!-- <v-list-item-title>
+                  <v-badge color="success" content="1">Notifications</v-badge>
+                </v-list-item-title> -->
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item link to="/profile">
+              <v-list-item-avatar>
+                <v-icon>mdi-account-details</v-icon>
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title>Profile</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item link to="/settings">
+              <v-list-item-avatar>
+                <v-icon>mdi-cog</v-icon>
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title>Settings</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-divider></v-divider>
+
+            <v-list-item @click="logout">
+              <v-list-item-avatar>
+                <v-icon>mdi-logout</v-icon>
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title>Logout</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-menu>
+
+      <!-- Notifications menu -->
       <v-menu
         bottom
         left
         offset-y
+        v-if="$vuetify.breakpoint.smAndUp"
         :close-on-content-click="false"
         v-model="notificationsMenu"
         transition="slide-y-transition"
@@ -108,24 +132,20 @@
         </template>
 
         <v-tabs grow color="green">
+          <v-tabs-slider></v-tabs-slider>
           <v-tab class="text-none font-weight-medium">Notifications</v-tab>
           <v-tab class="text-none font-weight-medium">Messages</v-tab>
 
           <!-- Notifications tab -->
           <v-tab-item>
             <p
-              v-if="notifications.length === 0"
+              v-if="!notifications"
               class="text--secondary subtitle-1 text-center py-4 mb-0"
             >
               No notifications
             </p>
 
-            <v-list
-              two-line
-              v-if="notifications.length > 0"
-              class="py-0"
-              max-width="400"
-            >
+            <v-list two-line v-if="notifications" class="py-0" max-width="400">
               <v-list-item-group
                 multiple
                 v-model="unreadNotifications"
@@ -165,7 +185,7 @@
 
             <v-divider></v-divider>
 
-            <v-card v-if="notifications.length > 0" elevation="0">
+            <v-card v-if="notifications" elevation="0">
               <v-card-actions class="justify-center">
                 <v-btn
                   plain
@@ -181,18 +201,13 @@
           <!-- Messages tab -->
           <v-tab-item>
             <p
-              v-if="messages.length === 0"
+              v-if="!messages"
               class="text--secondary subtitle-1 text-center py-4 mb-0"
             >
               No messages
             </p>
 
-            <v-list
-              two-line
-              v-if="messages.length > 0"
-              class="py-0"
-              max-width="400"
-            >
+            <v-list two-line v-if="messages" class="py-0" max-width="400">
               <v-list-item-group
                 multiple
                 v-model="unreadMessages"
@@ -241,7 +256,7 @@
 
             <v-divider></v-divider>
 
-            <v-card v-if="messages.length > 0" elevation="0">
+            <v-card v-if="messages" elevation="0">
               <v-card-actions class="justify-center">
                 <v-btn
                   plain
@@ -261,7 +276,7 @@
     <v-navigation-drawer
       fixed
       app
-      v-if="loggedIn"
+      v-if="viewDashboard"
       :permanent="$vuetify.breakpoint.mdAndUp"
     >
       <!-- Userview -->
@@ -269,18 +284,15 @@
         <v-list>
           <v-list-item>
             <v-list-item-avatar size="80px">
-              <img :src="userProfile.imageUrl" />
+              <img :src="profile.imageUrl" />
             </v-list-item-avatar>
           </v-list-item>
           <v-list-item>
             <v-list-item-content>
-              <v-list-item-title
-                class="text-h6 font-weight-medium jost-font-family"
-                >{{ userProfile.name }}</v-list-item-title
-              >
-              <v-list-item-subtitle>{{
-                userProfile.email
-              }}</v-list-item-subtitle>
+              <v-list-item-title class="text-h6 font-weight-medium">{{
+                profile.name
+              }}</v-list-item-title>
+              <v-list-item-subtitle>{{ profile.email }}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -288,7 +300,7 @@
 
       <!-- Navigation links -->
       <v-list rounded>
-        <v-list-item-group>
+        <v-list-item-group color="success">
           <v-list-item
             link
             v-for="link in dashboardLinks"
@@ -323,12 +335,14 @@
 
       <!-- Log out button -->
       <template v-slot:append>
-        <div class="px-4">
-          <v-btn block @click="logout" class="my-4" color="success">
-            <v-icon left>mdi-logout</v-icon>
-            Log out
-          </v-btn>
-        </div>
+        <v-list-item color="success" class="pl-6" @click="logout">
+          <v-list-item-icon>
+            <v-icon>mdi-logout</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Log out</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </template>
     </v-navigation-drawer>
 
@@ -337,18 +351,22 @@
       fixed
       app
       right
-      v-if="loggedIn"
+      v-if="viewDashboard"
       :permanent="$vuetify.breakpoint.smAndUp"
       v-model="rightSidenav"
     >
-      <meals-info v-if="userRole === 'consumer'"></meals-info>
+      <meals-info
+        v-if="$store.state.role === 'consumer' && $store.state.meals"
+      ></meals-info>
     </v-navigation-drawer>
 
     <!-- Dashboard bottom navigation -->
     <v-bottom-navigation
       app
-      :shift="$vuetify.breakpoint.smAndUp"
-      v-if="loggedIn && $vuetify.breakpoint.smAndDown"
+      shift
+      grow
+      color="success"
+      v-if="viewDashboard && $vuetify.breakpoint.smAndDown"
     >
       <v-btn
         link
@@ -356,7 +374,7 @@
         :key="link.text"
         :to="link.url"
       >
-        <span class="d-none d-sm-flex">{{ link.text }}</span>
+        <span>{{ link.text }}</span>
         <v-icon>{{ link.icon }}</v-icon>
       </v-btn>
       <v-btn link to="/settings" v-if="$vuetify.breakpoint.smAndUp">
@@ -371,92 +389,120 @@
         <span>Log out</span>
         <v-icon left>mdi-logout</v-icon>
       </v-btn>
-
-      <!-- More links menu -->
-      <v-menu top offset-y>
-        <!-- More button -->
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn class="px-0 d-flex d-sm-none" v-bind="attrs" v-on="on">
-            <span class="d-none d-sm-flex">More</span>
-            <v-icon>mdi-dots-horizontal</v-icon>
-          </v-btn>
-        </template>
-
-        <!-- Links -->
-        <v-list class="text-center py-0">
-          <v-list-item class="px-0" @click="logout">
-            <v-list-item-title>
-              <v-icon>mdi-logout</v-icon>
-            </v-list-item-title>
-          </v-list-item>
-          <v-list-item class="px-0" link to="/profile">
-            <v-list-item-title>
-              <v-icon>mdi-account-details</v-icon>
-            </v-list-item-title>
-          </v-list-item>
-          <v-list-item class="px-0" link to="/settings">
-            <v-list-item-title>
-              <v-icon>mdi-cog</v-icon>
-            </v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
     </v-bottom-navigation>
 
     <!-- Main section -->
     <v-main>
+      <!-- Internet connection banner -->
       <v-banner
-        single-line
         app
         outlined
-        v-model="isOnline"
-        v-if="loggedIn"
+        v-model="showBanner"
         class="rounded-lg"
         transition="slide-y-transition"
       >
-        <v-icon slot="icon" color="warning" size="24">
-          mdi-wifi-strength-alert-outline
+        <v-icon slot="icon" :color="isOnline ? 'success' : 'error'" size="24">
+          {{ isOnline ? "mdi-wifi" : "mdi-wifi-alert" }}
         </v-icon>
-        {{ internetConnectionMessage }}
+
+        <span>
+          {{
+            isOnline
+              ? "You are now connected!"
+              : "You have no internet connection!"
+          }}
+        </span>
+
         <template v-slot:actions="{ dismiss }">
-          <v-btn rounded text color="error" @click="dismiss"> Dismiss </v-btn>
+          <v-btn
+            rounded
+            text
+            :color="isOnline ? 'success' : 'error'"
+            @click="dismiss"
+          >
+            {{ isOnline ? "dismiss" : "connect" }}
+          </v-btn>
         </template>
       </v-banner>
+
+      <!-- Router view -->
       <router-view />
+
+      <!-- Scroll to top button -->
+      <v-fab-transition>
+        <v-btn
+          fab
+          fixed
+          bottom
+          right
+          v-if="!viewDashboard"
+          color="success"
+          v-show="showFabBtn"
+          @click="$vuetify.goTo(0, scrollOptions)"
+        >
+          <v-icon>mdi-chevron-up</v-icon>
+        </v-btn>
+      </v-fab-transition>
     </v-main>
 
     <!-- Footer -->
-    <v-footer app absolute padless v-if="!loggedIn">
-      <v-card flat tile width="100vw">
-        <v-card-text class="text-center">
-          <v-btn rounded link class="ma-2 text-none" elevation="0" to="/home"
-            >Home</v-btn
-          >
+    <v-footer app absolute padless v-if="!viewDashboard">
+      <v-card flat tile color="success" class="white--text" width="100vw">
+        <v-card-text v-if="$vuetify.breakpoint.smAndDown" class="text-center">
+          <v-btn icon plain rounded link class="mx-2" to="/home" color="white">
+            <v-icon>mdi-home</v-icon>
+          </v-btn>
+          <v-btn plain rounded link class="mx-2" to="/about-us" color="white">
+            <v-icon>mdi-information</v-icon>
+          </v-btn>
           <v-btn
+            icon
+            plain
             rounded
             link
-            class="ma-2 text-none"
-            elevation="0"
-            to="/about-us"
-            >About us</v-btn
-          >
-          <v-btn rounded link class="ma-2 text-none" elevation="0" to="/sign-up"
-            >Create account</v-btn
-          >
-          <v-btn rounded link class="ma-2 text-none" elevation="0" to="/sign-in"
-            >Log in</v-btn
-          >
-          <v-btn
-            rounded
-            link
-            class="ma-2 text-none"
-            elevation="0"
+            class="mx-2"
             to="/contact-us"
-            >Contact us</v-btn
+            color="white"
           >
+            <v-icon>mdi-phone-hangup</v-icon>
+          </v-btn>
+          <v-btn
+            icon
+            plain
+            rounded
+            link
+            class="mx-2"
+            to="/sign-in"
+            color="white"
+          >
+            <v-icon>mdi-login</v-icon>
+          </v-btn>
+          <v-btn
+            icon
+            plain
+            rounded
+            link
+            class="mx-2"
+            to="/sign-up"
+            color="white"
+          >
+            <v-icon>mdi-account-plus</v-icon>
+          </v-btn>
         </v-card-text>
 
-        <v-card-text>
+        <v-card-text v-if="$vuetify.breakpoint.mdAndUp" class="text-center">
+          <v-btn plain rounded link to="/home" color="white">Home</v-btn>
+          <v-btn plain rounded link to="/about-us" color="white"
+            >About us</v-btn
+          >
+          <v-btn plain rounded link to="/contact-us" color="white"
+            >Contact us</v-btn
+          >
+          <v-btn plain rounded link to="/sign-in" color="white">Log in</v-btn>
+          <v-btn plain rounded link to="/sign-up" color="white">Sign up</v-btn>
+        </v-card-text>
+
+        <!-- <v-card-text>
           <v-row class="text-center">
             <v-col cols="12" md="6">
               <h3 class="subtitle-1 text--secondary">Find us in:</h3>
@@ -491,165 +537,72 @@
               </v-btn>
             </v-col>
           </v-row>
-        </v-card-text>
+        </v-card-text> -->
 
         <v-divider></v-divider>
 
-        <v-card-text class="text-center">
-          <span>{{ new Date().getFullYear() }} — <strong>Dema</strong></span>
-        </v-card-text>
+        <v-card-actions
+          class="
+            px-4 px-sm-8
+            text-center
+            subtitle-2
+            text-md-subtitle-1
+            font-weight-regular
+          "
+        >
+          <span>All rights reserved.</span>
+          <v-spacer></v-spacer>
+          <span><strong>Dema</strong>, {{ new Date().getFullYear() }}</span>
+        </v-card-actions>
       </v-card>
     </v-footer>
 
     <!-- Page load overlay -->
     <v-overlay opacity="1" z-index="10" :value="pageLoadOverlay">
       <v-progress-circular
-        :rotate="360"
-        :size="250"
-        :width="12"
-        :value="pageLoadValue"
-        :color="pageLoadColor"
+        indeterminate
+        :size="200"
+        :width="4"
+        color="success"
         class="text-center"
       >
-        {{ pageLoadMessage }}
+        Loading...
       </v-progress-circular>
     </v-overlay>
   </v-app>
 </template>
 
 <script>
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { mapState, mapActions, mapGetters } from "vuex";
+import { getAuth, signOut } from "firebase/auth";
+import { mapState, mapGetters } from "vuex";
 import MealsInfo from "./components/MealsInfo.vue";
 
 export default {
   name: "App",
-  async created() {
-    // Sync local data with store data
-    this.$store.commit(
-      "setLoggedIn",
-      localStorage.getItem("loggedIn") === "true"
-    );
-    this.$store.commit("setUserEmail", localStorage.getItem("email"));
-    this.$store.commit("setUserRole", localStorage.getItem("role"));
-    this.$store.commit("setDashboardLinks", localStorage.getItem("role"));
-
-    // console.log(
-    //   this.$store.state.loggedIn,
-    //   this.$store.state.userEmail,
-    //   this.$store.state.userRole,
-    //   this.$store.state.dashboardLinks
-    // );
-  },
-  async mounted() {
-    if (localStorage.getItem("loggedIn") === "true") {
-      try {
-        // Start loading data
-        this.pageLoadOverlay = true;
-        this.pageLoadColor = "success";
-        this.pageLoadMessage = `Loading data: ${this.pageLoadValue}%`;
-
-        // 1. Fetch the user's profile
-        await this.getUserProfileAction();
-        this.pageLoadValue += 25;
-        this.pageLoadMessage = `Loading data: ${this.pageLoadValue}%`;
-
-        // 2. Fetch the user's settings
-        await this.getUserSettingsAction();
-        this.pageLoadValue += 25;
-        this.pageLoadMessage = `Loading data: ${this.pageLoadValue}%`;
-
-        // Set the app's theme
-        this.$vuetify.theme.dark = this.userSettings.appTheme === "dark";
-
-        // 3. Fetch the user's messages
-        await this.getMessagesAction();
-        this.pageLoadValue += 25;
-        this.pageLoadMessage = `Loading data: ${this.pageLoadValue}%`;
-
-        // 4. Fetch the user's notifications
-        await this.getNotificationsAction();
-        this.pageLoadValue += 25;
-        this.pageLoadMessage = `Loading data: ${this.pageLoadValue}%`;
-
-        // Set the page title
-        this.$store.commit("setPageTitle", document.title);
-
-        // Get the indexes of unread messages
-        const allMessages = this.getMessagesByRead(false);
-        allMessages.forEach((message) =>
-          this.unreadMessages.push(this.messages.indexOf(message))
-        );
-
-        // Get the indexes of unread notifications
-        const allNotifications = this.getNotificationsByRead(false);
-        allNotifications.forEach((notification) =>
-          this.unreadNotifications.push(
-            this.notifications.indexOf(notification)
-          )
-        );
-
-        switch (localStorage.getItem("role")) {
-          case "consumer":
-            await this.getEateriesAction();
-            break;
-        }
-
-        // Hide the overlay
-        setTimeout(() => (this.pageLoadOverlay = false), 1000);
-      } catch (error) {
-        // Display error message
-        this.pageLoadColor = "error";
-        this.pageLoadMessage = `${error.code}`;
-      }
-    }
-
-    // Monitor the user sign in activity
-    const auth = getAuth();
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // Update the local storage data
-        localStorage.setItem("loggedIn", "true");
-        localStorage.setItem("email", user.email);
-      } else {
-        // Delete local storage data
-        localStorage.removeItem("loggedIn");
-        localStorage.removeItem("email");
-        localStorage.removeItem("role");
-
-        // Update the store's data
-        this.$store.commit("setLoggedIn", false);
-        this.$store.commit("setUserRole", "");
-        this.$store.commit("setDashboardLinks", "");
-      }
+  created() {
+    window.addEventListener("scroll", () => {
+      this.scrollYPos = window.scrollY;
     });
   },
   data() {
     return {
+      scrollYPos: 0,
       unreadMessages: [],
       unreadNotifications: [],
-      pageLoadOverlay: false,
       pageLoadMessage: "",
       pageLoadColor: "",
-      interval: {},
       pageLoadValue: 0,
-      homeSidenav: false,
       rightSidenav: false,
       notificationsMenu: false,
-      isOnline: !navigator.onLine,
-      internetConnectionMessage:
-        "You are now offline. Any edits you make won't be saved.",
+      isOnline: true,
+      showBanner: false,
+      scrollOptions: {
+        duration: 400,
+        easing: "easeInQuint",
+      },
     };
   },
   methods: {
-    ...mapActions([
-      "getUserProfileAction",
-      "getUserSettingsAction",
-      "getMessagesAction",
-      "getNotificationsAction",
-      "getEateriesAction",
-    ]),
     lastReply(message) {
       return message.replies[message.replies.length - 1];
     },
@@ -659,35 +612,44 @@ export default {
         minute: "2-digit",
       });
     },
-    logout() {
+    async checkOnlineStatus() {
+      try {
+        const online = await fetch("./assets/images/silas-jimmy.jpg");
+        return online.status >= 200 && online.status < 300; // either true or false
+      } catch (err) {
+        return false; // definitely offline
+      }
+    },
+    async logout() {
       const auth = getAuth();
 
-      signOut(auth)
-        .then(() => {
-          this.$store.commit("setLoggedIn", false);
+      try {
+        // Sign out
+        await signOut(auth);
 
-          // Direct to sign in
-          this.$router.replace({ name: "sign-in" });
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
+        // Go to log in page
+        this.$router.replace({ name: "sign-in" });
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
   computed: {
-    ...mapState([
-      "dashboardLinks",
-      "userProfile",
-      "userSettings",
-      "messages",
-      "notifications",
-    ]),
+    ...mapState(["dashboardLinks", "profile", "messages", "notifications"]),
     ...mapGetters(["getMessagesByRead", "getNotificationsByRead"]),
-    loggedIn() {
-      return this.$store.state.loggedIn;
+    viewDashboard() {
+      return (
+        this.$store.state.loggedIn &&
+        this.$store.state.role &&
+        this.$store.state.profile
+      );
     },
-    userRole() {
-      return this.$store.state.userRole;
+    showFabBtn() {
+      if (this.scrollYPos > 200) return true;
+      return false;
+    },
+    pageLoadOverlay() {
+      return this.$store.state.pageLoading;
     },
   },
   components: { MealsInfo },

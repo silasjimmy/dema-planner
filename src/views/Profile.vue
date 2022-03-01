@@ -2,25 +2,37 @@
   <v-container fluid>
     <v-card outlined class="rounded-lg">
       <!-- Consumer profile view -->
-      <v-list subheader two-line v-if="$store.state.userRole === 'consumer'">
+      <v-list subheader two-line v-if="$store.state.role === 'consumer'">
         <v-list-item three-line>
           <v-list-item-avatar tile size="80" class="rounded-circle">
-            <v-img :src="userProfile.imageUrl"></v-img>
+            <v-img :src="profile.imageUrl"></v-img>
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title class="text-h5">{{
-              userProfile.name
+              profile.name
             }}</v-list-item-title>
             <v-list-item-subtitle>{{ age() }} years old</v-list-item-subtitle>
-            <v-list-item-subtitle>{{
-              userProfile.gender
-            }}</v-list-item-subtitle>
+            <v-list-item-subtitle>{{ profile.gender }}</v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>
-            <v-btn icon @click="editUserProfile = true">
+            <v-btn icon @click="editProfile = true">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </v-list-item-action>
+        </v-list-item>
+
+        <!-- Location -->
+        <v-list-item>
+          <v-list-item-avatar>
+            <v-icon> mdi-map-marker </v-icon>
+          </v-list-item-avatar>
+
+          <v-list-item-content>
+            <v-list-item-title>Location</v-list-item-title>
+            <v-list-item-subtitle
+              >{{ profile.town }}, {{ profile.country }}</v-list-item-subtitle
+            >
+          </v-list-item-content>
         </v-list-item>
         <!-- 
         <v-divider inset class="my-3"></v-divider>
@@ -32,7 +44,7 @@
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title>Diet</v-list-item-title>
-            <v-list-item-subtitle>{{ userProfile.diet }}</v-list-item-subtitle>
+            <v-list-item-subtitle>{{ profile.diet }}</v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>
             <v-dialog persistent v-model="primaryInfoDialog" width="500">
@@ -58,7 +70,7 @@
                     item-color="success"
                     color="success"
                     :items="['Anything', 'Vegan', 'Vegeterian']"
-                    v-model="userProfile.diet"
+                    v-model="profile.diet"
                     label="Diet"
                   ></v-select>
                   <v-text-field
@@ -70,8 +82,8 @@
                     color="success"
                     prepend-icon="mdi-account"
                     label="Height"
-                    v-model="userProfile.height.amount"
-                    :suffix="userProfile.height.units"
+                    v-model="profile.height.amount"
+                    :suffix="profile.height.units"
                   ></v-text-field>
                   <v-text-field
                     outlined
@@ -83,8 +95,8 @@
                     color="success"
                     prepend-icon="mdi-account"
                     label="Weight"
-                    v-model="userProfile.weight.amount"
-                    :suffix="userProfile.weight.units"
+                    v-model="profile.weight.amount"
+                    :suffix="profile.weight.units"
                   ></v-text-field>
                 </v-card-text>
 
@@ -113,8 +125,8 @@
           <v-list-item-content>
             <v-list-item-title>Height</v-list-item-title>
             <v-list-item-subtitle
-              >{{ userProfile.height.amount }}
-              {{ userProfile.height.units }}</v-list-item-subtitle
+              >{{ profile.height.amount }}
+              {{ profile.height.units }}</v-list-item-subtitle
             >
           </v-list-item-content>
         </v-list-item>
@@ -125,8 +137,8 @@
           <v-list-item-content>
             <v-list-item-title>Weight</v-list-item-title>
             <v-list-item-subtitle
-              >{{ userProfile.weight.amount }}
-              {{ userProfile.weight.units }}</v-list-item-subtitle
+              >{{ profile.weight.amount }}
+              {{ profile.weight.units }}</v-list-item-subtitle
             >
           </v-list-item-content>
         </v-list-item>
@@ -141,7 +153,7 @@
           <v-list-item-content>
             <v-list-item-title>Body fat</v-list-item-title>
             <v-list-item-subtitle>{{
-              userProfile.bodyFat
+              profile.bodyFat
             }}</v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>
@@ -168,7 +180,7 @@
                     color="success"
                     item-color="success"
                     :items="['Low', 'Medium', 'High']"
-                    v-model="userProfile.bodyFat"
+                    v-model="profile.bodyFat"
                     label="Body fat"
                   ></v-select>
                   <v-select
@@ -179,7 +191,7 @@
                     item-color="success"
                     color="success"
                     :items="['Not active', 'Lightly active', 'Very active']"
-                    v-model="userProfile.activityLevel"
+                    v-model="profile.activityLevel"
                     label="Activity level"
                   ></v-select>
                   <v-select
@@ -191,7 +203,7 @@
                     color="success"
                     item-color="success"
                     :items="['None', 'Diabetic', 'High blood pressure']"
-                    v-model="userProfile.healthCondition"
+                    v-model="profile.healthCondition"
                     label="Health condition"
                   ></v-select>
                 </v-card-text>
@@ -219,7 +231,7 @@
           <v-list-item-content>
             <v-list-item-title>Activity level</v-list-item-title>
             <v-list-item-subtitle>{{
-              userProfile.activityLevel
+              profile.activityLevel
             }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
@@ -230,7 +242,7 @@
           <v-list-item-content>
             <v-list-item-title>Health condition</v-list-item-title>
             <v-list-item-subtitle>{{
-              userProfile.healthCondition
+              profile.healthCondition
             }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
@@ -245,8 +257,8 @@
           <v-list-item-content>
             <v-list-item-title>Target</v-list-item-title>
             <v-list-item-subtitle
-              >{{ userProfile.goal }} - {{ userProfile.target.amount }}
-              {{ userProfile.target.units }}</v-list-item-subtitle
+              >{{ profile.goal }} - {{ profile.target.amount }}
+              {{ profile.target.units }}</v-list-item-subtitle
             >
           </v-list-item-content>
           <v-list-item-action>
@@ -277,7 +289,7 @@
                       'Maintain weight',
                       'Build muscle',
                     ]"
-                    v-model="userProfile.goal"
+                    v-model="profile.goal"
                     label="Goal"
                   ></v-select>
                   <v-text-field
@@ -289,8 +301,8 @@
                     color="success"
                     prepend-icon="mdi-account"
                     label="Target"
-                    v-model="userProfile.target.amount"
-                    :suffix="userProfile.target.units"
+                    v-model="profile.target.amount"
+                    :suffix="profile.target.units"
                   ></v-text-field>
                   <v-text-field
                     outlined
@@ -302,8 +314,8 @@
                     color="success"
                     prepend-icon="mdi-account"
                     label="Daily min spending"
-                    v-model="userProfile.minimumSpending.amount"
-                    :suffix="userProfile.minimumSpending.currency"
+                    v-model="profile.minimumSpending.amount"
+                    :suffix="profile.minimumSpending.currency"
                   ></v-text-field>
                 </v-card-text>
 
@@ -330,8 +342,8 @@
           <v-list-item-content>
             <v-list-item-title>Daily minimum spending</v-list-item-title>
             <v-list-item-subtitle class="text-capitalize"
-              >{{ userProfile.minimumSpending.currency }}
-              {{ userProfile.minimumSpending.amount }}</v-list-item-subtitle
+              >{{ profile.minimumSpending.currency }}
+              {{ profile.minimumSpending.amount }}</v-list-item-subtitle
             >
           </v-list-item-content>
         </v-list-item> -->
@@ -339,60 +351,82 @@
 
       <!-- Eatery profile view -->
       <v-img
-        v-if="$store.state.userRole === 'eatery'"
+        v-if="$store.state.role === 'eatery'"
         class="white--text align-end"
         height="200px"
-        src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+        :src="profile.imageUrl"
         gradient="to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7)"
       >
         <v-list-item two-line>
           <v-list-item-content>
-            <v-list-item-title class="text-h5 white--text">{{
-              userProfile.name
+            <v-list-item-title class="text-h5 text-capitalize white--text">{{
+              profile.name
             }}</v-list-item-title>
             <v-list-item-subtitle class="grey--text text--lighten-2"
               >Eatery ratings</v-list-item-subtitle
             >
           </v-list-item-content>
           <v-list-item-action>
-            <v-btn icon @click="editUserProfile = true">
+            <v-btn icon @click="editProfile = true">
               <v-icon color="white">mdi-pencil</v-icon>
             </v-btn>
           </v-list-item-action>
         </v-list-item>
       </v-img>
+
+      <v-list subheader two-line v-if="$store.state.role === 'eatery'">
+        <!-- Location -->
+        <v-list-item>
+          <v-list-item-avatar>
+            <v-icon> mdi-map-marker </v-icon>
+          </v-list-item-avatar>
+
+          <v-list-item-content>
+            <v-list-item-title>Location</v-list-item-title>
+            <v-list-item-subtitle
+              >{{ profile.town }}, {{ profile.country }}</v-list-item-subtitle
+            >
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
     </v-card>
 
     <!-- Consumer edit profile form -->
     <v-dialog
       persistent
       scrollable
-      v-if="$store.state.userRole === 'consumer'"
-      v-model="editUserProfile"
-      width="50vw"
+      v-if="$store.state.role === 'consumer'"
+      v-model="editProfile"
+      :width="dialogWidth"
     >
       <v-card>
         <v-card-title>
           <span>Edit profile</span>
           <v-spacer></v-spacer>
-          <v-btn icon @click="editUserProfile = false">
+          <v-btn icon @click="editProfile = false">
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-card-title>
 
-        <v-card-text class="text-center" style="max-height: 70vh">
+        <v-divider></v-divider>
+
+        <v-card-text
+          class="text-center"
+          style="max-height: 70vh"
+          :class="$vuetify.breakpoint.xs ? 'px-0' : ''"
+        >
           <v-form ref="profileForm">
             <v-container>
               <v-row>
                 <!-- Avatar field -->
                 <v-col cols="12">
                   <avatar-field
-                    :src="userProfile.imageUrl"
+                    :src="profile.imageUrl"
                     @imageChange="updateImageUrl"
                   ></avatar-field>
                 </v-col>
                 <!-- Name field -->
-                <v-col cols="12" lg="6">
+                <v-col cols="12" sm="6">
                   <v-text-field
                     outlined
                     dense
@@ -403,11 +437,11 @@
                     color="success"
                     prepend-icon="mdi-account"
                     label="Name"
-                    v-model="userProfile.name"
+                    v-model="profile.name"
                   ></v-text-field>
                 </v-col>
                 <!-- Date of birth field -->
-                <v-col cols="12" lg="6">
+                <v-col cols="12" sm="6">
                   <v-text-field
                     outlined
                     dense
@@ -419,21 +453,21 @@
                     prepend-icon="mdi-calendar"
                     label="Date of birth"
                     :value="formatDate"
-                    v-model="userProfile.dateOfBirth"
+                    v-model="profile.dateOfBirth"
                   ></v-text-field>
                 </v-col>
                 <!-- Gender field -->
-                <v-col cols="12" lg="6">
+                <v-col cols="12" sm="6">
                   <v-select
                     outlined
                     clearable
                     dense
                     hide-details
                     :rules="[rules.required]"
-                    prepend-icon="mdi-account"
+                    prepend-icon="mdi-gender-male-female"
                     color="success"
                     :items="['Male', 'Female']"
-                    v-model="userProfile.gender"
+                    v-model="profile.gender"
                     label="Gender"
                   ></v-select>
                 </v-col>
@@ -578,12 +612,14 @@
           </v-form>
         </v-card-text>
 
+        <v-divider></v-divider>
+
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
             rounded
+            text
             color="success"
-            class="text-none"
             :loading="loadingProfile"
             @click="saveProfile()"
           >
@@ -597,53 +633,66 @@
     <!-- Eatery edit profile form -->
     <v-dialog
       persistent
-      v-if="$store.state.userRole === 'eatery'"
-      v-model="editUserProfile"
+      v-if="$store.state.role === 'eatery'"
+      v-model="editProfile"
       width="500"
     >
       <v-card>
-        <v-card-title class="d-flex justify-space-between align-center">
+        <v-card-title>
           <span>Edit profile</span>
-          <v-btn icon @click="editUserProfile = false">
+          <v-spacer></v-spacer>
+          <v-btn icon @click="editProfile = false">
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-card-title>
 
-        <v-card-text class="text-center">
-          <div class="avatar-upload mb-4">
-            <v-img
-              width="100px"
-              height="100px"
-              class="rounded-circle mx-auto d-flex align-center"
-              src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-              gradient="to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)"
-            >
-              <label id="avatar-label" for="avatar">
-                <v-icon class="icon" color="white">mdi-camera</v-icon>
-              </label>
-            </v-img>
+        <v-divider></v-divider>
 
-            <input id="avatar" type="file" accept="image/*" />
-          </div>
-          <v-text-field
-            outlined
-            dense
-            clearable
-            type="text"
-            color="success"
-            prepend-icon="mdi-account"
-            label="Name"
-            v-model="userProfile.name"
-          ></v-text-field>
+        <v-card-text
+          class="text-center"
+          style="max-height: 70vh"
+          :class="$vuetify.breakpoint.xs ? 'px-0' : ''"
+        >
+          <v-form ref="profileForm">
+            <v-container>
+              <v-row>
+                <!-- Avatar field -->
+                <v-col cols="12">
+                  <avatar-field
+                    :src="profile.imageUrl"
+                    @imageChange="updateImageUrl"
+                  ></avatar-field>
+                </v-col>
+                <!-- Name field -->
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    outlined
+                    dense
+                    clearable
+                    hide-details
+                    :rules="[rules.required]"
+                    type="text"
+                    color="success"
+                    prepend-icon="mdi-account"
+                    label="Name"
+                    v-model="profile.name"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-form>
         </v-card-text>
+
+        <v-divider></v-divider>
 
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
             rounded
+            text
             color="success"
-            class="text-none"
-            @click="editUserProfile = false"
+            :loading="loadingProfile"
+            @click="saveProfile()"
           >
             Save
           </v-btn>
@@ -663,11 +712,9 @@
 </template>
 
 <script>
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { getFirestore, setDoc, doc } from "firebase/firestore";
 import { mapState, mapActions } from "vuex";
 import { differenceInYears, format, parseISO } from "date-fns";
-import { defaultImageUrl } from "../utils";
+import { defaultImageUrl, uploadImage } from "../utils";
 import AvatarField from "@/components/AvatarField.vue";
 import Toast from "@/components/Toast.vue";
 // import UnitField from "@/components/UnitField.vue";
@@ -676,12 +723,12 @@ export default {
   title: "Profile",
   name: "Profile",
   async created() {
-    if (Object.keys(this.userProfile).length === 0)
-      await this.getUserProfileAction();
+    // Fetch user's profile'
+    await this.getProfileAction();
   },
   data() {
     return {
-      editUserProfile: false,
+      editProfile: false,
       loadingProfile: false,
       newAvatarImage: undefined,
       showToast: false,
@@ -735,32 +782,45 @@ export default {
     };
   },
   computed: {
-    ...mapState(["userProfile"]),
+    ...mapState(["profile"]),
+    dialogWidth() {
+      switch (this.$vuetify.breakpoint.name) {
+        case "xl":
+          return "40vw";
+        case "lg":
+          return "50vw";
+        case "md":
+          return "60vw";
+        case "sm":
+          return "80vw";
+        case "xs":
+          return "100vw";
+        default:
+          return "100vw";
+      }
+    },
   },
   methods: {
-    ...mapActions(["getUserProfileAction"]),
+    ...mapActions(["getProfileAction", "uploadProfileAction"]),
     age() {
-      return differenceInYears(
-        new Date(),
-        new Date(this.userProfile.dateOfBirth)
-      );
+      return differenceInYears(new Date(), new Date(this.profile.dateOfBirth));
     },
     formatDate() {
-      return format(parseISO(this.userProfile.dateOfBirth), "yyyy-MM-dd");
+      return format(parseISO(this.profile.dateOfBirth), "yyyy-MM-dd");
     },
     updateImageUrl(e) {
       let reader = new FileReader();
 
       reader.onloadend = () => {
-        this.userProfile.imageUrl = reader.result;
+        this.profile.imageUrl = reader.result;
       };
 
       let images = e.target.files || e.dataTransfer.files;
 
-      if (!images.length) this.userProfile.imageUrl = defaultImageUrl;
+      if (!images.length) this.profile.imageUrl = defaultImageUrl;
       else {
         this.newAvatarImage = images[0];
-        this.userProfile.imageUrl = reader.readAsDataURL(images[0]);
+        this.profile.imageUrl = reader.readAsDataURL(images[0]);
       }
     },
     // setWeightUnits(value) {
@@ -779,22 +839,10 @@ export default {
         // Upload user avatar if uploaded
         if (typeof this.newAvatarImage === "object") {
           try {
-            const storage = getStorage();
-
-            // Upload the image to storage
-            const snapshot = await uploadBytes(
-              ref(
-                storage,
-                `profileAvatars/${this.userProfile.email}/avatar.jpg`
-              ),
-              this.newAvatarImage
-            );
-
-            // Get the image url
-            this.userProfile.imageUrl = await getDownloadURL(snapshot.ref);
+            this.profile.imageUrl = await uploadImage(this.newAvatarImage);
           } catch (error) {
             this.loadingProfile = false;
-            this.editUserProfile = false;
+            this.editProfile = false;
 
             // Display error toast
             this.toastMessage = error.code;
@@ -804,19 +852,12 @@ export default {
           }
         }
 
-        // Upload the user profile to the database
         try {
-          const db = getFirestore();
-          await setDoc(
-            doc(db, "profiles", this.userProfile.email),
-            this.userProfile,
-            {
-              merge: true,
-            }
-          );
+          // Upload the user profile to the database
+          await this.uploadProfileAction(this.profile);
 
           this.loadingProfile = false;
-          this.editUserProfile = false;
+          this.editProfile = false;
 
           // Display success toast
           this.toastMessage = "Profile updated successfully!";
@@ -824,7 +865,7 @@ export default {
           this.showToast = true;
         } catch (error) {
           this.loadingProfile = false;
-          this.editUserProfile = false;
+          this.editProfile = false;
 
           // Display success toast
           this.toastMessage = error.code;

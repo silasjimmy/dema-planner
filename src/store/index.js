@@ -14,41 +14,54 @@ import {
   getDocs,
   query,
   where,
+  updateDoc,
 } from "firebase/firestore";
 
 export default new Vuex.Store({
   state: {
-    pageTitle: 'Home',
-    loggedIn: null,
-    userEmail: null,
-    userRole: null,
+    pageTitle: '',
+    pageLoading: false,
+    loggedIn: false,
+    email: undefined,
+    role: undefined,
+    meals: [],
+    profile: undefined,
+    settings: undefined,
+    notifications: undefined,
+    messages: undefined,
+    eateries: [],
+    likedFoods: [],
     dashboardLinks: [],
-    userProfile: {},
+    availableFoods: [],
+    menu: [],
+    allMenus: [],
+    suggestedEateries: [],
+
     allFoods: [],
     allUsers: [],
-    availableFoods: [],
-    userSettings: {},
-    menu: [],
-    notifications: [],
-    messages: [],
-    eateries: [],
-
-    meals: [],
-    likedFoods: null,
     mealTimes: null,
   },
   mutations: {
     setPageTitle(state, title) {
       state.pageTitle = title
     },
+    setPageLoading(state, status) {
+      state.pageLoading = status
+    },
     setLoggedIn(state, status) {
       state.loggedIn = status
     },
-    setUserEmail(state, email) {
-      state.userEmail = email
+    setEmail(state, email) {
+      state.email = email
     },
-    setUserRole(state, role) {
-      state.userRole = role
+    setRole(state, role) {
+      state.role = role
+    },
+    setProfile(state, profile) {
+      state.profile = profile
+    },
+    setSettings(state, settings) {
+      state.settings = settings
     },
     setDashboardLinks(state, role) {
       switch (role) {
@@ -80,9 +93,42 @@ export default new Vuex.Store({
           state.dashboardLinks = []
       }
     },
-    setUserProfile(state, profile) {
-      state.userProfile = profile
+    addLikedFood(state, food) {
+      state.likedFoods.push(food)
     },
+    updateLikedFood(state, food) {
+      const index = state.availableFoods.findIndex(f => f.id === food.id);
+      state.likedFoods.splice(index, 1);
+      state.likedFoods = [...state.likedFoods];
+    },
+    addMenuFood(state, food) {
+      state.menu.push(food)
+    },
+    updateMenuFood(state, food) {
+      const index = state.menu.findIndex(f => f.id === food.id);
+      state.menu.splice(index, 1, food);
+      state.menu = [...state.menu];
+    },
+    deleteMenuFood(state, food) {
+      const index = state.menu.findIndex(f => f.id === food.id);
+      state.menu.splice(index, 1);
+      state.menu = [...state.menu]
+    },
+    addMenu(state, menu) {
+      state.allMenus.push(menu)
+    },
+    addSuggestedEatery(state, eatery) {
+      state.suggestedEateries.push(eatery)
+    },
+    setSuggestedEateries(state, eateries) {
+      state.suggestedEateries = eateries
+    },
+    deleteSuggestedEatery(state, meal) {
+      const index = state.suggestedEateries.findIndex(e => e.mealId === meal.id);
+      state.suggestedEateries.splice(index, 1);
+      state.suggestedEateries = [...state.suggestedEateries]
+    },
+
     setAllFoods(state, foods) {
       state.allFoods = foods
     },
@@ -103,22 +149,8 @@ export default new Vuex.Store({
     setAvailableFoods(state, foods) {
       state.availableFoods = foods
     },
-    setUserSettings(state, settings) {
-      state.userSettings = settings
-    },
     setMenu(state, menu) {
       state.menu = menu
-    },
-    addMenuFood(state, food) {
-      state.menu.push(food)
-    },
-    updateMenuFood(state, food) {
-      const index = state.menu.findIndex(f => f.id === food.id);
-      state.menu.splice(index, 1, food);
-      state.menu = [...state.menu];
-    },
-    deleteMenuFood(state, food) {
-      state.menu.splice(food, 1);
     },
     setNotifications(state, notifications) {
       state.notifications = notifications
@@ -129,25 +161,233 @@ export default new Vuex.Store({
     setEateries(state, eateries) {
       state.eateries = eateries
     },
-
-    setMeals(state, meals) {
-      state.meals = meals
+    addMeal(state, meal) {
+      state.meals.push(meal)
+    },
+    updateMeal(state, meal) {
+      const index = state.meals.findIndex(m => m.id === meal.id);
+      state.meals.splice(index, 1, meal);
+      state.meals = [...state.meals];
+    },
+    deleteMeal(state, meal) {
+      state.meals.splice(meal, 1);
     },
     setLikedFoods(state, foods) {
       state.likedFoods = foods
     },
 
+    removeLikedFood(state, food) {
+      state.likedFoods.splice(food, 1);
+    },
+
+    setMeals(state, meals) {
+      state.meals = meals
+    },
     setMealTimes(state, mealTimes) {
       state.mealTimes = mealTimes
     },
   },
   actions: {
-    async getUserProfileAction({ commit }) {
+    async getProfileAction({ commit, state }) {
+      // Get the user profile from the database
       const db = getFirestore();
-      const profile = await getDoc(doc(db, "profiles", localStorage.getItem('email')));
-
-      commit('setUserProfile', profile.data())
+      const docRef = doc(db, `users/${state.email}`)
+      const snapShot = await getDoc(docRef);
+      const profile = snapShot.data()
+      commit('setProfile', profile)
     },
+    async getSettingsAction({ commit, state }) {
+      // Get the user settings
+      const db = getFirestore()
+      const docRef = doc(db, `users/${state.email}/settings/all`)
+      const snapShot = await getDoc(docRef)
+      const settings = snapShot.data()
+      commit('setSettings', settings)
+    },
+    async uploadProfileAction({ commit, state }, profile) {
+      // Upload the user profile to the database
+      const db = getFirestore();
+      const docRef = doc(db, "users", state.email)
+      await setDoc(docRef, profile, { merge: true });
+      commit('setProfile', profile)
+    },
+    async uploadSettingsAction({ commit, state }, settings) {
+      // Upload the user settings to the database
+      const db = getFirestore();
+      const docRef = doc(db, `users/${state.email}/settings/all`)
+      await setDoc(docRef, settings, { merge: true });
+      commit('setSettings', settings)
+    },
+    async getMealsAction({ commit, state }) {
+      const db = getFirestore();
+      const docRef = collection(db, `users/${state.email}/meals`)
+      const snapShot = await getDocs(docRef)
+      const meals = snapShot.docs.map(doc => doc.data())
+      commit('setMeals', meals);
+    },
+    async getAvailableFoodsAction({ commit, state }) {
+      // Get the foods from the database
+      const db = getFirestore()
+      const docRef = collection(db, "foods")
+      const foodsQuery = query(docRef, where("regions", "array-contains", state.profile.country));
+      const snapShot = await getDocs(foodsQuery)
+      const availableFoods = snapShot.docs.map(doc => doc.data())
+      commit('setAvailableFoods', availableFoods);
+    },
+    async getLikedFoodsAction({ commit, state }) {
+      // Get user's liked foods from the database
+      const db = getFirestore();
+      const docRef = collection(db, `users/${state.email}/likedFoods`)
+      const snapShot = await getDocs(docRef)
+      const likedFoods = snapShot.docs.map(doc => doc.data())
+      commit('setLikedFoods', likedFoods);
+    },
+    async getEateriesAction({ commit }) {
+      // Get all registered eateries from the database
+      const db = getFirestore()
+      const eateriesRef = collection(db, "users");
+      const eateriesQuery = query(eateriesRef, where("role", "==", "eatery"));
+      const snapShot = await getDocs(eateriesQuery)
+      const eateries = snapShot.docs.map(doc => doc.data())
+      commit('setEateries', eateries);
+    },
+    async addMealAction({ commit, state }, meal) {
+      // Add a single meal to the database
+      const db = getFirestore();
+      const docRef = doc(db, `users/${state.email}/meals/meal${meal.id}`)
+      await setDoc(docRef, meal, { merge: true })
+      commit('addMeal', meal)
+    },
+    async deleteMealAction({ commit, state }, meal) {
+      const db = getFirestore()
+      const docRef = doc(db, `users/${state.email}/meals/meal${meal.id}`)
+      await deleteDoc(docRef);
+      commit('deleteMeal', meal)
+    },
+    async updateMealAction({ commit, state }, meal) {
+      const db = getFirestore()
+      const docRef = doc(db, `users/${state.email}/meals/meal${meal.id}`)
+
+      // Change the dialog variables to false
+      meal.servingsDialog = false
+      meal.revealServings = false
+
+      await setDoc(docRef, meal, { merge: true })
+      commit('updateMeal', meal)
+    },
+    async saveAteMealAction({ commit, state }, meal) {
+      const db = getFirestore()
+      const docRef = doc(db, `users/${state.email}/meals/meal${meal.id}`)
+      await updateDoc(docRef, {
+        ate: meal.ate
+      })
+      commit('updateMeal', meal)
+    },
+    async addLikedFoodAction({ commit, state }, food) {
+      // Add a single liked food to the database
+      const db = getFirestore();
+      const docRef = doc(db, `users/${state.email}/likedFoods/food${food.id}`)
+      await setDoc(docRef, food)
+      commit('addLikedFood', food)
+    },
+    async updateLikedFoodAction({ commit, state }, food) {
+      // Update the liked foods in the database
+      const db = getFirestore();
+      const docRef = doc(db, `users/${state.email}/likedFoods/food${food.id}`)
+      await deleteDoc(docRef)
+      commit('updateLikedFood', food)
+    },
+    async addMenuFoodAction({ commit, state }, food) {
+      const db = getFirestore()
+      const docRef = doc(db, `users/${state.email}/menu/food${food.id}`)
+      await setDoc(docRef, food)
+      commit('addMenuFood', food)
+    },
+    async getMenuAction({ commit, state }) {
+      const db = getFirestore()
+      const collectionRef = collection(db, `users/${state.email}/menu`)
+      const snapShot = await getDocs(collectionRef)
+      const menuFoods = snapShot.docs.map(doc => doc.data())
+      commit('setMenu', menuFoods)
+    },
+    async updateMenuFoodAction({ commit, state }, food) {
+      const db = getFirestore()
+      const docRef = doc(db, `users/${state.email}/menu/food${food.id}`)
+      await setDoc(docRef, food, { merge: true })
+      commit('updateMenuFood', food)
+    },
+    async deleteMenuFoodAction({ commit, state }, food) {
+      const db = getFirestore()
+      const docRef = doc(db, `users/${state.email}/menu/food${food.id}`)
+      await deleteDoc(docRef);
+      commit('deleteMenuFood', food)
+    },
+    async setAllMenusAction({ commit, state }) {
+      for (let index = 0; index < state.eateries.length; index++) {
+        // Get the email of the eatery
+        const eatery = state.eateries[index]
+        const email = eatery.email
+
+        // Fetch the menu
+        const db = getFirestore()
+        const collectionRef = collection(db, `users/${email}/menu`)
+        const snapShot = await getDocs(collectionRef)
+        const menuFoods = snapShot.docs.map(doc => doc.data())
+
+        // Create an object
+        const menuObj = {
+          name: eatery.name,
+          id: eatery.id,
+          foods: menuFoods
+        }
+
+        // Add to the list of menus
+        commit('addMenu', menuObj)
+      }
+    },
+    async getSuggestedEateries({ commit, state }) {
+      const db = getFirestore()
+      const collectionRef = collection(db, `users/${state.email}/suggestedEateries`)
+      const snapShot = await getDocs(collectionRef)
+      const suggestedEateries = snapShot.docs.map(doc => doc.data())
+      commit('setSuggstedEateries', suggestedEateries)
+    },
+    async addSuggestedEatery({ commit, state }, eatery) {
+      const db = getFirestore()
+      const docRef = doc(db, `users/${state.email}/suggestedEateries/meal${eatery.mealId}`)
+      await setDoc(docRef, eatery)
+      commit('addSuggestedEatery', eatery)
+    },
+    async deleteSuggestedEateryAction({ commit, state }, meal) {
+      const db = getFirestore()
+      const docRef = doc(db, `users/${state.email}/suggestedEateries/meal${meal.id}`)
+      await deleteDoc(docRef)
+      commit('deleteSuggestedEatery', meal)
+    },
+
+    async getMessagesAction({ commit, state }) {
+      // Get user messages
+      const db = getFirestore();
+      const docRef = doc(db, `users/${state.email}/messages/all`)
+      const snapshot = await getDoc(docRef)
+      const messages = snapshot.data()
+
+      // Sort the messages
+      const sortedMessages = sortMessages(messages)
+      commit('setMessages', sortedMessages)
+    },
+    async getNotificationsAction({ commit, state }) {
+      // Get user notifications
+      const db = getFirestore();
+      const docRef = doc(db, `users/${state.email}/notifications/all`)
+      const snapshot = await getDoc(docRef)
+      const notifications = snapshot.data()
+
+      // Sort the notifications according to created time
+      const sortedNotifications = sortNotifications(notifications)
+      commit('setNotifications', sortedNotifications)
+    },
+
     async getAllFoodsAction({ commit }) {
       // Create firestore database instance
       const db = getFirestore();
@@ -201,175 +441,22 @@ export default new Vuex.Store({
       // Add the foods to the store
       commit('setAllUsers', users);
     },
-    getAvailableFoodsAction({ commit }) {
-      // Get the foods from the database
-
-      // Commit the foods to the available foods state
-      commit('setAvailableFoods', []);
-    },
-    getLikedFoodsAction({ commit }) {
-      // Get the foods from the database
-
-      // Commit the foods to the liked foods state
-      commit('setLikedFoods', []);
-    },
-    async getUserSettingsAction({ commit, state }) {
-      const db = getFirestore()
-
-      const settings = await getDoc(doc(db, 'settings', state.userEmail))
-
-      commit('setUserSettings', settings.data())
-    },
-    async getMenuAction({ commit, state }) {
-      const db = getFirestore()
-
-      // Fetch the menu foods from the database
-      const snapShot = await getDocs(collection(db, 'menus', state.userEmail, 'menu'))
-
-      // Map the foods to an array
-      const menuFoods = snapShot.docs.map(doc => doc.data())
-
-      commit('setMenu', menuFoods)
-    },
-    async addMenuFoodAction({ commit, state }, food) {
-      const db = getFirestore()
-
-      // Upload the food to the database
-      await setDoc(doc(db, 'menus', state.userEmail, 'menu', `food${food.food.id}`), food)
-
-      // Add to store
-      commit('addMenuFood', food)
-    },
-    async updateMenuFoodAction({ commit, state }, food) {
-      const db = getFirestore()
-
-      // Upload the food to the database
-      await setDoc(doc(db, 'menus', state.userEmail, 'menu', `food${food.food.id}`), food, { merge: true })
-
-      // Update in store
-      commit('updateMenuFood', food)
-    },
-    async deleteMenuFoodAction({ commit, state }, food) {
+    async removeLikedFoodAction({ commit, state }, food) {
       const db = getFirestore()
 
       // Delete from database
-      await deleteDoc(doc(db, "menus", state.userEmail, 'menu', `food${food.food.id}`));
+      await deleteDoc(doc(db, `profiles/${state.email}/likedFoods/food${food.id}`));
 
       // Delete from store
-      commit('deleteMenuFood', food)
-    },
-    async getNotificationsAction({ commit }) {
-      // Get user notifications
-      const db = getFirestore();
-      const snapshot = await getDoc(doc(db, 'notifications/jimmysilas17@gmail.com'))
-      const notifications = snapshot.data()
-
-      // Sort the notifications according to created time
-      const sortedNotifications = sortNotifications(notifications)
-
-      commit('setNotifications', sortedNotifications)
-    },
-    async getEateriesAction({ commit }) {
-      const db = getFirestore()
-      const eateriesRef = collection(db, "profiles");
-      const eateriesQuery = query(eateriesRef, where("role", "==", "eatery"));
-      const snapShot = await getDocs(eateriesQuery)
-      const eateries = snapShot.docs.map(doc => doc.data())
-
-      // Commit the eateries to the nearest eateries state
-      commit('setEateries', eateries);
-    },
-    async getMessagesAction({ commit }) {
-      // Get user messages
-      const db = getFirestore();
-      const snapshot = await getDoc(doc(db, 'messages/jimmysilas17@gmail.com'))
-      const messages = snapshot.data()
-
-      // Sort the messages
-      const sortedMessages = sortMessages(messages)
-
-      commit('setMessages', sortedMessages)
-    },
-
-    getMealsAction({ commit }) {
-      // // Get the meals from the database
-      // const meals = [
-      //   {
-      //     name: "breakfast",
-      //     image: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
-      //     id: 1,
-      //     time: "07:00am",
-      //     ate: false,
-      //     revealServings: false,
-      //     servingsDialog: false,
-      //     foods: [
-      //       { name: "chapati", cost: 10, serving: 1 },
-      //       { name: "cabbage", cost: 20, serving: 1 },
-      //       { name: "meat stew", cost: 50, serving: 1 },
-      //     ],
-      //   },
-      //   {
-      //     name: "lunch",
-      //     image: 'https://images.unsplash.com/photo-1573225342350-16731dd9bf3d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=762&q=80',
-      //     id: 2,
-      //     time: "01:00pm",
-      //     ate: false,
-      //     revealServings: false,
-      //     servingsDialog: false,
-      //     foods: [
-      //       { name: "pilau", cost: 150, serving: 1 },
-      //       { name: "mango juice", cost: 70, serving: 1 },
-      //       { name: "meat stew", cost: 50, serving: 1 },
-      //     ],
-      //   },
-      //   {
-      //     name: "snack",
-      //     image: 'https://images.unsplash.com/photo-1566496875470-68ada46a38c5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
-      //     id: 4,
-      //     time: "04:00pm",
-      //     ate: false,
-      //     revealServings: false,
-      //     servingsDialog: false,
-      //     foods: [
-      //       { name: "donut", cost: 10, serving: 1 },
-      //       { name: "passion juice", cost: 30, serving: 1 },
-      //     ],
-      //   },
-      //   {
-      //     name: "supper",
-      //     image: 'https://images.unsplash.com/photo-1598515213692-5f252f75d785?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
-      //     id: 3,
-      //     time: "07:00pm",
-      //     ate: false,
-      //     revealServings: false,
-      //     servingsDialog: false,
-      //     foods: [
-      //       { name: "rice", cost: 30, serving: 1 },
-      //       { name: "cabbage", cost: 20, serving: 1 },
-      //       { name: "beans", cost: 20, serving: 1 },
-      //     ],
-      //   },
-      // ]
-
-      // Commit the meals to the meals state
-      commit('setMeals', []);
-    },
-    getMealTimesAction({ commit }) {
-      // Get the profile from the database
-      let mealTimes = [
-        { id: 1, name: "breakfast", time: "07:00am" },
-        { id: 2, name: "lunch", time: "01:00pm" },
-        { id: 3, name: "snack", time: "04:00pm" },
-        { id: 4, name: "supper", time: "07:00pm" },
-      ]
-
-      // Commit the profile to the user profile state
-      commit('setMealTimes', mealTimes);
+      commit('removeLikedFood', food)
     },
   },
   getters: {
     getEateryById: (state) => id => {
       return state.eateries.find(e => e.id === id)
+    },
+    getMenuById: (state) => id => {
+      return state.allMenus.find(m => m.id === id)
     },
     getMessageById: (state) => id => {
       return state.messages.find(m => m.id === id)
@@ -382,6 +469,36 @@ export default new Vuex.Store({
     },
     getNotificationsByRead: (state) => read => {
       return state.notifications.filter(m => m.read === read)
+    },
+    calculateNutrientContent: (state) => nutrient => {
+      let nutrientValues = []
+
+      // Get the nutrient values from the meal foods
+      state.meals.forEach(meal => {
+        const foodWithNutrient = meal.foods.find(food => food.nutrient.name === nutrient)
+        nutrientValues.push(parseInt(foodWithNutrient.nutrient.amount))
+      });
+
+      // Calculate the total of the nutrient amount
+      const nutrientContent = nutrientValues.reduce((prevValue, currentValue) => prevValue + currentValue, 0)
+
+      return nutrientContent
+    },
+    calculateCaloricContent: (state) => () => {
+      let calorieValues = []
+
+      // Get the calorie values in each food
+      state.meals.forEach(meal => {
+
+        meal.foods.forEach(food => {
+          calorieValues.push(parseInt(food.calories.amount))
+        });
+      });
+
+      // Calculate the total of the nutrient amount
+      const caloricContent = calorieValues.reduce((prevValue, currentValue) => prevValue + currentValue, 0)
+
+      return caloricContent
     },
   },
 })
