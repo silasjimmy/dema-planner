@@ -4,14 +4,16 @@
       <!-- Consumer profile view -->
       <v-list subheader two-line v-if="$store.state.role === 'consumer'">
         <v-list-item three-line>
-          <v-list-item-avatar tile size="80" class="rounded-circle">
+          <v-list-item-avatar tile size="60" class="rounded-circle">
             <v-img :src="profile.imageUrl"></v-img>
           </v-list-item-avatar>
           <v-list-item-content>
-            <v-list-item-title class="text-h5">{{
+            <v-list-item-title class="font-weight-medium">{{
               profile.name
             }}</v-list-item-title>
-            <v-list-item-subtitle>{{ age() }} years old</v-list-item-subtitle>
+            <v-list-item-subtitle class="text--primary"
+              >{{ age() }} years old</v-list-item-subtitle
+            >
             <v-list-item-subtitle>{{ profile.gender }}</v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>
@@ -723,8 +725,7 @@ export default {
   title: "Profile",
   name: "Profile",
   async created() {
-    // Fetch user's profile'
-    await this.getProfileAction();
+    if (!this.$store.state.profile) await this.getProfileAction();
   },
   data() {
     return {

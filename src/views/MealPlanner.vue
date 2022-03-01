@@ -4,17 +4,20 @@
       <v-card-text class="text--primary">
         <v-container class="pa-0">
           <v-row no-gutters align="center">
-            <v-col cols="12" sm="4" class="d-flex">
+            <v-col cols="3" class="d-flex">
               <div class="text-center">
-                <h1 class="text-h6 text-uppercase font-weight-light">
+                <h1
+                  class="subtitle-1 text-md-h6 text-uppercase font-weight-light"
+                >
                   {{ weekday }}
                 </h1>
-                <h1 class="text-h2 font-weight-bold">{{ day }}</h1>
+                <h1 class="text-h4 text-md-h3 font-weight-bold">{{ day }}</h1>
               </div>
-              <v-spacer></v-spacer>
             </v-col>
-            <v-col cols="12" sm="4" class="d-flex align-center justify-center">
-              <h2 class="subtitle-1 mx-1">
+            <v-col cols="6" class="d-flex align-center justify-center">
+              <h2
+                class="subtitle-2 text-md-subtitle-1 font-weight-regular mx-1"
+              >
                 {{ monthAndYear }}
               </h2>
               <v-menu
@@ -64,7 +67,7 @@
                 </v-date-picker>
               </v-menu>
             </v-col>
-            <v-col cols="12" sm="4" class="text-right">
+            <v-col cols="3" class="text-right">
               <v-tooltip left color="black">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
@@ -88,41 +91,41 @@
         </v-container>
       </v-card-text>
 
-      <!-- Alert for anything that happens in the page -->
-      <!-- <v-alert
-      text
-      dense
-      dismissible
-      prominent
-      v-model="alertShow"
-      :icon="alertIcon"
-      :type="alertType"
-      class="rounded-lg"
-      transition="scale-transition"
-    >
-      {{ alertMessage }}
-    </v-alert> -->
-
-      <v-card-text class="text-center" v-if="meals.length === 0">
-        <p class="subtitle-1">
-          It seems you don't have meals for today. Click generate to
-          automatically create a meal plan. Don't worry, we know what you
-          like...
-        </p>
-        <v-btn
+      <v-card-title
+        class="justify-center subtitle-2 text-md-subtitle-1 font-weight-regular"
+        v-if="loadingData"
+        >{{ loadingDataMessage }}</v-card-title
+      >
+      <v-card-text v-if="loadingData">
+        <v-progress-linear
+          :color="loadingDataSuccess ? 'success' : 'error'"
+          :indeterminate="loadingData"
           rounded
-          :loading="loadingMeals"
-          @click="generateMeals"
-          color="success"
-        >
-          <v-icon left>mdi-rotate-right</v-icon>
-          Generate
-        </v-btn>
+          height="4"
+        ></v-progress-linear>
       </v-card-text>
 
-      <v-card-text v-if="meals.length > 0">
-        <v-container class="pa-0">
-          <!-- Meal card -->
+      <v-card-text v-if="!loadingData">
+        <!-- No meals message -->
+        <div class="b text-center" v-if="meals.length === 0">
+          <p class="subtitle-2 text-md-subtitle-1 font-weight-regular">
+            It seems you don't have meals for today. Click generate to
+            automatically create a meal plan. Don't worry, we know what you
+            like...
+          </p>
+          <v-btn
+            rounded
+            :loading="loadingMeals"
+            @click="generateMeals"
+            color="success"
+          >
+            <v-icon left>mdi-rotate-right</v-icon>
+            Generate
+          </v-btn>
+        </div>
+
+        <!-- User meals -->
+        <v-container class="pa-0" v-if="meals.length > 0">
           <v-row>
             <v-col
               cols="12"
@@ -137,10 +140,20 @@
                 <div class="d-flex align-center justify-space-between pr-4">
                   <!-- Meal name and time -->
                   <div>
-                    <v-card-title class="pt-2">{{ meal.name }}</v-card-title>
-                    <v-card-subtitle class="pb-2">{{
-                      formatTime(meal.time)
-                    }}</v-card-subtitle>
+                    <v-card-title
+                      class="pt-2 subtitle-1 text-md-h6 font-weight-medium"
+                      >{{ meal.name }}</v-card-title
+                    >
+                    <v-card-subtitle
+                      class="
+                        pb-2
+                        subtitle-2
+                        text-md-subtitle-1
+                        font-weight-regular
+                        text--secondary
+                      "
+                      >{{ formatTime(meal.time) }}</v-card-subtitle
+                    >
                   </div>
 
                   <!-- Dropdown menu -->
@@ -175,7 +188,15 @@
                   ></v-img>
 
                   <!-- Meal foods -->
-                  <div class="food-names subtitle-1 text-capitalize">
+                  <div
+                    class="
+                      food-names
+                      subtitle-1
+                      text-md-h6
+                      font-weight-regular
+                      text-capitalize text--primary
+                    "
+                  >
                     <span v-for="food in meal.foods" :key="food.name">{{
                       food.name
                     }}</span>
@@ -204,6 +225,7 @@
 
                 <v-expand-transition>
                   <v-card
+                    flat
                     v-if="meal.revealServings"
                     class="
                       transition-fast-in-fast-out
@@ -212,10 +234,11 @@
                       overflow-auto
                     "
                     height="100%"
-                    elevation="0"
                   >
-                    <v-card-title class="py-2">
-                      <span>Servings</span>
+                    <v-card-title class="py-1">
+                      <span class="subtitle-1 text-md-h6 font-weight-medium"
+                        >Servings</span
+                      >
                       <v-spacer></v-spacer>
                       <v-btn icon @click="meal.revealServings = false"
                         ><v-icon>mdi-chevron-down</v-icon></v-btn
@@ -228,9 +251,18 @@
                         :key="food.name"
                         class="d-flex align-center my-1 px-4"
                       >
-                        <span class="text-capitalize">{{ food.name }}</span>
+                        <span
+                          class="
+                            text-capitalize
+                            subtitle-2
+                            text-md-subtitle-1
+                            font-weight-regular
+                            text-capitalize text--primary
+                          "
+                          >{{ food.name }}</span
+                        >
                         <v-spacer></v-spacer>
-                        <span class="">{{ food.serving }}</span>
+                        <span>{{ food.serving }}</span>
                       </div>
                     </v-card-text>
 
@@ -339,13 +371,27 @@ export default {
   title: "Meal planner",
   name: "MealPlanner",
   async created() {
-    if (this.$store.state.eateries.length === 0) await this.getEateriesAction();
-    if (this.meals.length === 0) await this.getMealsAction();
-    if (this.availableFoods.length === 0) await this.getAvailableFoodsAction();
-    if (this.allMenus.length === 0) await this.setAllMenusAction();
+    // this.loadingData = true;
+
+    try {
+      if (this.$store.state.eateries.length === 0)
+        await this.getEateriesAction();
+      if (this.meals.length === 0) await this.getMealsAction();
+      if (this.availableFoods.length === 0)
+        await this.getAvailableFoodsAction();
+      if (this.allMenus.length === 0) await this.setAllMenusAction();
+    } catch (error) {
+      this.loadingDataMessage = error.code;
+      this.loadingDataSuccess = false;
+    } finally {
+      setTimeout(() => (this.loadingData = false), 1000);
+    }
   },
   data() {
     return {
+      loadingData: true,
+      loadingDataMessage: "Checking your meals...",
+      loadingDataSuccess: true,
       actionSuccess: false,
       toastMessage: "",
       showToast: false,

@@ -1,68 +1,101 @@
 <template>
-  <v-container>
-    <!-- Message if no eateries available -->
-    <p v-if="eateries.length === 0" class="text--secondary text-center">
-      There are no registered eateries around you.
-    </p>
+  <v-card flat>
+    <v-card-title
+      class="justify-center subtitle-2 text-md-subtitle-1 font-weight-regular"
+      v-if="loadingData"
+      >{{ loadingDataMessage }}</v-card-title
+    >
+    <v-card-text v-if="loadingData">
+      <v-progress-linear
+        :color="loadingDataSuccess ? 'success' : 'error'"
+        :indeterminate="loadingData"
+        rounded
+        height="4"
+      ></v-progress-linear>
+    </v-card-text>
 
-    <!-- Eateries list -->
-    <v-row v-if="eateries.length > 0">
-      <v-col cols="12">
-        <p class="text--secondary text-center">
-          Eateries/restaurants near you.
-        </p>
-      </v-col>
+    <v-card-text v-if="!loadingData">
+      <!-- No eateries message -->
+      <p
+        class="text-center subtitle-2 text-md-subtitle-1 font-weight-regular"
+        v-if="eateries.length === 0"
+      >
+        There are no registered eateries around you.
+      </p>
 
-      <v-col v-for="eatery in eateries" :key="eatery.name" cols="12" lg="6">
-        <v-card outlined class="rounded-lg">
-          <v-list-item three-line>
-            <v-list-item-content>
-              <v-list-item-title
-                class="text-capitalize font-weight-bold jost-font-family"
-                >{{ eatery.name }}</v-list-item-title
-              >
-              <v-list-item-subtitle class="text-capitalize"
-                >{{ eatery.town }}, {{ eatery.country }}</v-list-item-subtitle
-              >
-              <v-list-item-subtitle class="d-flex align-center">
-                <v-rating
-                  :value="eatery.ratings"
-                  background-color="grey"
-                  color="orange"
-                  dense
-                  half-increments
-                  readonly
-                  size="14"
-                ></v-rating>
-                <span class="caption ml-4">{{ eatery.ratings }}</span>
-              </v-list-item-subtitle>
-            </v-list-item-content>
+      <!-- Eateries list -->
+      <v-subheader
+        class="justify-center subtitle-2 text-md-subtitle-1 font-weight-regular"
+        v-if="eateries.length > 0"
+        >Eateries near you.</v-subheader
+      >
+      <v-container v-if="eateries.length > 0">
+        <v-row>
+          <v-col v-for="eatery in eateries" :key="eatery.name" cols="12" lg="6">
+            <v-card outlined class="rounded-lg">
+              <v-list-item three-line>
+                <v-list-item-content>
+                  <v-list-item-title
+                    class="
+                      text-capitalize
+                      subtitle-1
+                      text-md-h6
+                      font-weight-medium
+                    "
+                    >{{ eatery.name }}</v-list-item-title
+                  >
+                  <v-list-item-subtitle
+                    class="
+                      text-capitalize
+                      subtitle-2
+                      text-md-subtitle-1
+                      font-weight-regular
+                    "
+                    >{{ eatery.town }},
+                    {{ eatery.country }}</v-list-item-subtitle
+                  >
+                  <v-list-item-subtitle class="d-flex align-center">
+                    <v-rating
+                      :value="eatery.ratings"
+                      background-color="grey"
+                      color="orange"
+                      dense
+                      half-increments
+                      readonly
+                      size="14"
+                    ></v-rating>
+                    <span class="caption ml-4">{{ eatery.ratings }}</span>
+                  </v-list-item-subtitle>
+                </v-list-item-content>
 
-            <v-list-item-avatar
-              tile
-              class="rounded-lg"
-              color="grey"
-              width="80px"
-              height="70px"
-            >
-              <v-img :src="eatery.imageUrl"></v-img>
-            </v-list-item-avatar>
-          </v-list-item>
+                <v-list-item-avatar
+                  tile
+                  class="rounded-lg"
+                  color="grey"
+                  width="80px"
+                  height="70px"
+                >
+                  <v-img :src="eatery.imageUrl"></v-img>
+                </v-list-item-avatar>
+              </v-list-item>
 
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-              link
-              plain
-              :to="{ name: 'eatery-details', params: { id: eatery.id } }"
-              >More info</v-btn
-            >
-            <v-spacer></v-spacer>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  link
+                  plain
+                  class="subtitle-2 text-md-subtitle-1 font-weight-regular"
+                  :to="{ name: 'eatery-details', params: { id: eatery.id } }"
+                  >More info</v-btn
+                >
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>
@@ -72,8 +105,25 @@ export default {
   title: "Nearest eateries",
   name: "NearestEateries",
   async created() {
-    await this.getEateriesAction();
-    await this.setAllMenusAction();
+    this.loadingData = true;
+
+    try {
+      if (this.eateries.length === 0) await this.getEateriesAction();
+      if (this.$store.state.allMenus.length === 0)
+        await this.setAllMenusAction();
+    } catch (error) {
+      this.loadingDataMessage = error.code;
+      this.loadingDataSuccess = false;
+    } finally {
+      setTimeout(() => (this.loadingData = false), 1000);
+    }
+  },
+  data() {
+    return {
+      loadingData: true,
+      loadingDataMessage: "Checking eateries...",
+      loadingDataSuccess: true,
+    };
   },
   computed: {
     ...mapState(["eateries"]),

@@ -211,7 +211,7 @@ export default new Vuex.Store({
       await setDoc(docRef, profile, { merge: true });
       commit('setProfile', profile)
     },
-    async uploadSettingsAction({ commit, state }, settings) {
+    async updateSettingsAction({ commit, state }, settings) {
       // Upload the user settings to the database
       const db = getFirestore();
       const docRef = doc(db, `users/${state.email}/settings/all`)

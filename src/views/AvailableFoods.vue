@@ -1,13 +1,26 @@
 <template>
   <v-container fluid>
     <v-card outlined class="rounded-lg">
+      <v-card-title
+        class="justify-center subtitle-2 text-md-subtitle-1 font-weight-regular"
+        v-if="loadingData"
+        >{{ loadingDataMessage }}</v-card-title
+      >
+      <v-card-text v-if="loadingData">
+        <v-progress-linear
+          :color="loadingDataSuccess ? 'success' : 'error'"
+          :indeterminate="loadingData"
+          rounded
+          height="4"
+        ></v-progress-linear>
+      </v-card-text>
+
       <v-data-table
+        v-if="!loadingData"
         :headers="headers"
         :items="availableFoods"
         :search="searchFood"
         item-key="name"
-        :loading="loadingFoods"
-        loading-text="Loading foods... Please wait"
         :items-per-page="5"
       >
         <template v-slot:top>
@@ -38,7 +51,7 @@
     <toast
       :show="showToast"
       :message="toastMessage"
-      :success="actionSuccess"
+      :success="toastActionSuccess"
       @close="showToast = false"
     ></toast>
   </v-container>
@@ -52,15 +65,27 @@ export default {
   title: "Available foods",
   name: "AvailableFoods",
   async created() {
-    await this.getAvailableFoodsAction();
-    await this.getLikedFoodsAction();
+    this.loadingData = true;
+
+    try {
+      if (this.availableFoods.length === 0)
+        await this.getAvailableFoodsAction();
+      if (this.likedFoods.length === 0) await this.getLikedFoodsAction();
+    } catch (error) {
+      this.loadingDataMessage = error.code;
+      this.loadingDataSuccess = false;
+    } finally {
+      setTimeout(() => (this.loadingData = false), 1000);
+    }
   },
   data() {
     return {
-      actionSuccess: false,
+      loadingData: true,
+      loadingDataMessage: "Loading foods...",
+      loadingDataSuccess: true,
+      toastActionSuccess: false,
       toastMessage: "",
       showToast: false,
-      loadingFoods: false,
       searchFood: "",
       headers: [
         {
@@ -102,10 +127,10 @@ export default {
           this.toastMessage = "Food added successfully!";
         }
 
-        this.actionSuccess = true;
+        this.toastActionSuccess = true;
       } catch (error) {
         this.toastMessage = error.code;
-        this.actionSuccess = false;
+        this.toastActionSuccess = false;
       } finally {
         this.showToast = true;
       }

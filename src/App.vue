@@ -26,7 +26,9 @@
       ></v-app-bar-nav-icon>
 
       <!-- Page title -->
-      <v-toolbar-title>{{ $store.state.pageTitle }}</v-toolbar-title>
+      <v-toolbar-title class="subtitle-1 text-md-h6 font-weight-medium">
+        {{ $store.state.pageTitle }}
+      </v-toolbar-title>
 
       <v-spacer></v-spacer>
 
@@ -40,26 +42,22 @@
       >
         <template v-slot:activator="{ on }">
           <v-btn icon class="mr-1" v-on="on">
-            <v-badge bordered overlap dot color="success">
-              <v-avatar size="36">
-                <img :src="profile.imageUrl" :alt="profile.name" />
-              </v-avatar>
-            </v-badge>
+            <v-avatar size="36">
+              <img :src="profile.imageUrl" :alt="profile.name" />
+            </v-avatar>
           </v-btn>
         </template>
 
         <v-card>
           <!-- Links -->
           <v-list class="py-0">
-            <v-list-item link to="/messages">
+            <v-list-item-group color="success">
+              <!-- <v-list-item link to="/messages">
               <v-list-item-avatar>
                 <v-icon>mdi-message</v-icon>
               </v-list-item-avatar>
               <v-list-item-content>
                 <v-list-item-title>Messages</v-list-item-title>
-                <!-- <v-list-item-title>
-                  <v-badge color="success" content="1">Messages</v-badge>
-                </v-list-item-title> -->
               </v-list-item-content>
             </v-list-item>
             <v-list-item link to="/notifications">
@@ -68,38 +66,36 @@
               </v-list-item-avatar>
               <v-list-item-content>
                 <v-list-item-title>Notifications</v-list-item-title>
-                <!-- <v-list-item-title>
-                  <v-badge color="success" content="1">Notifications</v-badge>
-                </v-list-item-title> -->
               </v-list-item-content>
-            </v-list-item>
-            <v-list-item link to="/profile">
-              <v-list-item-avatar>
-                <v-icon>mdi-account-details</v-icon>
-              </v-list-item-avatar>
-              <v-list-item-content>
-                <v-list-item-title>Profile</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item link to="/settings">
-              <v-list-item-avatar>
-                <v-icon>mdi-cog</v-icon>
-              </v-list-item-avatar>
-              <v-list-item-content>
-                <v-list-item-title>Settings</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
+            </v-list-item> -->
+              <v-list-item link to="/profile">
+                <v-list-item-avatar>
+                  <v-icon>mdi-account-details</v-icon>
+                </v-list-item-avatar>
+                <v-list-item-content>
+                  <v-list-item-title>Profile</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item link to="/settings">
+                <v-list-item-avatar>
+                  <v-icon>mdi-cog</v-icon>
+                </v-list-item-avatar>
+                <v-list-item-content>
+                  <v-list-item-title>Settings</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
 
-            <v-divider></v-divider>
+              <v-divider></v-divider>
 
-            <v-list-item @click="logout">
-              <v-list-item-avatar>
-                <v-icon>mdi-logout</v-icon>
-              </v-list-item-avatar>
-              <v-list-item-content>
-                <v-list-item-title>Logout</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
+              <v-list-item @click="logout">
+                <v-list-item-avatar>
+                  <v-icon>mdi-logout</v-icon>
+                </v-list-item-avatar>
+                <v-list-item-content>
+                  <v-list-item-title>Logout</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list-item-group>
           </v-list>
         </v-card>
       </v-menu>
@@ -109,6 +105,7 @@
         bottom
         left
         offset-y
+        class="d-none"
         v-if="$vuetify.breakpoint.smAndUp"
         :close-on-content-click="false"
         v-model="notificationsMenu"
@@ -586,9 +583,11 @@ export default {
     // Start loading page
     this.$store.commit("setPageLoading", true);
 
-    // window.addEventListener("scroll", () => {
-    //   this.scrollYPos = window.scrollY;
-    // });
+    if (!this.$store.state.loggedIn) {
+      window.addEventListener("scroll", () => {
+        this.scrollYPos = window.scrollY;
+      });
+    }
   },
   data() {
     return {
