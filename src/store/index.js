@@ -21,6 +21,7 @@ export default new Vuex.Store({
   state: {
     pageTitle: '',
     pageLoading: false,
+    pageLoadingMessage: '',
     loggedIn: false,
     email: undefined,
     role: undefined,
@@ -47,6 +48,9 @@ export default new Vuex.Store({
     },
     setPageLoading(state, status) {
       state.pageLoading = status
+    },
+    setPageLoadingMessage(state, message) {
+      state.pageLoadingMessage = message
     },
     setLoggedIn(state, status) {
       state.loggedIn = status
@@ -96,8 +100,8 @@ export default new Vuex.Store({
     addLikedFood(state, food) {
       state.likedFoods.push(food)
     },
-    updateLikedFood(state, food) {
-      const index = state.availableFoods.findIndex(f => f.id === food.id);
+    removeLikedFood(state, food) {
+      const index = state.likedFoods.findIndex(f => f.id === food.id);
       state.likedFoods.splice(index, 1);
       state.likedFoods = [...state.likedFoods];
     },
@@ -174,10 +178,6 @@ export default new Vuex.Store({
     },
     setLikedFoods(state, foods) {
       state.likedFoods = foods
-    },
-
-    removeLikedFood(state, food) {
-      state.likedFoods.splice(food, 1);
     },
 
     setMeals(state, meals) {
@@ -290,12 +290,12 @@ export default new Vuex.Store({
       await setDoc(docRef, food)
       commit('addLikedFood', food)
     },
-    async updateLikedFoodAction({ commit, state }, food) {
+    async removeLikedFoodAction({ commit, state }, food) {
       // Update the liked foods in the database
       const db = getFirestore();
       const docRef = doc(db, `users/${state.email}/likedFoods/food${food.id}`)
       await deleteDoc(docRef)
-      commit('updateLikedFood', food)
+      commit('removeLikedFood', food)
     },
     async addMenuFoodAction({ commit, state }, food) {
       const db = getFirestore()
@@ -441,15 +441,6 @@ export default new Vuex.Store({
       // Add the foods to the store
       commit('setAllUsers', users);
     },
-    async removeLikedFoodAction({ commit, state }, food) {
-      const db = getFirestore()
-
-      // Delete from database
-      await deleteDoc(doc(db, `profiles/${state.email}/likedFoods/food${food.id}`));
-
-      // Delete from store
-      commit('removeLikedFood', food)
-    },
   },
   getters: {
     getEateryById: (state) => id => {
@@ -463,6 +454,9 @@ export default new Vuex.Store({
     },
     getFoodByName: (state) => name => {
       return state.allFoods.find(food => food.name === name)
+    },
+    getLikedFoodById: (state) => id => {
+      return state.likedFoods.find(food => food.id === id)
     },
     getMessagesByRead: (state) => read => {
       return state.messages.filter(m => m.read === read)

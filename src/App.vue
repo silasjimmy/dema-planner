@@ -561,12 +561,12 @@
     <v-overlay opacity="1" z-index="10" :value="pageLoadOverlay">
       <v-progress-circular
         indeterminate
-        :size="200"
-        :width="4"
+        :size="250"
+        :width="5"
         color="success"
         class="text-center"
       >
-        Loading...
+        {{ $store.state.pageLoadingMessage }}
       </v-progress-circular>
     </v-overlay>
   </v-app>
@@ -580,9 +580,15 @@ import MealsInfo from "./components/MealsInfo.vue";
 export default {
   name: "App",
   created() {
-    window.addEventListener("scroll", () => {
-      this.scrollYPos = window.scrollY;
-    });
+    // Inform user of action
+    this.$store.commit("setPageLoadingMessage", "Loading data... please wait");
+
+    // Start loading page
+    this.$store.commit("setPageLoading", true);
+
+    // window.addEventListener("scroll", () => {
+    //   this.scrollYPos = window.scrollY;
+    // });
   },
   data() {
     return {

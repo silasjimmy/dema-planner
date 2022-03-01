@@ -12,9 +12,6 @@ function checkAuth(to, from, next) {
     // Set the page title in the dashboard bar
     store.commit('setPageTitle', to.meta.title)
 
-    // Start loading page
-    store.commit('setPageLoading', true)
-
     let init = new Promise(resolve => resolve(false))
 
     // Initialize firebase before routing
@@ -40,6 +37,9 @@ function checkAuth(to, from, next) {
     // Initialize firebase auth first
     init.then(status => {
         if (status) {
+            // Inform user of action
+            store.commit('setPageLoadingMessage', 'Loading data... please wait')
+
             // Fetch and store user data
             return Promise.all([
                 store.dispatch('getProfileAction'),
@@ -51,7 +51,7 @@ function checkAuth(to, from, next) {
             store.commit('setRole', store.state.profile.role)
             store.commit('setDashboardLinks', store.state.profile.role)
         }
-    }).finally(() => {
+    }).then(() => {
         // Stop page laod
         store.commit('setPageLoading', false)
 
@@ -112,6 +112,8 @@ function checkAuth(to, from, next) {
         }
         // 3. If not, it is probably a page not found so pass
         else next()
+    }).catch(error => {
+        store.commit('setPageLoadingMessage', error.code)
     })
 }
 

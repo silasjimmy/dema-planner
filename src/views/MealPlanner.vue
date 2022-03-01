@@ -70,7 +70,7 @@
                   <v-btn
                     fab
                     small
-                    :disabled="meals.length == 0"
+                    disabled
                     :loading="loadingRegenerate"
                     elevation="1"
                     color="success"
