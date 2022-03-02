@@ -578,7 +578,7 @@ export default {
   name: "App",
   created() {
     // Inform user of action
-    this.$store.commit("setPageLoadingMessage", "Loading data... please wait");
+    this.$store.commit("setPageLoadingMessage", "Loading...");
 
     // Start loading page
     this.$store.commit("setPageLoading", true);
@@ -668,6 +668,10 @@ export default {
 
 [v-cloak] {
   display: none;
+}
+
+html {
+  overflow: auto;
 }
 
 .theme--light.v-app-bar.v-toolbar.v-sheet {
