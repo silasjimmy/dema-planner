@@ -38,7 +38,7 @@ function checkAuth(to, from, next) {
     init.then(status => {
         if (status) {
             // Inform user of action
-            store.commit('setPageLoadingMessage', 'Loading data... please wait')
+            store.commit('setPageLoadingMessage', 'Loading data...')
 
             // Fetch and store user data
             return Promise.all([
