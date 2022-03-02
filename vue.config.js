@@ -4,7 +4,7 @@ module.exports = {
   ],
   pwa: {
     name: 'Dema',
-    // themeColor: '#4DBA87',
+    themeColor: '#4CAF50',
     // msTileColor: '#000000',
     // appleMobileWebAppCapable: 'yes',
     // appleMobileWebAppStatusBarStyle: 'black',
