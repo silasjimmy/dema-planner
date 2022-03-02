@@ -1,7 +1,22 @@
 <template>
   <v-container fluid>
     <v-card outlined class="rounded-lg">
+      <v-card-title
+        class="justify-center subtitle-2 text-md-subtitle-1 font-weight-regular"
+        v-if="loadingData"
+        >{{ loadingDataMessage }}</v-card-title
+      >
+      <v-card-text v-if="loadingData">
+        <v-progress-linear
+          :color="loadingDataSuccess ? 'success' : 'error'"
+          :indeterminate="loadingData"
+          rounded
+          height="4"
+        ></v-progress-linear>
+      </v-card-text>
+
       <v-data-table
+        v-if="!loadingData"
         :items-per-page="5"
         :headers="headers"
         :items="menu"
@@ -143,8 +158,18 @@ export default {
   title: "Menu",
   name: "Menu",
   async created() {
-    await this.getAvailableFoodsAction();
-    await this.getMenuAction();
+    this.loadingData = true;
+
+    try {
+      if (this.availableFoods.length === 0)
+        await this.getAvailableFoodsAction();
+      if (this.menu.length === 0) await this.getMenuAction();
+    } catch (error) {
+      this.loadingDataMessage = error.code;
+      this.loadingDataSuccess = false;
+    } finally {
+      setTimeout(() => (this.loadingData = false), 1000);
+    }
   },
   data() {
     return {
@@ -153,6 +178,9 @@ export default {
         { text: "Cost", value: "cost", align: "center" },
         { text: "Actions", value: "actions", align: "center", sortable: false },
       ],
+      loadingData: true,
+      loadingDataMessage: "Loading menu...",
+      loadingDataSuccess: true,
       promptOverlay: false,
       searchFood: "",
       showToast: false,
@@ -193,7 +221,10 @@ export default {
       "deleteMenuFoodAction",
     ]),
     foodNames() {
-      return this.availableFoods.map((food) => food.name);
+      const available = this.availableFoods.map((food) => food.name);
+      const menu = this.menu.map((food) => food.name);
+
+      return available.filter((f) => !menu.includes(f));
     },
     addNewFood() {
       this.selectedFood = JSON.parse(JSON.stringify(this.defaultFood));
@@ -245,13 +276,12 @@ export default {
             this.addMenuFoodAction(this.selectedFood);
 
             this.toastMessage = "Food added successfully!";
-            this.actionSuccess = true;
           } else {
             // // Edit food
             await this.updateMenuFoodAction(this.selectedFood);
             this.toastMessage = "Food updated successfully!";
-            this.actionSuccess = true;
           }
+          this.actionSuccess = true;
         } catch (error) {
           this.toastMessage = error.code;
           this.actionSuccess = false;
