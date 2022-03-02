@@ -107,7 +107,7 @@
 
       <v-card-text v-if="!loadingData">
         <!-- No meals message -->
-        <div class="b text-center" v-if="meals.length === 0">
+        <div class="text-center" v-if="meals.length === 0">
           <p class="subtitle-2 text-md-subtitle-1 font-weight-regular">
             It seems you don't have meals for today. Click generate to
             automatically create a meal plan. Don't worry, we know what you
@@ -371,8 +371,6 @@ export default {
   title: "Meal planner",
   name: "MealPlanner",
   async created() {
-    // this.loadingData = true;
-
     try {
       if (this.$store.state.eateries.length === 0)
         await this.getEateriesAction();
@@ -457,11 +455,11 @@ export default {
           // Uplaod the generated meal to the database
           await this.addMealAction(meal);
 
-          // Search for eatery
-          const findEatery = suggestEatery(meal, this.allMenus);
+          // // Search for eatery
+          // const findEatery = suggestEatery(meal, this.allMenus);
 
-          // Save the search details if found
-          if (findEatery) await this.addSuggestedEatery(findEatery);
+          // // Save the search details if found
+          // if (findEatery) await this.addSuggestedEatery(findEatery);
 
           this.toastMessage = "Meals created successfully!";
           this.actionSuccess = true;

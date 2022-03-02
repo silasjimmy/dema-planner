@@ -1184,7 +1184,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["uploadProfileAction", "uploadSettingsAction"]),
+    ...mapActions(["uploadProfileAction", "updateSettingsAction"]),
     validateAge(dob) {
       const age = differenceInYears(new Date(), new Date(dob));
 
@@ -1302,7 +1302,7 @@ export default {
         await updateCounter("users", { last: userId + 1 });
 
         // Add user settings
-        await this.uploadSettingsAction(settings);
+        await this.updateSettingsAction(settings);
 
         // Stop loading
         this.consumerLoading = false;

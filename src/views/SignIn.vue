@@ -203,11 +203,11 @@ export default {
       await this.getProfileAction();
 
       // Redirect based on if the profile exists
-      if (this.$store.state.profile) {
+      if (this.$store.state.profile)
         this.$router.replace({
           name: roleRedirect(this.$store.state.profile.role),
         });
-      } else this.$router.replace({ name: "create-profile" });
+      else this.$router.replace({ name: "create-profile" });
     },
   },
 };
