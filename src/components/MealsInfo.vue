@@ -43,28 +43,46 @@
     <v-divider></v-divider>
 
     <!-- Eateries suggestions -->
-    <v-card-subtitle class="text-center">Suggested eateries</v-card-subtitle>
-    <v-card-text>
-      <div class="d-flex align-center font-weight-medium">
-        <span>Meal name</span>
-        <v-spacer></v-spacer>
-        <v-tooltip left>
-          <template v-slot:activator="{ on, attrs }">
-            <span v-bind="attrs" v-on="on">Eatery name</span>
-          </template>
-          <span>Meal details</span>
-        </v-tooltip>
-      </div>
-    </v-card-text>
+    <v-list subheader two-line>
+      <v-subheader>Suggested eateries</v-subheader>
+      <v-list-item v-for="(eatery, index) in suggestedEateries" :key="index">
+        <v-list-item-content>
+          <v-list-item-title>{{ eatery.mealName }}</v-list-item-title>
+          <v-list-item-subtitle>{{ eatery.eateryName }}</v-list-item-subtitle>
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-tooltip left>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn icon v-bind="attrs" v-on="on">
+                <v-icon size="18px"> mdi-information </v-icon>
+              </v-btn>
+            </template>
+            <div class="b text-center">
+              <v-btn
+                plain
+                small
+                link
+                :to="`/nearest-eateries/${eatery.eateryId}`"
+                >view eatery</v-btn
+              >
+            </div>
+          </v-tooltip>
+        </v-list-item-action>
+      </v-list-item>
+    </v-list>
   </v-card>
 </template>
 
 <script>
 import { GChart } from "vue-google-charts";
-import { mapState, mapGetters } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 
 export default {
   name: "MealsInfo",
+  async created() {
+    if (this.suggestedEateries.length === 0)
+      await this.getSuggestedEateriesAction();
+  },
   data() {
     return {
       chartOptions: {
@@ -84,8 +102,11 @@ export default {
       },
     };
   },
+  methods: {
+    ...mapActions(["getSuggestedEateriesAction"]),
+  },
   computed: {
-    ...mapState(["meals"]),
+    ...mapState(["meals", "suggestedEateries"]),
     ...mapGetters(["calculateNutrientContent", "calculateCaloricContent"]),
     chartData() {
       return [
@@ -115,4 +136,7 @@ export default {
 </script>
 
 <style scoped>
+.pointer {
+  cursor: pointer;
+}
 </style>

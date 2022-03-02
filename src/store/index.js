@@ -345,14 +345,14 @@ export default new Vuex.Store({
         commit('addMenu', menuObj)
       }
     },
-    async getSuggestedEateries({ commit, state }) {
+    async getSuggestedEateriesAction({ commit, state }) {
       const db = getFirestore()
       const collectionRef = collection(db, `users/${state.email}/suggestedEateries`)
       const snapShot = await getDocs(collectionRef)
       const suggestedEateries = snapShot.docs.map(doc => doc.data())
-      commit('setSuggstedEateries', suggestedEateries)
+      commit('setSuggestedEateries', suggestedEateries)
     },
-    async addSuggestedEatery({ commit, state }, eatery) {
+    async addSuggestedEateryAction({ commit, state }, eatery) {
       const db = getFirestore()
       const docRef = doc(db, `users/${state.email}/suggestedEateries/meal${eatery.mealId}`)
       await setDoc(docRef, eatery)

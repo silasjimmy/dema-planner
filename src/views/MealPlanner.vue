@@ -115,7 +115,7 @@
           </p>
           <v-btn
             rounded
-            :loading="loadingMeals"
+            :loading="generatingMeals"
             @click="generateMeals"
             color="success"
           >
@@ -393,7 +393,7 @@ export default {
       actionSuccess: false,
       toastMessage: "",
       showToast: false,
-      loadingMeals: false,
+      generatingMeals: false,
       loadingRegenerate: false,
       datePickerMenu: false,
       mealsDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
@@ -431,7 +431,7 @@ export default {
       "saveAteMealAction",
       "setAllMenusAction",
       "getEateriesAction",
-      "addSuggestedEatery",
+      "addSuggestedEateryAction",
       "deleteSuggestedEateryAction",
     ]),
     formatTime(timeString) {
@@ -442,34 +442,37 @@ export default {
       });
     },
     async generateMeals() {
-      this.loadingMeals = true;
+      this.generatingMeals = true;
+      // this.loadingDataMessage = "Generating your meals..."
+      // this.loadingDataSuccess = true
+      // this.loadingData = true;
 
-      for (let index = 0; index < this.settings.mealTimes.length; index++) {
-        try {
+      try {
+        for (let i = 0; i < this.settings.mealTimes.length; i++) {
           // Create the meals
           const meal = generateMeal(
             this.availableFoods,
-            this.settings.mealTimes[index]
+            this.settings.mealTimes[i]
           );
 
           // Uplaod the generated meal to the database
           await this.addMealAction(meal);
 
-          // // Search for eatery
-          // const findEatery = suggestEatery(meal, this.allMenus);
+          // Search for eatery
+          const findEatery = suggestEatery(meal, this.allMenus);
 
-          // // Save the search details if found
-          // if (findEatery) await this.addSuggestedEatery(findEatery);
-
-          this.toastMessage = "Meals created successfully!";
-          this.actionSuccess = true;
-        } catch (error) {
-          this.toastMessage = error.message;
-          this.actionSuccess = false;
-        } finally {
-          this.loadingMeals = false;
-          this.showToast = true;
+          // Save the search details if found
+          if (findEatery) await this.addSuggestedEateryAction(findEatery);
         }
+
+        this.toastMessage = "Meals created successfully!";
+        this.actionSuccess = true;
+      } catch (error) {
+        this.toastMessage = error.message;
+        this.actionSuccess = false;
+      } finally {
+        this.generatingMeals = false;
+        this.showToast = true;
       }
     },
     async regenerateMeals() {
@@ -504,7 +507,7 @@ export default {
 
           // Find an eatery
           const findEatery = suggestEatery(meal, this.allMenus);
-          if (findEatery) await this.addSuggestedEatery(findEatery);
+          if (findEatery) await this.addSuggestedEateryAction(findEatery);
         } catch (error) {
           this.toastMessage = error.code;
           this.actionSuccess = false;
