@@ -267,11 +267,6 @@ export default new Vuex.Store({
     async updateMealAction({ commit, state }, meal) {
       const db = getFirestore()
       const docRef = doc(db, `users/${state.email}/meals/meal${meal.id}`)
-
-      // Change the dialog variables to false
-      meal.servingsDialog = false
-      meal.revealServings = false
-
       await setDoc(docRef, meal, { merge: true })
       commit('updateMeal', meal)
     },

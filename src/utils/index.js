@@ -101,8 +101,6 @@ function generateMeal(foods, mealTime) {
         ate: false,
         image: mealImages[Math.floor(Math.random() * mealImages.length)],
         foods: mealFoods,
-        revealServings: false,
-        servingsDialog: false,
     }
 }
 
