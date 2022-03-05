@@ -178,11 +178,108 @@
           </v-dialog>
         </v-list-item>
 
-        <!-- <v-divider></v-divider>
+        <v-divider></v-divider>
 
-        <v-subheader>Preferences</v-subheader> -->
+        <v-subheader>Preferences</v-subheader>
 
-        <!-- Meal add/delete -->
+        <!-- Meal edit/delete -->
+        <v-list-item>
+          <v-list-item-content class="pt-0">
+            <v-container>
+              <v-row justify="center">
+                <v-expansion-panels accordion flat>
+                  <v-expansion-panel
+                    v-for="mealTime in settings.mealTimes"
+                    :key="mealTime.id"
+                  >
+                    <v-expansion-panel-header class="py-0 pl-0 pr-2">
+                      <v-list-item two-line class="px-0">
+                        <v-list-item-content>
+                          <v-list-item-title>
+                            {{ mealTime.name }}
+                          </v-list-item-title>
+                          <v-list-item-subtitle>
+                            {{ formatTime(mealTime.time) }}
+                          </v-list-item-subtitle>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content class="text-center">
+                      <v-btn
+                        text
+                        rounded
+                        small
+                        color="success"
+                        class="mx-2"
+                        @click="editMealTime(mealTime)"
+                      >
+                        Edit
+                      </v-btn>
+                      <v-btn
+                        text
+                        rounded
+                        small
+                        color="error"
+                        class="mx-2"
+                        @click="deleteMealTime(mealTime)"
+                        >Delete</v-btn
+                      >
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
+                </v-expansion-panels>
+              </v-row>
+            </v-container>
+          </v-list-item-content>
+
+          <!-- Meal time form -->
+          <v-dialog width="400px" v-model="mealTimeDialog">
+            <v-card>
+              <v-card-title>
+                <span>{{ mealTimeAction }} meal time</span>
+                <v-spacer></v-spacer>
+                <v-btn icon @click="mealTimeDialog = false">
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+              </v-card-title>
+
+              <v-card-text class="pb-0 pt-2">
+                <v-text-field
+                  outlined
+                  dense
+                  type="text"
+                  color="success"
+                  label="Name"
+                  prepend-icon="mdi-pizza"
+                  v-model="selectedMealTime.name"
+                ></v-text-field>
+                <v-text-field
+                  outlined
+                  dense
+                  type="time"
+                  label="Time"
+                  color="success"
+                  prepend-icon="mdi-clock"
+                  v-model="selectedMealTime.time"
+                ></v-text-field>
+              </v-card-text>
+
+              <v-card-actions class="justify-center">
+                <v-btn text rounded @click="saveMealTime" color="success"
+                  >Save</v-btn
+                >
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
+          <!-- Delete meal time prompt -->
+          <question-prompt
+            :question="'Are you sure you want to delete this meal time?'"
+            :dialog="deleteMealTimeDialog"
+            :overlay="deleteMealTimeOverlay"
+            @cancel="deleteMealTimeCancel"
+            @confirm="deleteMealTimeConfirm"
+          ></question-prompt>
+        </v-list-item>
         <!-- <v-list-item three-line>
           <v-list-item-content>
             <v-list-item-title>Meals</v-list-item-title>
@@ -208,52 +305,9 @@
                 <span>{{ formatTime(mealTime.time) }}</span>
               </v-chip>
 
-              <question-prompt
-                :question="'Are you sure you want to delete this meal time?'"
-                :dialog="deleteMealTimeDialog"
-                :overlay="deleteMealTimeOverlay"
-                @cancel="deleteMealTimeCancel"
-                @confirm="deleteMealTimeConfirm"
-              ></question-prompt>
+              
 
-              <v-dialog width="400px" v-model="mealTimeDialog">
-                <v-card>
-                  <v-card-title>
-                    <span>{{ mealTimeAction }} meal time</span>
-                    <v-spacer></v-spacer>
-                    <v-btn icon @click="mealTimeDialog = false">
-                      <v-icon>mdi-close</v-icon>
-                    </v-btn>
-                  </v-card-title>
-
-                  <v-card-text class="pb-0 pt-2">
-                    <v-text-field
-                      outlined
-                      dense
-                      type="text"
-                      color="success"
-                      label="Name"
-                      prepend-icon="mdi-pizza"
-                      v-model="selectedMealTime.name"
-                    ></v-text-field>
-                    <v-text-field
-                      outlined
-                      dense
-                      type="time"
-                      label="Time"
-                      color="success"
-                      prepend-icon="mdi-clock"
-                      v-model="selectedMealTime.time"
-                    ></v-text-field>
-                  </v-card-text>
-
-                  <v-card-actions class="justify-center">
-                    <v-btn text rounded @click="saveMealTime" color="success"
-                      >Save</v-btn
-                    >
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
+              
             </v-list-item-subtitle>
           </v-list-item-content>
 

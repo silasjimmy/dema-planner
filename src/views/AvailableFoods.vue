@@ -1,19 +1,12 @@
 <template>
   <v-container fluid>
     <v-card outlined class="rounded-lg">
-      <v-card-title
-        class="justify-center subtitle-2 text-md-subtitle-1 font-weight-regular"
-        v-if="loadingData"
-        >{{ loadingDataMessage }}</v-card-title
-      >
-      <v-card-text v-if="loadingData">
-        <v-progress-linear
-          :color="loadingDataSuccess ? 'success' : 'error'"
-          :indeterminate="loadingData"
-          rounded
-          height="4"
-        ></v-progress-linear>
-      </v-card-text>
+      <!-- Loading foods -->
+      <data-loader
+        :show="loadingData"
+        :message="loadingDataMessage"
+        :success="loadingDataSuccess"
+      ></data-loader>
 
       <v-data-table
         v-if="!loadingData"
@@ -60,14 +53,15 @@
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
 import Toast from "@/components/Toast.vue";
+import DataLoader from "@/components/DataLoader.vue";
 
 export default {
   title: "Available foods",
   name: "AvailableFoods",
   async created() {
-    this.loadingData = true;
-
     try {
+      this.loadingData = true;
+
       if (this.availableFoods.length === 0)
         await this.getAvailableFoodsAction();
       if (this.likedFoods.length === 0) await this.getLikedFoodsAction();
@@ -80,7 +74,7 @@ export default {
   },
   data() {
     return {
-      loadingData: true,
+      loadingData: false,
       loadingDataMessage: "Loading foods...",
       loadingDataSuccess: true,
       toastActionSuccess: false,
@@ -144,6 +138,7 @@ export default {
   },
   components: {
     Toast,
+    DataLoader,
   },
 };
 </script>

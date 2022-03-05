@@ -339,6 +339,7 @@ export default {
   name: "MealPlanner",
   async created() {
     try {
+      this.loadingData = true;
       if (this.$store.state.eateries.length === 0)
         await this.getEateriesAction();
       if (this.meals.length === 0) await this.getMealsAction();
@@ -354,7 +355,7 @@ export default {
   },
   data() {
     return {
-      loadingData: true,
+      loadingData: false,
       loadingDataMessage: "Checking your meals...",
       loadingDataSuccess: true,
       actionSuccess: false,
