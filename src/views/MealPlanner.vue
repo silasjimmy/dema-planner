@@ -69,9 +69,7 @@
                   <v-btn
                     fab
                     small
-                    disabled
                     :loading="loadingRegenerate"
-                    elevation="1"
                     color="success"
                     v-bind="attrs"
                     v-on="on"
@@ -412,9 +410,11 @@ export default {
       });
     },
     async generateMeals() {
-      this.generatingMeals = true;
-
       try {
+        // Start loading
+        this.generatingMeals = true;
+
+        // Generate meals
         for (let i = 0; i < this.settings.mealTimes.length; i++) {
           // Create the meals
           const meal = generateMeal(
@@ -443,49 +443,40 @@ export default {
       }
     },
     async regenerateMeals() {
-      this.loadingRegenerate = true;
+      try {
+        // Start loading
+        this.loadingRegenerate = true;
 
-      const mealsCopy = [...this.meals];
+        // Delete existing meals
+        const mealsCopy = [...this.meals];
 
-      // First delete all the meals that exists
-      for (let mealIndex = 0; mealIndex < mealsCopy.length; mealIndex++) {
-        try {
+        for (let mealIndex = 0; mealIndex < mealsCopy.length; mealIndex++) {
           await this.deleteMealAction(mealsCopy[mealIndex]);
-          // await this.deleteSuggestedEateryAction(mealsCopy[mealIndex]);
-        } catch (error) {
-          this.loadingRegenerate = false;
-          this.toastMessage = error.code;
-          this.actionSuccess = false;
-          this.showToast = true;
-          return;
+          await this.deleteSuggestedEateryAction(mealsCopy[mealIndex]);
         }
-      }
 
-      // Then create new meals
-      for (let index = 0; index < this.settings.mealTimes.length; index++) {
-        try {
+        // Generate new meals
+        for (let index = 0; index < this.settings.mealTimes.length; index++) {
           const meal = generateMeal(
             this.availableFoods,
             this.settings.mealTimes[index]
           );
 
-          // Uplaod the generated meal to the database
           await this.addMealAction(meal);
 
-          // Find an eatery
           const findEatery = suggestEatery(meal, this.allMenus);
           if (findEatery) await this.addSuggestedEateryAction(findEatery);
-        } catch (error) {
-          this.toastMessage = error.code;
-          this.actionSuccess = false;
-          return;
         }
-      }
 
-      this.loadingRegenerate = false;
-      this.toastMessage = "Meals regenerated successfully!";
-      this.actionSuccess = true;
-      this.showToast = true;
+        this.toastMessage = "Meals regenerated successfully!";
+        this.actionSuccess = true;
+      } catch (error) {
+        this.toastMessage = error.code;
+        this.actionSuccess = false;
+      } finally {
+        this.loadingRegenerate = false;
+        this.showToast = true;
+      }
     },
     async saveServings(meal, index) {
       try {

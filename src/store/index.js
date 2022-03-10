@@ -37,10 +37,10 @@ export default new Vuex.Store({
     menu: [],
     allMenus: [],
     suggestedEateries: [],
+    mealTimes: [],
 
     allFoods: [],
     allUsers: [],
-    mealTimes: null,
   },
   mutations: {
     setPageTitle(state, title) {
@@ -182,9 +182,6 @@ export default new Vuex.Store({
 
     setMeals(state, meals) {
       state.meals = meals
-    },
-    setMealTimes(state, mealTimes) {
-      state.mealTimes = mealTimes
     },
   },
   actions: {
@@ -381,6 +378,11 @@ export default new Vuex.Store({
       // Sort the notifications according to created time
       const sortedNotifications = sortNotifications(notifications)
       commit('setNotifications', sortedNotifications)
+    },
+    async deleteUserDataAction({ state }) {
+      const db = getFirestore()
+      const docRef = doc(db, `users/${state.email}`)
+      await deleteDoc(docRef)
     },
 
     async getAllFoodsAction({ commit }) {
