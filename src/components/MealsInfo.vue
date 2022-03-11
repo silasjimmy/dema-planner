@@ -1,72 +1,155 @@
 <template>
   <v-card flat>
-    <v-card-subtitle v-if="meals.length === 0"
-      >No data available</v-card-subtitle
+    <v-card-title class="justify-center">Summary</v-card-title>
+    <v-card-subtitle
+      class="text-center text--primary font-weight-regular subtitle-1 py-2"
     >
+      Nutritional content
+    </v-card-subtitle>
 
-    <v-card-title class="justify-center" v-if="meals.length > 0"
-      >Summary</v-card-title
-    >
-    <v-card-subtitle class="text-center pb-0" v-if="meals.length > 0"
-      >Nutritional content</v-card-subtitle
-    >
+    <!-- Load meals -->
+    <data-loader
+      :show="loadingData"
+      :message="loadingDataMessage"
+      :success="loadingDataSuccess"
+    ></data-loader>
 
-    <!-- Chart -->
-    <v-card-text v-if="meals.length > 0">
-      <GChart type="PieChart" :data="chartData" :options="chartOptions" />
+    <v-card-text v-if="!loadingData">
+      <v-subheader class="justify-center" v-if="meals.length === 0">
+        No data available
+      </v-subheader>
 
-      <div class="d-flex align-center green--text font-weight-medium">
-        <span>Proteins</span>
-        <v-spacer></v-spacer>
-        <span>{{ proteins }}g</span>
-      </div>
+      <div v-if="meals.length > 0">
+        <GChart type="PieChart" :data="chartData" :options="chartOptions" />
 
-      <div class="d-flex align-center my-1 blue-grey--text font-weight-medium">
-        <span>Carbohydrates</span>
-        <v-spacer></v-spacer>
-        <span>{{ carbohydrates }}g</span>
-      </div>
+        <div class="d-flex align-center green--text font-weight-medium">
+          <span>Proteins</span>
+          <v-spacer></v-spacer>
+          <span>{{ proteins }}g</span>
+        </div>
 
-      <div class="d-flex align-center orange--text font-weight-medium">
-        <span>Vitamins</span>
-        <v-spacer></v-spacer>
-        <span>{{ vitamins }}g</span>
-      </div>
+        <div
+          class="d-flex align-center my-1 blue-grey--text font-weight-medium"
+        >
+          <span>Carbohydrates</span>
+          <v-spacer></v-spacer>
+          <span>{{ carbohydrates }}g</span>
+        </div>
 
-      <div class="d-flex align-center mt-2 text--primary font-weight-bold">
-        <span>Calories</span>
-        <v-spacer></v-spacer>
-        <span>{{ calories }} cal</span>
+        <div class="d-flex align-center orange--text font-weight-medium">
+          <span>Vitamins</span>
+          <v-spacer></v-spacer>
+          <span>{{ vitamins }}g</span>
+        </div>
+
+        <div class="d-flex align-center mt-2 text--primary font-weight-bold">
+          <span>Calories</span>
+          <v-spacer></v-spacer>
+          <span>{{ calories }} cal</span>
+        </div>
       </div>
     </v-card-text>
 
-    <v-divider></v-divider>
+    <v-divider class="mb-2"></v-divider>
 
-    <!-- Eateries suggestions -->
-    <v-card-subtitle class="text-center">Suggested eateries</v-card-subtitle>
-    <v-card-text>
-      <div class="d-flex align-center font-weight-medium">
-        <span>Meal name</span>
-        <v-spacer></v-spacer>
-        <v-tooltip left>
-          <template v-slot:activator="{ on, attrs }">
-            <span v-bind="attrs" v-on="on">Eatery name</span>
-          </template>
-          <span>Meal details</span>
-        </v-tooltip>
-      </div>
+    <v-card-subtitle
+      class="text-center text--primary font-weight-regular subtitle-1 py-2"
+    >
+      Sugessted eateries
+    </v-card-subtitle>
+
+    <!-- Load suggested eateries -->
+    <data-loader
+      :show="loadingData"
+      :message="loadingDataMessage"
+      :success="loadingDataSuccess"
+    ></data-loader>
+
+    <v-card-text v-if="!loadingData">
+      <v-subheader class="justify-center" v-if="suggestedEateries.length === 0">
+        No suggested eateries found
+      </v-subheader>
+
+      <v-list class="py-0" two-line v-if="suggestedEateries.length > 0">
+        <v-list-item
+          class="px-0"
+          v-for="(eatery, index) in suggestedEateries"
+          :key="index"
+        >
+          <v-list-item-content>
+            <v-list-item-title>{{ eatery.mealName }}</v-list-item-title>
+            <v-list-item-subtitle>
+              {{ eatery.eateryName }}
+            </v-list-item-subtitle>
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-tooltip
+              left
+              :open-on-hover="false"
+              :open-on-focus="false"
+              color="transparent"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon v-bind="attrs" v-on="on">
+                  <v-icon size="18px"> mdi-information </v-icon>
+                </v-btn>
+              </template>
+
+              <v-simple-table dense dark>
+                <template v-slot:default>
+                  <thead>
+                    <tr>
+                      <th>Food</th>
+                      <th>Cost</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="food in eatery.foods" :key="food.name">
+                      <td>{{ food.name }}</td>
+                      <td>{{ food.cost }}</td>
+                    </tr>
+                    <!-- <tr>
+                      <td>Total</td>
+                      <td>100</td>
+                    </tr> -->
+                  </tbody>
+                </template>
+              </v-simple-table>
+            </v-tooltip>
+          </v-list-item-action>
+        </v-list-item>
+      </v-list>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
 import { GChart } from "vue-google-charts";
-import { mapState, mapGetters } from "vuex";
+import DataLoader from "@/components/DataLoader.vue";
+import { mapState, mapGetters, mapActions } from "vuex";
 
 export default {
   name: "MealsInfo",
+  async created() {
+    try {
+      if (this.meals.length === 0) await this.getMealsAction();
+      if (this.suggestedEateries.length === 0)
+        await this.getSuggestedEateriesAction();
+
+      this.loadingDataSuccess = true;
+    } catch (error) {
+      this.loadingDataSuccess = false;
+      this.loadingDataMessage = error.code;
+    } finally {
+      setTimeout(() => (this.loadingData = false), 1000);
+    }
+  },
   data() {
     return {
+      loadingData: true,
+      loadingDataSuccess: true,
+      loadingDataMessage: "Loading...",
+      tooltipAction: [],
       chartOptions: {
         chartArea: {
           top: 0,
@@ -84,8 +167,11 @@ export default {
       },
     };
   },
+  methods: {
+    ...mapActions(["getSuggestedEateriesAction", "getMealsAction"]),
+  },
   computed: {
-    ...mapState(["meals"]),
+    ...mapState(["meals", "suggestedEateries"]),
     ...mapGetters(["calculateNutrientContent", "calculateCaloricContent"]),
     chartData() {
       return [
@@ -110,9 +196,13 @@ export default {
   },
   components: {
     GChart,
+    DataLoader,
   },
 };
 </script>
 
 <style scoped>
+.pointer {
+  cursor: pointer;
+}
 </style>

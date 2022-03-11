@@ -37,10 +37,10 @@ export default new Vuex.Store({
     menu: [],
     allMenus: [],
     suggestedEateries: [],
+    mealTimes: [],
 
     allFoods: [],
     allUsers: [],
-    mealTimes: null,
   },
   mutations: {
     setPageTitle(state, title) {
@@ -132,7 +132,6 @@ export default new Vuex.Store({
       state.suggestedEateries.splice(index, 1);
       state.suggestedEateries = [...state.suggestedEateries]
     },
-
     setAllFoods(state, foods) {
       state.allFoods = foods
     },
@@ -173,18 +172,11 @@ export default new Vuex.Store({
       state.meals.splice(index, 1, meal);
       state.meals = [...state.meals];
     },
-    deleteMeal(state, meal) {
-      state.meals.splice(meal, 1);
-    },
     setLikedFoods(state, foods) {
       state.likedFoods = foods
     },
-
     setMeals(state, meals) {
       state.meals = meals
-    },
-    setMealTimes(state, mealTimes) {
-      state.mealTimes = mealTimes
     },
   },
   actions: {
@@ -252,26 +244,14 @@ export default new Vuex.Store({
       commit('setEateries', eateries);
     },
     async addMealAction({ commit, state }, meal) {
-      // Add a single meal to the database
       const db = getFirestore();
       const docRef = doc(db, `users/${state.email}/meals/meal${meal.id}`)
       await setDoc(docRef, meal, { merge: true })
       commit('addMeal', meal)
     },
-    async deleteMealAction({ commit, state }, meal) {
-      const db = getFirestore()
-      const docRef = doc(db, `users/${state.email}/meals/meal${meal.id}`)
-      await deleteDoc(docRef);
-      commit('deleteMeal', meal)
-    },
     async updateMealAction({ commit, state }, meal) {
       const db = getFirestore()
       const docRef = doc(db, `users/${state.email}/meals/meal${meal.id}`)
-
-      // Change the dialog variables to false
-      meal.servingsDialog = false
-      meal.revealServings = false
-
       await setDoc(docRef, meal, { merge: true })
       commit('updateMeal', meal)
     },
@@ -345,14 +325,14 @@ export default new Vuex.Store({
         commit('addMenu', menuObj)
       }
     },
-    async getSuggestedEateries({ commit, state }) {
+    async getSuggestedEateriesAction({ commit, state }) {
       const db = getFirestore()
       const collectionRef = collection(db, `users/${state.email}/suggestedEateries`)
       const snapShot = await getDocs(collectionRef)
       const suggestedEateries = snapShot.docs.map(doc => doc.data())
-      commit('setSuggstedEateries', suggestedEateries)
+      commit('setSuggestedEateries', suggestedEateries)
     },
-    async addSuggestedEatery({ commit, state }, eatery) {
+    async addSuggestedEateryAction({ commit, state }, eatery) {
       const db = getFirestore()
       const docRef = doc(db, `users/${state.email}/suggestedEateries/meal${eatery.mealId}`)
       await setDoc(docRef, eatery)
@@ -363,6 +343,36 @@ export default new Vuex.Store({
       const docRef = doc(db, `users/${state.email}/suggestedEateries/meal${meal.id}`)
       await deleteDoc(docRef)
       commit('deleteSuggestedEatery', meal)
+    },
+    async getAllUsersAction({ commit }) {
+      const db = getFirestore();
+      const snapShot = await getDocs(collection(db, 'users'))
+      const users = snapShot.docs.map(doc => doc.data())
+      commit('setAllUsers', users);
+    },
+    async getAllFoodsAction({ commit }) {
+      const db = getFirestore();
+      const snapShot = await getDocs(collection(db, 'foods'))
+      const foods = snapShot.docs.map(doc => doc.data())
+      commit('setAllFoods', foods);
+    },
+    async addFoodAction({ commit }, food) {
+      const db = getFirestore()
+      const docRef = doc(db, 'foods', `food${food.id}`)
+      await setDoc(docRef, food)
+      commit('addFood', food)
+    },
+    async updateFoodAction({ commit }, food) {
+      const db = getFirestore()
+      const docRef = doc(db, 'foods', `food${food.id}`)
+      await setDoc(docRef, food, { merge: true })
+      commit('updateFood', food)
+    },
+    async deleteFoodAction({ commit }, food) {
+      const db = getFirestore()
+      const docRef = doc(db, "foods", `food${food.id}`)
+      await deleteDoc(docRef);
+      commit('deleteFood', food)
     },
 
     async getMessagesAction({ commit, state }) {
@@ -387,59 +397,10 @@ export default new Vuex.Store({
       const sortedNotifications = sortNotifications(notifications)
       commit('setNotifications', sortedNotifications)
     },
-
-    async getAllFoodsAction({ commit }) {
-      // Create firestore database instance
-      const db = getFirestore();
-
-      // Fetch the foods from the database
-      const snapShot = await getDocs(collection(db, 'foods'))
-
-      // Map the foods to an array
-      const foods = snapShot.docs.map(doc => doc.data())
-
-      // Add the foods to the store
-      commit('setAllFoods', foods);
-    },
-    async addFoodAction({ commit }, food) {
+    async deleteUserDataAction({ state }) {
       const db = getFirestore()
-
-      // Upload the food to the database
-      await setDoc(doc(db, 'foods', `food${food.id}`), food)
-
-      // Add to store
-      commit('addFood', food)
-    },
-    async updateFoodAction({ commit }, food) {
-      const db = getFirestore()
-
-      // Upload the food to the database
-      await setDoc(doc(db, 'foods', `food${food.id}`), food, { merge: true })
-
-      // Update in store
-      commit('updateFood', food)
-    },
-    async deleteFoodAction({ commit }, food) {
-      const db = getFirestore()
-
-      // Delete from database
-      await deleteDoc(doc(db, "foods", `food${food.id}`));
-
-      // Delete from store
-      commit('deleteFood', food)
-    },
-    async getAllUsersAction({ commit }) {
-      // Create firestore database instance
-      const db = getFirestore();
-
-      // Fetch the foods from the database
-      const snapShot = await getDocs(collection(db, 'profiles'))
-
-      // Map the foods to an array
-      const users = snapShot.docs.map(doc => doc.data())
-
-      // Add the foods to the store
-      commit('setAllUsers', users);
+      const docRef = doc(db, `users/${state.email}`)
+      await deleteDoc(docRef)
     },
   },
   getters: {

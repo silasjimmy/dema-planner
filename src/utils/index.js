@@ -101,8 +101,6 @@ function generateMeal(foods, mealTime) {
         ate: false,
         image: mealImages[Math.floor(Math.random() * mealImages.length)],
         foods: mealFoods,
-        revealServings: false,
-        servingsDialog: false,
     }
 }
 
@@ -124,8 +122,9 @@ function suggestEatery(meal, menus) {
         foods: []
     }
 
-    menus.forEach(menu => {
-        meal.foods.forEach(food => {
+    for (const menu of menus) {
+        for (const food of meal.foods) {
+            // Search for the food in the menu
             const search = menu.foods.find(f => f.id === food.id)
 
             // If food in menu, add in foods list
@@ -133,9 +132,9 @@ function suggestEatery(meal, menus) {
             else {
                 // Clear the foods list
                 suggestedEatery.foods = []
-                return
+                break
             }
-        });
+        }
 
         if (suggestedEatery.foods.length > 0) {
             eateryFound = true
@@ -148,9 +147,9 @@ function suggestEatery(meal, menus) {
             suggestedEatery.mealTime = meal.time
 
             // Stop searching
-            return
+            break
         } else eateryFound = false
-    });
+    }
 
     if (eateryFound) return suggestedEatery
     else return eateryFound

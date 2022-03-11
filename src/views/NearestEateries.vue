@@ -1,18 +1,11 @@
 <template>
   <v-card flat>
-    <v-card-title
-      class="justify-center subtitle-2 text-md-subtitle-1 font-weight-regular"
-      v-if="loadingData"
-      >{{ loadingDataMessage }}</v-card-title
-    >
-    <v-card-text v-if="loadingData">
-      <v-progress-linear
-        :color="loadingDataSuccess ? 'success' : 'error'"
-        :indeterminate="loadingData"
-        rounded
-        height="4"
-      ></v-progress-linear>
-    </v-card-text>
+    <!-- Loading foods -->
+    <data-loader
+      :show="loadingData"
+      :message="loadingDataMessage"
+      :success="loadingDataSuccess"
+    ></data-loader>
 
     <v-card-text v-if="!loadingData">
       <!-- No eateries message -->
@@ -100,14 +93,15 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
+import DataLoader from "@/components/DataLoader.vue";
 
 export default {
   title: "Nearest eateries",
   name: "NearestEateries",
   async created() {
-    this.loadingData = true;
-
     try {
+      this.loadingData = true;
+
       if (this.eateries.length === 0) await this.getEateriesAction();
       if (this.$store.state.allMenus.length === 0)
         await this.setAllMenusAction();
@@ -115,12 +109,12 @@ export default {
       this.loadingDataMessage = error.code;
       this.loadingDataSuccess = false;
     } finally {
-      setTimeout(() => (this.loadingData = false), 1000);
+      this.loadingData = false;
     }
   },
   data() {
     return {
-      loadingData: true,
+      loadingData: false,
       loadingDataMessage: "Checking eateries...",
       loadingDataSuccess: true,
     };
@@ -130,6 +124,9 @@ export default {
   },
   methods: {
     ...mapActions(["getEateriesAction", "setAllMenusAction"]),
+  },
+  components: {
+    DataLoader,
   },
 };
 </script>

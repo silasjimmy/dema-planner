@@ -1,7 +1,15 @@
 <template>
   <v-container fluid>
     <v-card outlined class="rounded-lg">
+      <!-- Load foods -->
+      <data-loader
+        :show="loadingData"
+        :message="loadingDataMessage"
+        :success="loadingDataSuccess"
+      ></data-loader>
+
       <v-data-table
+        v-if="!loadingData"
         :items-per-page="5"
         :headers="headers"
         :items="menu"
@@ -138,13 +146,24 @@
 import { mapState, mapActions, mapGetters } from "vuex";
 import QuestionPrompt from "../components/QuestionPrompt.vue";
 import Toast from "@/components/Toast.vue";
+import DataLoader from "@/components/DataLoader.vue";
 
 export default {
   title: "Menu",
   name: "Menu",
   async created() {
-    await this.getAvailableFoodsAction();
-    await this.getMenuAction();
+    try {
+      this.loadingData = true;
+
+      if (this.availableFoods.length === 0)
+        await this.getAvailableFoodsAction();
+      if (this.menu.length === 0) await this.getMenuAction();
+    } catch (error) {
+      this.loadingDataMessage = error.code;
+      this.loadingDataSuccess = false;
+    } finally {
+      this.loadingData = false;
+    }
   },
   data() {
     return {
@@ -153,6 +172,9 @@ export default {
         { text: "Cost", value: "cost", align: "center" },
         { text: "Actions", value: "actions", align: "center", sortable: false },
       ],
+      loadingData: true,
+      loadingDataMessage: "Loading menu...",
+      loadingDataSuccess: true,
       promptOverlay: false,
       searchFood: "",
       showToast: false,
@@ -193,7 +215,10 @@ export default {
       "deleteMenuFoodAction",
     ]),
     foodNames() {
-      return this.availableFoods.map((food) => food.name);
+      const available = this.availableFoods.map((food) => food.name);
+      const menu = this.menu.map((food) => food.name);
+
+      return available.filter((f) => !menu.includes(f));
     },
     addNewFood() {
       this.selectedFood = JSON.parse(JSON.stringify(this.defaultFood));
@@ -245,13 +270,12 @@ export default {
             this.addMenuFoodAction(this.selectedFood);
 
             this.toastMessage = "Food added successfully!";
-            this.actionSuccess = true;
           } else {
             // // Edit food
             await this.updateMenuFoodAction(this.selectedFood);
             this.toastMessage = "Food updated successfully!";
-            this.actionSuccess = true;
           }
+          this.actionSuccess = true;
         } catch (error) {
           this.toastMessage = error.code;
           this.actionSuccess = false;
@@ -270,6 +294,7 @@ export default {
   components: {
     QuestionPrompt,
     Toast,
+    DataLoader,
   },
 };
 </script>

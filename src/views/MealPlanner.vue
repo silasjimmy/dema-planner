@@ -4,78 +4,73 @@
       <v-card-text class="text--primary">
         <v-container class="pa-0">
           <v-row no-gutters align="center">
-            <v-col cols="3" class="d-flex">
+            <v-col cols="6" class="d-flex">
               <div class="text-center">
-                <h1
-                  class="subtitle-1 text-md-h6 text-uppercase font-weight-light"
-                >
+                <h1 class="text-h6 text-uppercase font-weight-light">
                   {{ weekday }}
                 </h1>
-                <h1 class="text-h4 text-md-h3 font-weight-bold">{{ day }}</h1>
+                <h1 class="text-h3 font-weight-bold">{{ day }}</h1>
+                <h2 class="subtitle-1 font-weight-regular">
+                  {{ monthAndYear }}
+                </h2>
+
+                <!-- Date picker -->
+                <!-- <v-menu
+                    offset-y
+                    v-model="datePickerMenu"
+                    transition="scale-transition"
+                    ref="dateMenu"
+                    :return-value.sync="mealsDate"
+                    :close-on-content-click="false"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        icon
+                        class="mx-1"
+                        :disabled="!meals"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        <v-icon>mdi-calendar</v-icon>
+                      </v-btn>
+                    </template>
+
+                    <v-date-picker
+                      v-if="datePickerMenu"
+                      v-model="mealsDate"
+                      header-color="blue-grey"
+                      color="green"
+                      show-current="false"
+                    >
+                      <v-btn
+                        text
+                        color="red"
+                        class="font-weight-bold"
+                        @click="datePickerMenu = false"
+                      >
+                        Cancel
+                      </v-btn>
+                      <v-spacer></v-spacer>
+                      <v-btn
+                        text
+                        color="orange"
+                        class="font-weight-bold"
+                        @click="$refs.dateMenu.save(mealsDate)"
+                      >
+                        Ok
+                      </v-btn>
+                    </v-date-picker>
+                  </v-menu> -->
               </div>
             </v-col>
-            <v-col cols="6" class="d-flex align-center justify-center">
-              <h2
-                class="subtitle-2 text-md-subtitle-1 font-weight-regular mx-1"
-              >
-                {{ monthAndYear }}
-              </h2>
-              <v-menu
-                offset-y
-                v-model="datePickerMenu"
-                transition="scale-transition"
-                ref="dateMenu"
-                :return-value.sync="mealsDate"
-                :close-on-content-click="false"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                    icon
-                    class="mx-1"
-                    :disabled="!meals"
-                    v-bind="attrs"
-                    v-on="on"
-                  >
-                    <v-icon>mdi-calendar</v-icon>
-                  </v-btn>
-                </template>
-
-                <v-date-picker
-                  v-if="datePickerMenu"
-                  v-model="mealsDate"
-                  header-color="blue-grey"
-                  color="green"
-                  show-current="false"
-                >
-                  <v-btn
-                    text
-                    color="red"
-                    class="font-weight-bold"
-                    @click="datePickerMenu = false"
-                  >
-                    Cancel
-                  </v-btn>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    text
-                    color="orange"
-                    class="font-weight-bold"
-                    @click="$refs.dateMenu.save(mealsDate)"
-                  >
-                    Ok
-                  </v-btn>
-                </v-date-picker>
-              </v-menu>
-            </v-col>
-            <v-col cols="3" class="text-right">
+            <v-col cols="6" class="text-right">
               <v-tooltip left color="black">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     fab
                     small
-                    disabled
+                    :disabled="meals.length === 0"
                     :loading="loadingRegenerate"
-                    elevation="1"
                     color="success"
                     v-bind="attrs"
                     v-on="on"
@@ -91,31 +86,24 @@
         </v-container>
       </v-card-text>
 
-      <v-card-title
-        class="justify-center subtitle-2 text-md-subtitle-1 font-weight-regular"
-        v-if="loadingData"
-        >{{ loadingDataMessage }}</v-card-title
-      >
-      <v-card-text v-if="loadingData">
-        <v-progress-linear
-          :color="loadingDataSuccess ? 'success' : 'error'"
-          :indeterminate="loadingData"
-          rounded
-          height="4"
-        ></v-progress-linear>
-      </v-card-text>
+      <!-- Load meals -->
+      <data-loader
+        :show="loadingData"
+        :message="loadingDataMessage"
+        :success="loadingDataSuccess"
+      ></data-loader>
 
       <v-card-text v-if="!loadingData">
         <!-- No meals message -->
         <div class="text-center" v-if="meals.length === 0">
-          <p class="subtitle-2 text-md-subtitle-1 font-weight-regular">
+          <p class="subtitle-1">
             It seems you don't have meals for today. Click generate to
             automatically create a meal plan. Don't worry, we know what you
             like...
           </p>
           <v-btn
             rounded
-            :loading="loadingMeals"
+            :loading="generatingMeals"
             @click="generateMeals"
             color="success"
           >
@@ -133,27 +121,17 @@
               md="12"
               lg="6"
               xl="4"
-              v-for="meal in meals"
+              v-for="(meal, index) in meals"
               :key="meal.id"
             >
               <v-card outlined class="rounded-lg">
                 <div class="d-flex align-center justify-space-between pr-4">
                   <!-- Meal name and time -->
                   <div>
-                    <v-card-title
-                      class="pt-2 subtitle-1 text-md-h6 font-weight-medium"
-                      >{{ meal.name }}</v-card-title
-                    >
-                    <v-card-subtitle
-                      class="
-                        pb-2
-                        subtitle-2
-                        text-md-subtitle-1
-                        font-weight-regular
-                        text--secondary
-                      "
-                      >{{ formatTime(meal.time) }}</v-card-subtitle
-                    >
+                    <v-card-title class="pt-2">{{ meal.name }}</v-card-title>
+                    <v-card-subtitle class="pb-2">{{
+                      formatTime(meal.time)
+                    }}</v-card-subtitle>
                   </div>
 
                   <!-- Dropdown menu -->
@@ -188,15 +166,7 @@
                   ></v-img>
 
                   <!-- Meal foods -->
-                  <div
-                    class="
-                      food-names
-                      subtitle-1
-                      text-md-h6
-                      font-weight-regular
-                      text-capitalize text--primary
-                    "
-                  >
+                  <div class="food-names subtitle-1 text--primary">
                     <span v-for="food in meal.foods" :key="food.name">{{
                       food.name
                     }}</span>
@@ -218,7 +188,7 @@
                   <v-spacer></v-spacer>
 
                   <!-- View servings button -->
-                  <v-btn icon @click="meal.revealServings = true">
+                  <v-btn icon @click="$set(servingsReveal, index, true)">
                     <v-icon>mdi-chevron-up</v-icon>
                   </v-btn>
                 </v-card-actions>
@@ -226,7 +196,7 @@
                 <v-expand-transition>
                   <v-card
                     flat
-                    v-if="meal.revealServings"
+                    v-if="servingsReveal[index]"
                     class="
                       transition-fast-in-fast-out
                       v-card--revealServings
@@ -235,14 +205,12 @@
                     "
                     height="100%"
                   >
-                    <v-card-title class="py-1">
-                      <span class="subtitle-1 text-md-h6 font-weight-medium"
-                        >Servings</span
-                      >
+                    <v-card-title class="py-2">
+                      <span>Servings</span>
                       <v-spacer></v-spacer>
-                      <v-btn icon @click="meal.revealServings = false"
-                        ><v-icon>mdi-chevron-down</v-icon></v-btn
-                      >
+                      <v-btn icon @click="$set(servingsReveal, index, false)">
+                        <v-icon>mdi-chevron-down</v-icon>
+                      </v-btn>
                     </v-card-title>
 
                     <v-card-text class="overflow-auto py-0">
@@ -251,43 +219,40 @@
                         :key="food.name"
                         class="d-flex align-center my-1 px-4"
                       >
-                        <span
-                          class="
-                            text-capitalize
-                            subtitle-2
-                            text-md-subtitle-1
-                            font-weight-regular
-                            text-capitalize text--primary
-                          "
-                          >{{ food.name }}</span
-                        >
+                        <span class="text-capitalize text--primary">{{
+                          food.name
+                        }}</span>
                         <v-spacer></v-spacer>
                         <span>{{ food.serving }}</span>
                       </div>
                     </v-card-text>
 
                     <v-card-actions class="justify-center">
-                      <!-- Edit servings button -->
-                      <v-btn
-                        text
-                        rounded
-                        @click="meal.servingsDialog = true"
-                        color="success"
-                      >
-                        Edit
-                      </v-btn>
-
-                      <!-- Servings edit form -->
                       <v-dialog
-                        v-model="meal.servingsDialog"
                         persistent
+                        v-model="servingsDialog[index]"
                         width="400"
                       >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn
+                            text
+                            rounded
+                            v-bind="attrs"
+                            v-on="on"
+                            color="success"
+                          >
+                            Edit
+                          </v-btn>
+                        </template>
+
                         <v-card>
                           <v-card-title>
                             <span>Edit food servings</span>
                             <v-spacer></v-spacer>
-                            <v-btn icon @click="meal.servingsDialog = false">
+                            <v-btn
+                              icon
+                              @click="$set(servingsDialog, index, false)"
+                            >
                               <v-icon>mdi-close</v-icon>
                             </v-btn>
                           </v-card-title>
@@ -316,8 +281,9 @@
                             <v-btn
                               text
                               rounded
+                              :loading="loadingServings"
                               color="success"
-                              @click="saveServings(meal)"
+                              @click="saveServings(meal, index)"
                             >
                               save
                             </v-btn>
@@ -366,12 +332,14 @@
 import { mapState, mapActions, mapGetters } from "vuex";
 import { generateMeal, suggestEatery } from "../utils";
 import Toast from "@/components/Toast.vue";
+import DataLoader from "@/components/DataLoader.vue";
 
 export default {
   title: "Meal planner",
   name: "MealPlanner",
   async created() {
     try {
+      this.loadingData = true;
       if (this.$store.state.eateries.length === 0)
         await this.getEateriesAction();
       if (this.meals.length === 0) await this.getMealsAction();
@@ -382,20 +350,23 @@ export default {
       this.loadingDataMessage = error.code;
       this.loadingDataSuccess = false;
     } finally {
-      setTimeout(() => (this.loadingData = false), 1000);
+      this.loadingData = false;
     }
   },
   data() {
     return {
-      loadingData: true,
+      loadingData: false,
       loadingDataMessage: "Checking your meals...",
       loadingDataSuccess: true,
       actionSuccess: false,
       toastMessage: "",
       showToast: false,
-      loadingMeals: false,
+      generatingMeals: false,
       loadingRegenerate: false,
+      loadingServings: false,
       datePickerMenu: false,
+      servingsDialog: [],
+      servingsReveal: [],
       mealsDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
@@ -425,13 +396,12 @@ export default {
     ...mapActions([
       "getAvailableFoodsAction",
       "getMealsAction",
-      "deleteMealAction",
       "addMealAction",
       "updateMealAction",
       "saveAteMealAction",
       "setAllMenusAction",
       "getEateriesAction",
-      "addSuggestedEatery",
+      "addSuggestedEateryAction",
       "deleteSuggestedEateryAction",
     ]),
     formatTime(timeString) {
@@ -442,93 +412,79 @@ export default {
       });
     },
     async generateMeals() {
-      this.loadingMeals = true;
+      try {
+        // Start loading
+        this.generatingMeals = true;
 
-      for (let index = 0; index < this.settings.mealTimes.length; index++) {
-        try {
+        // Generate meals
+        for (let i = 0; i < this.settings.mealTimes.length; i++) {
           // Create the meals
           const meal = generateMeal(
             this.availableFoods,
-            this.settings.mealTimes[index]
+            this.settings.mealTimes[i]
           );
 
           // Uplaod the generated meal to the database
           await this.addMealAction(meal);
 
-          // // Search for eatery
-          // const findEatery = suggestEatery(meal, this.allMenus);
+          // Search for eatery
+          const findEatery = suggestEatery(meal, this.allMenus);
 
-          // // Save the search details if found
-          // if (findEatery) await this.addSuggestedEatery(findEatery);
-
-          this.toastMessage = "Meals created successfully!";
-          this.actionSuccess = true;
-        } catch (error) {
-          this.toastMessage = error.message;
-          this.actionSuccess = false;
-        } finally {
-          this.loadingMeals = false;
-          this.showToast = true;
+          // Save the search details if found
+          if (findEatery) await this.addSuggestedEateryAction(findEatery);
         }
+
+        this.toastMessage = "Meals created successfully!";
+        this.actionSuccess = true;
+      } catch (error) {
+        this.toastMessage = error.message;
+        this.actionSuccess = false;
+      } finally {
+        this.generatingMeals = false;
+        this.showToast = true;
       }
     },
     async regenerateMeals() {
-      this.loadingRegenerate = true;
+      try {
+        // Start loading
+        this.loadingRegenerate = true;
 
-      const mealsCopy = [...this.meals];
-
-      // First delete all the meals that exists
-      for (let mealIndex = 0; mealIndex < mealsCopy.length; mealIndex++) {
-        try {
-          await this.deleteMealAction(mealsCopy[mealIndex]);
-          // await this.deleteSuggestedEateryAction(mealsCopy[mealIndex]);
-        } catch (error) {
-          this.loadingRegenerate = false;
-          this.toastMessage = error.code;
-          this.actionSuccess = false;
-          this.showToast = true;
-          return;
-        }
-      }
-
-      // Then create new meals
-      for (let index = 0; index < this.settings.mealTimes.length; index++) {
-        try {
+        // Generate new meals
+        for (let index = 0; index < this.settings.mealTimes.length; index++) {
           const meal = generateMeal(
             this.availableFoods,
             this.settings.mealTimes[index]
           );
 
-          // Uplaod the generated meal to the database
-          await this.addMealAction(meal);
+          await this.updateMealAction(meal);
 
-          // Find an eatery
           const findEatery = suggestEatery(meal, this.allMenus);
-          if (findEatery) await this.addSuggestedEatery(findEatery);
-        } catch (error) {
-          this.toastMessage = error.code;
-          this.actionSuccess = false;
-          return;
+          if (findEatery) await this.addSuggestedEateryAction(findEatery);
         }
+
+        this.toastMessage = "Meals regenerated successfully!";
+        this.actionSuccess = true;
+      } catch (error) {
+        this.toastMessage = error.code;
+        this.actionSuccess = false;
+      } finally {
+        this.loadingRegenerate = false;
+        this.showToast = true;
       }
-
-      this.loadingRegenerate = false;
-      this.toastMessage = "Meals regenerated successfully!";
-      this.actionSuccess = true;
-      this.showToast = true;
     },
-    async saveServings(meal) {
+    async saveServings(meal, index) {
       try {
+        this.loadingServings = true;
         await this.updateMealAction(meal);
-
         this.toastMessage = "Servings saved successfully!";
         this.actionSuccess = true;
       } catch (error) {
         this.toastMessage = error.code;
         this.actionSuccess = false;
       } finally {
+        this.loadingServings = false;
+        this.$set(this.servingsDialog, index, false);
         this.showToast = true;
-        meal.servingsDialog = false;
       }
     },
     regenerateMeal(id) {
@@ -550,6 +506,13 @@ export default {
   },
   components: {
     Toast,
+    DataLoader,
+  },
+  watch: {
+    "$store.state.meals": function (meals) {
+      this.servingsDialog = meals.map(() => false);
+      this.servingsReveal = meals.map(() => false);
+    },
   },
 };
 </script>

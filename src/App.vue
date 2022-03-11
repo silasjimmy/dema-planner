@@ -2,7 +2,15 @@
   <v-app v-cloak>
     <!-- Home app bar -->
     <v-app-bar app elevate-on-scroll v-if="!viewDashboard">
-      <v-toolbar-title class="font-weight-bold">Dema</v-toolbar-title>
+      <v-toolbar-title>
+        <v-btn text rounded>
+          <v-img
+            :width="logoWidth"
+            height="auto"
+            src="./assets/logo-text.svg"
+          ></v-img>
+        </v-btn>
+      </v-toolbar-title>
 
       <v-spacer></v-spacer>
 
@@ -634,6 +642,9 @@ export default {
 
         // Go to log in page
         this.$router.replace({ name: "sign-in" });
+
+        // Clear the store data
+        location.reload();
       } catch (error) {
         console.log(error);
       }
@@ -655,6 +666,18 @@ export default {
     },
     pageLoadOverlay() {
       return this.$store.state.pageLoading;
+    },
+    logoWidth() {
+      switch (this.$vuetify.breakpoint.name) {
+        case "xs":
+          return "35px";
+        case "sm":
+          return "40px";
+        case "lg":
+          return "60px";
+        default:
+          return "70px";
+      }
     },
   },
   components: { MealsInfo },

@@ -178,95 +178,94 @@
           </v-dialog>
         </v-list-item>
 
-        <!-- <v-divider></v-divider>
+        <v-divider v-if="$store.state.role === 'consumer'"></v-divider>
 
-        <v-subheader>Preferences</v-subheader> -->
+        <v-subheader v-if="$store.state.role === 'consumer'"
+          >Preferences
+        </v-subheader>
 
-        <!-- Meal add/delete -->
-        <!-- <v-list-item three-line>
-          <v-list-item-content>
-            <v-list-item-title>Meals</v-list-item-title>
-            <v-list-item-subtitle
-              >Add, edit or delete meal time</v-list-item-subtitle
-            >
-            <v-list-item-subtitle class="text-center">
-              <v-chip
-                close
-                class="mt-2 mr-2 mb-0"
-                :input-value="mealTimeDialog"
-                @click="editMealTime(mealTime)"
-                close-icon="mdi-delete"
-                @click:close="deleteMealTime(mealTime)"
-                v-for="mealTime in settings.mealTimes"
-                :key="mealTime.id"
-              >
-                <v-avatar left color="success">
-                  <span class="white--text text-h5">{{
-                    mealTime.name[0]
-                  }}</span>
-                </v-avatar>
-                <span>{{ formatTime(mealTime.time) }}</span>
-              </v-chip>
+        <!-- Meal time edit -->
+        <v-list-item v-if="$store.state.role === 'consumer'">
+          <v-list-item-content class="pt-0">
+            <v-container>
+              <v-row justify="center">
+                <v-expansion-panels accordion flat>
+                  <v-expansion-panel
+                    v-for="(mealTime, index) in settings.mealTimes"
+                    :key="mealTime.id"
+                  >
+                    <v-expansion-panel-header class="py-0 pl-0 pr-2">
+                      <v-list-item two-line class="px-0">
+                        <v-list-item-content>
+                          <v-list-item-title>
+                            {{ mealTime.name }}
+                          </v-list-item-title>
+                          <v-list-item-subtitle>
+                            {{ formatTime(mealTime.time) }}
+                          </v-list-item-subtitle>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content class="text-center">
+                      <v-dialog width="400px" v-model="mealTimesDialog[index]">
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn
+                            text
+                            rounded
+                            color="success"
+                            v-on="on"
+                            v-bind="attrs"
+                          >
+                            Edit
+                          </v-btn>
+                        </template>
 
-              <question-prompt
-                :question="'Are you sure you want to delete this meal time?'"
-                :dialog="deleteMealTimeDialog"
-                :overlay="deleteMealTimeOverlay"
-                @cancel="deleteMealTimeCancel"
-                @confirm="deleteMealTimeConfirm"
-              ></question-prompt>
+                        <v-card>
+                          <v-card-title> Edit meal time </v-card-title>
 
-              <v-dialog width="400px" v-model="mealTimeDialog">
-                <v-card>
-                  <v-card-title>
-                    <span>{{ mealTimeAction }} meal time</span>
-                    <v-spacer></v-spacer>
-                    <v-btn icon @click="mealTimeDialog = false">
-                      <v-icon>mdi-close</v-icon>
-                    </v-btn>
-                  </v-card-title>
+                          <v-card-text class="pb-0 pt-2">
+                            <v-text-field
+                              outlined
+                              dense
+                              type="text"
+                              color="success"
+                              label="Name"
+                              prepend-icon="mdi-pizza"
+                              v-model="mealTime.name"
+                            ></v-text-field>
+                            <v-text-field
+                              outlined
+                              dense
+                              type="time"
+                              label="Time"
+                              color="success"
+                              prepend-icon="mdi-clock"
+                              v-model="mealTime.time"
+                            ></v-text-field>
+                          </v-card-text>
 
-                  <v-card-text class="pb-0 pt-2">
-                    <v-text-field
-                      outlined
-                      dense
-                      type="text"
-                      color="success"
-                      label="Name"
-                      prepend-icon="mdi-pizza"
-                      v-model="selectedMealTime.name"
-                    ></v-text-field>
-                    <v-text-field
-                      outlined
-                      dense
-                      type="time"
-                      label="Time"
-                      color="success"
-                      prepend-icon="mdi-clock"
-                      v-model="selectedMealTime.time"
-                    ></v-text-field>
-                  </v-card-text>
-
-                  <v-card-actions class="justify-center">
-                    <v-btn text rounded @click="saveMealTime" color="success"
-                      >Save</v-btn
-                    >
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
-            </v-list-item-subtitle>
+                          <v-card-actions class="justify-center">
+                            <v-btn
+                              text
+                              rounded
+                              @click="$set(mealTimesDialog, index, false)"
+                              color="success"
+                              >close</v-btn
+                            >
+                          </v-card-actions>
+                        </v-card>
+                      </v-dialog>
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
+                </v-expansion-panels>
+              </v-row>
+            </v-container>
           </v-list-item-content>
+        </v-list-item>
 
-          <v-list-item-action>
-            <v-btn icon @click="addMealTime">
-              <v-icon>mdi-plus</v-icon>
-            </v-btn>
-          </v-list-item-action>
-        </v-list-item> -->
+        <!-- <v-divider></v-divider> -->
 
-        <v-divider></v-divider>
-
-        <v-subheader>Advanced</v-subheader>
+        <!-- <v-subheader>Advanced</v-subheader> -->
         <!-- Email change -->
         <!-- <v-list-item two-line>
           <v-list-item-content>
@@ -310,8 +309,9 @@
             </v-card>
           </v-dialog>
         </v-list-item> -->
+
         <!-- Delete account -->
-        <v-list-item two-line>
+        <!-- <v-list-item two-line>
           <v-list-item-content>
             <v-list-item-title>Delete account</v-list-item-title>
             <v-list-item-subtitle
@@ -325,15 +325,27 @@
             </v-btn>
           </v-list-item-action>
 
-          <!-- Account delete dialog -->
           <question-prompt
             :question="'Are you sure you want to delete your account?'"
             :dialog="deleteAccountDialog"
             :overlay="deleteAccountOverlay"
-            @cancel="deleteAccountCancel"
+            @cancel="deleteAccountDialog = false"
             @confirm="deleteAccountConfirm"
           ></question-prompt>
-        </v-list-item>
+
+          <v-dialog persistent v-model="reauthenticateDialog" width="auto">
+            <v-card>
+              <v-card-subtitle class="py-4"
+                >Log out and log in again to continue.</v-card-subtitle
+              >
+              <v-card-actions class="justify-center pt-0">
+                <v-btn text rounded color="success" @click="reauthenticate"
+                  >ok</v-btn
+                >
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-list-item> -->
       </v-list>
     </v-card>
 
@@ -348,9 +360,11 @@
 </template>
 
 <script>
+import { getAuth, signOut, deleteUser } from "firebase/auth";
+import { getStorage, ref, deleteObject } from "firebase/storage";
 import { mapState, mapActions } from "vuex";
 import { format } from "date-fns";
-import QuestionPrompt from "../components/QuestionPrompt.vue";
+// import QuestionPrompt from "../components/QuestionPrompt.vue";
 import Toast from "@/components/Toast.vue";
 
 export default {
@@ -361,28 +375,17 @@ export default {
   },
   data() {
     return {
-      // unsubscribeListener: null,
       showToast: false,
       toastMessage: "",
       actionSuccess: true,
       themeChangeDialog: false,
       languageChangeDialog: false,
       deleteAccountDialog: false,
+      reauthenticateDialog: false,
       emailChangeDialog: false,
       deleteAccountOverlay: false,
-      mealTimeAction: "Add",
-      mealTimeDialog: false,
-      deleteMealTimeDialog: false,
-      deleteMealTimeOverlay: false,
+      mealTimesDialog: [],
       languages: [{ text: "English", value: "english" }],
-      selectedMealTime: {
-        name: "",
-        time: "",
-      },
-      defaultMealTime: {
-        name: "",
-        time: "",
-      },
     };
   },
   watch: {
@@ -401,12 +404,20 @@ export default {
       },
       deep: true,
     },
+    "$store.state.settings": function (settings) {
+      this.mealTimesDialog = settings.mealTimes.map(() => false);
+      console.log(this.mealTimesDialog);
+    },
   },
   computed: {
     ...mapState(["settings"]),
   },
   methods: {
-    ...mapActions(["getSettingsAction", "updateSettingsAction"]),
+    ...mapActions([
+      "getSettingsAction",
+      "updateSettingsAction",
+      "deleteUserDataAction",
+    ]),
     formatTime(time) {
       return format(new Date("1970-1-1 " + time), "HH:mm a");
     },
@@ -420,46 +431,52 @@ export default {
     changeEmail() {
       this.emailChangeDialog = false;
     },
-    deleteAccountCancel() {
-      this.deleteAccountDialog = false;
-    },
-    deleteAccountConfirm() {
-      this.deleteAccountDialog = false;
-    },
-    addMealTime() {
-      this.mealTimeAction = "Add";
-      this.mealTimeDialog = true;
-    },
-    editMealTime(mealTime) {
-      this.selectedMealTime = Object.assign({}, mealTime);
-      this.mealTimeAction = "Edit";
-      this.mealTimeDialog = true;
-    },
-    saveMealTime() {
-      switch (this.mealTimeAction) {
-        case "Add":
-          console.log(this.selectedMealTime);
-          alert("Save a new meal time!");
-          break;
-        case "Edit":
-          alert("Save an existing meal time!");
-          break;
+    async deleteAccountConfirm() {
+      this.deleteAccountOverlay = true;
+
+      // Delete the user avatar
+      const storage = getStorage();
+      const imageRef = ref(
+        storage,
+        `profileAvatars/${this.$store.state.email}/avatar.jpg`
+      );
+      deleteObject(imageRef).catch((error) => console.log(error.code));
+
+      try {
+        // Delete user data from database
+        await this.deleteUserDataAction();
+
+        // Delete user account
+        const auth = getAuth();
+        const user = auth.currentUser;
+        await deleteUser(user);
+
+        this.deleteAccountOverlay = false;
+
+        // Redirect to log in page
+        this.$router.replace({ name: "sign-in" });
+      } catch (error) {
+        console.log(error);
+        this.deleteAccountOverlay = false;
+        this.deleteAccountDialog = false;
+        this.reauthenticateDialog = true;
       }
     },
-    deleteMealTime(mealTime) {
-      this.selectedMealTime = Object.assign({}, mealTime);
-      this.deleteMealTimeDialog = true;
-    },
-    deleteMealTimeCancel() {
-      this.selectedMealTime = JSON.parse(JSON.stringify(this.defaultMealTime));
-      this.deleteMealTimeDialog = false;
-    },
-    deleteMealTimeConfirm() {
-      this.deleteMealTimeDialog = false;
+    async reauthenticate() {
+      this.reauthenticateDialog = false;
+
+      try {
+        const auth = getAuth();
+        await signOut(auth);
+
+        this.$router.replace({ name: "sign-in" });
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
   components: {
-    QuestionPrompt,
+    // QuestionPrompt,
     Toast,
   },
 };

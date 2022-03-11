@@ -1,20 +1,36 @@
 <template>
   <v-container fluid>
     <v-card outlined class="rounded-lg">
-      <!-- Consumer profile view -->
-      <v-list subheader two-line v-if="$store.state.role === 'consumer'">
+      <v-list subheader>
         <v-list-item three-line>
           <v-list-item-avatar tile size="60" class="rounded-circle">
             <v-img :src="profile.imageUrl"></v-img>
           </v-list-item-avatar>
           <v-list-item-content>
-            <v-list-item-title class="font-weight-medium">{{
-              profile.name
-            }}</v-list-item-title>
-            <v-list-item-subtitle class="text--primary"
-              >{{ age() }} years old</v-list-item-subtitle
+            <v-list-item-title class="font-weight-medium">
+              {{ profile.name }}
+            </v-list-item-title>
+            <v-list-item-subtitle
+              class="text--primary"
+              v-if="$store.state.role === 'consumer'"
             >
-            <v-list-item-subtitle>{{ profile.gender }}</v-list-item-subtitle>
+              {{ age() }} years old
+            </v-list-item-subtitle>
+            <v-list-item-subtitle v-if="$store.state.role === 'consumer'">
+              {{ profile.gender }}
+            </v-list-item-subtitle>
+            <v-list-item-subtitle v-if="$store.state.role === 'eatery'">
+              Eatery settings
+            </v-list-item-subtitle>
+            <v-list-item-subtitle v-if="$store.state.role === 'admin'">
+              CEO and Founder
+            </v-list-item-subtitle>
+            <v-list-item-subtitle
+              class="text-capitalize"
+              v-if="$store.state.role === 'admin'"
+            >
+              {{ profile.role }}
+            </v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>
             <v-btn icon @click="editProfile = true">
@@ -24,11 +40,10 @@
         </v-list-item>
 
         <!-- Location -->
-        <v-list-item>
+        <v-list-item two-line>
           <v-list-item-avatar>
             <v-icon> mdi-map-marker </v-icon>
           </v-list-item-avatar>
-
           <v-list-item-content>
             <v-list-item-title>Location</v-list-item-title>
             <v-list-item-subtitle
@@ -36,6 +51,7 @@
             >
           </v-list-item-content>
         </v-list-item>
+
         <!-- 
         <v-divider inset class="my-3"></v-divider>
 
@@ -349,47 +365,6 @@
             >
           </v-list-item-content>
         </v-list-item> -->
-      </v-list>
-
-      <!-- Eatery profile view -->
-      <v-img
-        v-if="$store.state.role === 'eatery'"
-        class="white--text align-end"
-        height="200px"
-        :src="profile.imageUrl"
-        gradient="to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7)"
-      >
-        <v-list-item two-line>
-          <v-list-item-content>
-            <v-list-item-title class="text-h5 text-capitalize white--text">{{
-              profile.name
-            }}</v-list-item-title>
-            <v-list-item-subtitle class="grey--text text--lighten-2"
-              >Eatery ratings</v-list-item-subtitle
-            >
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-btn icon @click="editProfile = true">
-              <v-icon color="white">mdi-pencil</v-icon>
-            </v-btn>
-          </v-list-item-action>
-        </v-list-item>
-      </v-img>
-
-      <v-list subheader two-line v-if="$store.state.role === 'eatery'">
-        <!-- Location -->
-        <v-list-item>
-          <v-list-item-avatar>
-            <v-icon> mdi-map-marker </v-icon>
-          </v-list-item-avatar>
-
-          <v-list-item-content>
-            <v-list-item-title>Location</v-list-item-title>
-            <v-list-item-subtitle
-              >{{ profile.town }}, {{ profile.country }}</v-list-item-subtitle
-            >
-          </v-list-item-content>
-        </v-list-item>
       </v-list>
     </v-card>
 

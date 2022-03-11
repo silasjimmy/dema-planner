@@ -116,10 +116,10 @@
                   </v-list-item-action>
                 </v-list-item>
 
-                <v-divider></v-divider>
+                <v-divider class="d-none"></v-divider>
 
                 <!-- Send message button -->
-                <v-list-item class="justify-center">
+                <v-list-item class="justify-center d-none">
                   <v-btn text rounded color="success">
                     <v-icon left>mdi-message-text</v-icon>
                     Send a message
