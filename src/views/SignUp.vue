@@ -1,107 +1,105 @@
 <template>
-  <v-sheet class="d-flex flex-column align-center justify-center" height="100%">
-    <v-card flat class="rounded-lg mx-auto" :width="cardWidth">
-      <v-card-title class="justify-center text-h5 text-md-h4 font-weight-bold"
-        >Get started!</v-card-title
-      >
-      <v-card-subtitle
-        class="text-center subtitle-2 text-md-subtitle-1 font-weight-regular"
-        >Create an account to continue</v-card-subtitle
-      >
+  <v-card flat class="rounded-lg mx-auto my-8" :width="cardWidth">
+    <v-card-title class="justify-center text-h5 text-md-h4 font-weight-bold"
+      >Get started!</v-card-title
+    >
+    <v-card-subtitle
+      class="text-center subtitle-2 text-md-subtitle-1 font-weight-regular"
+      >Create an account to continue</v-card-subtitle
+    >
 
-      <v-card-text class="text-center py-2">
-        <!-- Action alert -->
-        <v-alert
-          text
-          dismissible
+    <v-card-text class="text-center py-2">
+      <!-- Action alert -->
+      <v-alert
+        text
+        dismissible
+        dense
+        v-model="showAlert"
+        transition="scale-transition"
+        :type="actionSuccess ? 'success' : 'error'"
+        :icon="actionSuccess ? 'mdi-account-check' : 'mdi-account-alert'"
+        class="rounded-lg"
+      >
+        {{ alertMessage }}
+      </v-alert>
+
+      <v-form ref="signUpForm" lazy-validation>
+        <!-- Email address field -->
+        <v-text-field
           dense
-          v-model="showAlert"
-          transition="scale-transition"
-          :type="actionSuccess ? 'success' : 'error'"
-          :icon="actionSuccess ? 'mdi-account-check' : 'mdi-account-alert'"
-          class="rounded-lg"
-        >
-          {{ alertMessage }}
-        </v-alert>
-
-        <v-form ref="signUpForm" lazy-validation>
-          <!-- Email address field -->
-          <v-text-field
-            dense
-            outlined
-            clearable
-            single-line
-            rounded
-            :rules="[rules.required]"
-            placeholder="example@domain.com"
-            color="success"
-            prepend-icon="mdi-email"
-            v-model="email"
-            label="Email address"
-            type="email"
-          ></v-text-field>
-
-          <!-- Password field -->
-          <v-text-field
-            dense
-            outlined
-            clearable
-            rounded
-            single-line
-            :rules="[rules.required]"
-            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-            @click:append="() => (showPassword = !showPassword)"
-            color="success"
-            prepend-icon="mdi-lock"
-            v-model="password"
-            label="Password"
-            :type="showPassword ? 'text' : 'password'"
-          ></v-text-field>
-
-          <!-- Submit button -->
-          <v-btn
-            rounded
-            :loading="emailSignUpLoad"
-            @click="emailSignUp"
-            color="success"
-            class="text-none"
-            >Create</v-btn
-          >
-        </v-form>
-
-        <!-- Log in link -->
-        <v-btn text rounded link to="/sign-in" class="text-none mt-4">
-          Already have an account?
-          <span class="success--text"> Log in</span>
-        </v-btn>
-      </v-card-text>
-
-      <v-card-subtitle
-        class="text-center subtitle-2 text-md-subtitle-1 font-weight-regular"
-        >or sign up with...</v-card-subtitle
-      >
-
-      <v-card-actions class="justify-center">
-        <!-- Google sign up button -->
-        <v-btn
           outlined
-          color="grey"
-          class="rounded-lg"
-          :loading="googleSignUpLoad"
-          @click="googleSignUp"
+          clearable
+          single-line
+          rounded
+          :rules="[rules.required]"
+          placeholder="example@domain.com"
+          color="success"
+          prepend-icon="mdi-email"
+          v-model="email"
+          label="Email address"
+          type="email"
+        ></v-text-field>
+
+        <!-- Password field -->
+        <v-text-field
+          dense
+          outlined
+          clearable
+          rounded
+          single-line
+          :rules="[rules.required]"
+          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+          @click:append="() => (showPassword = !showPassword)"
+          color="success"
+          prepend-icon="mdi-lock"
+          v-model="password"
+          label="Password"
+          :type="showPassword ? 'text' : 'password'"
+        ></v-text-field>
+
+        <!-- Submit button -->
+        <v-btn
+          rounded
+          :loading="emailSignUpLoad"
+          @click="emailSignUp"
+          color="success"
+          class="text-none"
+          >Create</v-btn
         >
-          <v-img
-            width="20px"
-            height="20px"
-            src="../assets/icons/google.svg"
-          ></v-img>
-          <span class="text-capitalize grey--text text--darken-4 ml-2"
-            >Google</span
-          >
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-sheet>
+      </v-form>
+
+      <!-- Log in link -->
+      <v-btn text rounded link to="/sign-in" class="text-none mt-4">
+        Already have an account?
+        <span class="success--text"> Log in</span>
+      </v-btn>
+    </v-card-text>
+
+    <v-card-subtitle
+      class="text-center subtitle-2 text-md-subtitle-1 font-weight-regular"
+      >or sign up with...</v-card-subtitle
+    >
+
+    <v-card-actions class="justify-center">
+      <!-- Google sign up button -->
+      <v-btn
+        outlined
+        color="grey"
+        class="rounded-lg"
+        :loading="googleSignUpLoad"
+        @click="googleSignUp"
+      >
+        <v-img
+          width="20px"
+          height="20px"
+          src="../assets/icons/google.svg"
+        ></v-img>
+        <span class="text-capitalize grey--text text--darken-4 ml-2"
+          >Google</span
+        >
+      </v-btn>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>
