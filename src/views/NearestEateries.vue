@@ -109,7 +109,7 @@ export default {
       this.loadingDataMessage = error.code;
       this.loadingDataSuccess = false;
     } finally {
-      setTimeout(() => (this.loadingData = false), 1000);
+      this.loadingData = false;
     }
   },
   data() {

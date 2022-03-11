@@ -86,14 +86,15 @@
             <v-tooltip
               left
               :open-on-hover="false"
+              :open-on-focus="false"
               color="transparent"
-              v-model="eateryTooltips[index]"
             >
-              <template v-slot:activator="{}">
-                <v-btn icon @click="openTooltip(index)">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon v-bind="attrs" v-on="on">
                   <v-icon size="18px"> mdi-information </v-icon>
                 </v-btn>
               </template>
+
               <v-simple-table dense dark>
                 <template v-slot:default>
                   <thead>
@@ -107,10 +108,10 @@
                       <td>{{ food.name }}</td>
                       <td>{{ food.cost }}</td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                       <td>Total</td>
                       <td>100</td>
-                    </tr>
+                    </tr> -->
                   </tbody>
                 </template>
               </v-simple-table>
@@ -148,7 +149,6 @@ export default {
       loadingData: true,
       loadingDataSuccess: true,
       loadingDataMessage: "Loading...",
-      eateryTooltips: [],
       tooltipAction: [],
       chartOptions: {
         chartArea: {
@@ -169,10 +169,6 @@ export default {
   },
   methods: {
     ...mapActions(["getSuggestedEateriesAction", "getMealsAction"]),
-    openTooltip(index) {
-      this.eateryTooltips = this.suggestedEateries.map(() => false);
-      this.$set(this.eateryTooltips, index, true);
-    },
   },
   computed: {
     ...mapState(["meals", "suggestedEateries"]),
@@ -196,11 +192,6 @@ export default {
     },
     calories() {
       return this.calculateCaloricContent();
-    },
-  },
-  watch: {
-    "$store.state.suggestedEateries": function (eateries) {
-      this.eateryTooltips = eateries.map(() => false);
     },
   },
   components: {

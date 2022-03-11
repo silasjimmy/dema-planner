@@ -69,6 +69,7 @@
                   <v-btn
                     fab
                     small
+                    :disabled="meals.length === 0"
                     :loading="loadingRegenerate"
                     color="success"
                     v-bind="attrs"
@@ -280,6 +281,7 @@
                             <v-btn
                               text
                               rounded
+                              :loading="loadingServings"
                               color="success"
                               @click="saveServings(meal, index)"
                             >
@@ -348,7 +350,7 @@ export default {
       this.loadingDataMessage = error.code;
       this.loadingDataSuccess = false;
     } finally {
-      setTimeout(() => (this.loadingData = false), 1000);
+      this.loadingData = false;
     }
   },
   data() {
@@ -361,6 +363,7 @@ export default {
       showToast: false,
       generatingMeals: false,
       loadingRegenerate: false,
+      loadingServings: false,
       datePickerMenu: false,
       servingsDialog: [],
       servingsReveal: [],
@@ -393,7 +396,6 @@ export default {
     ...mapActions([
       "getAvailableFoodsAction",
       "getMealsAction",
-      "deleteMealAction",
       "addMealAction",
       "updateMealAction",
       "saveAteMealAction",
@@ -447,14 +449,6 @@ export default {
         // Start loading
         this.loadingRegenerate = true;
 
-        // Delete existing meals
-        const mealsCopy = [...this.meals];
-
-        for (let mealIndex = 0; mealIndex < mealsCopy.length; mealIndex++) {
-          await this.deleteMealAction(mealsCopy[mealIndex]);
-          await this.deleteSuggestedEateryAction(mealsCopy[mealIndex]);
-        }
-
         // Generate new meals
         for (let index = 0; index < this.settings.mealTimes.length; index++) {
           const meal = generateMeal(
@@ -462,7 +456,7 @@ export default {
             this.settings.mealTimes[index]
           );
 
-          await this.addMealAction(meal);
+          await this.updateMealAction(meal);
 
           const findEatery = suggestEatery(meal, this.allMenus);
           if (findEatery) await this.addSuggestedEateryAction(findEatery);
@@ -480,6 +474,7 @@ export default {
     },
     async saveServings(meal, index) {
       try {
+        this.loadingServings = true;
         await this.updateMealAction(meal);
         this.toastMessage = "Servings saved successfully!";
         this.actionSuccess = true;
@@ -487,6 +482,7 @@ export default {
         this.toastMessage = error.code;
         this.actionSuccess = false;
       } finally {
+        this.loadingServings = false;
         this.$set(this.servingsDialog, index, false);
         this.showToast = true;
       }

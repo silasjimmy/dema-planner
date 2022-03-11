@@ -9,7 +9,7 @@
         >Log in to continue</v-card-subtitle
       >
 
-      <v-card-text class="text-center pt-4">
+      <v-card-text class="text-center py-2">
         <!-- Action alert -->
         <v-alert
           text
@@ -58,6 +58,13 @@
             :type="showPassword ? 'text' : 'password'"
           ></v-text-field>
 
+          <!-- Forgot password link -->
+          <div class="pb-4 d-none">
+            <v-btn text color="success" class="text-none"
+              >Forgot password?</v-btn
+            >
+          </div>
+
           <!-- Submit button -->
           <v-btn
             rounded
@@ -68,25 +75,38 @@
             >Log in</v-btn
           >
         </v-form>
+
+        <!-- Create account link -->
+        <v-btn text rounded link to="/sign-up" class="text-none mt-4">
+          No account?
+          <span class="success--text"> Create one</span>
+        </v-btn>
       </v-card-text>
 
-      <v-card-text class="text-center">
-        <p class="subtitle-2 text-md-subtitle-1 font-weight-regular">
-          Log in with
-        </p>
+      <v-card-subtitle
+        class="text-center subtitle-2 text-md-subtitle-1 font-weight-regular"
+        >or log in with...</v-card-subtitle
+      >
 
+      <v-card-actions class="justify-center">
         <!-- Google sign up button -->
         <v-btn
-          small
-          fab
-          color="red"
-          class="text-none"
+          outlined
+          color="grey"
+          class="rounded-lg"
           :loading="googleSignInLoad"
           @click="googleSignIn"
         >
-          <v-icon small color="white">mdi-google</v-icon>
+          <v-img
+            width="20px"
+            height="20px"
+            src="../assets/icons/google.svg"
+          ></v-img>
+          <span class="text-capitalize grey--text text--darken-4 ml-2"
+            >Google</span
+          >
         </v-btn>
-      </v-card-text>
+      </v-card-actions>
     </v-card>
   </v-sheet>
 </template>
@@ -127,7 +147,7 @@ export default {
         case "lg":
           return "40vw";
         case "md":
-          return "50vw";
+          return "45vw";
         case "sm":
           return "70vw";
         case "xs":
@@ -212,6 +232,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-</style>

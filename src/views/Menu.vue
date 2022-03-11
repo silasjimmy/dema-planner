@@ -1,19 +1,12 @@
 <template>
   <v-container fluid>
     <v-card outlined class="rounded-lg">
-      <v-card-title
-        class="justify-center subtitle-2 text-md-subtitle-1 font-weight-regular"
-        v-if="loadingData"
-        >{{ loadingDataMessage }}</v-card-title
-      >
-      <v-card-text v-if="loadingData">
-        <v-progress-linear
-          :color="loadingDataSuccess ? 'success' : 'error'"
-          :indeterminate="loadingData"
-          rounded
-          height="4"
-        ></v-progress-linear>
-      </v-card-text>
+      <!-- Load foods -->
+      <data-loader
+        :show="loadingData"
+        :message="loadingDataMessage"
+        :success="loadingDataSuccess"
+      ></data-loader>
 
       <v-data-table
         v-if="!loadingData"
@@ -153,14 +146,15 @@
 import { mapState, mapActions, mapGetters } from "vuex";
 import QuestionPrompt from "../components/QuestionPrompt.vue";
 import Toast from "@/components/Toast.vue";
+import DataLoader from "@/components/DataLoader.vue";
 
 export default {
   title: "Menu",
   name: "Menu",
   async created() {
-    this.loadingData = true;
-
     try {
+      this.loadingData = true;
+
       if (this.availableFoods.length === 0)
         await this.getAvailableFoodsAction();
       if (this.menu.length === 0) await this.getMenuAction();
@@ -168,7 +162,7 @@ export default {
       this.loadingDataMessage = error.code;
       this.loadingDataSuccess = false;
     } finally {
-      setTimeout(() => (this.loadingData = false), 1000);
+      this.loadingData = false;
     }
   },
   data() {
@@ -300,6 +294,7 @@ export default {
   components: {
     QuestionPrompt,
     Toast,
+    DataLoader,
   },
 };
 </script>

@@ -178,12 +178,14 @@
           </v-dialog>
         </v-list-item>
 
-        <v-divider></v-divider>
+        <v-divider v-if="$store.state.role === 'consumer'"></v-divider>
 
-        <v-subheader>Preferences </v-subheader>
+        <v-subheader v-if="$store.state.role === 'consumer'"
+          >Preferences
+        </v-subheader>
 
         <!-- Meal time edit -->
-        <v-list-item>
+        <v-list-item v-if="$store.state.role === 'consumer'">
           <v-list-item-content class="pt-0">
             <v-container>
               <v-row justify="center">
@@ -261,9 +263,9 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-divider></v-divider>
+        <!-- <v-divider></v-divider> -->
 
-        <v-subheader>Advanced</v-subheader>
+        <!-- <v-subheader>Advanced</v-subheader> -->
         <!-- Email change -->
         <!-- <v-list-item two-line>
           <v-list-item-content>
@@ -309,7 +311,7 @@
         </v-list-item> -->
 
         <!-- Delete account -->
-        <v-list-item two-line>
+        <!-- <v-list-item two-line>
           <v-list-item-content>
             <v-list-item-title>Delete account</v-list-item-title>
             <v-list-item-subtitle
@@ -323,7 +325,6 @@
             </v-btn>
           </v-list-item-action>
 
-          <!-- Account delete dialog -->
           <question-prompt
             :question="'Are you sure you want to delete your account?'"
             :dialog="deleteAccountDialog"
@@ -332,7 +333,6 @@
             @confirm="deleteAccountConfirm"
           ></question-prompt>
 
-          <!-- Re-authenticate message -->
           <v-dialog persistent v-model="reauthenticateDialog" width="auto">
             <v-card>
               <v-card-subtitle class="py-4"
@@ -345,7 +345,7 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-        </v-list-item>
+        </v-list-item> -->
       </v-list>
     </v-card>
 
@@ -364,7 +364,7 @@ import { getAuth, signOut, deleteUser } from "firebase/auth";
 import { getStorage, ref, deleteObject } from "firebase/storage";
 import { mapState, mapActions } from "vuex";
 import { format } from "date-fns";
-import QuestionPrompt from "../components/QuestionPrompt.vue";
+// import QuestionPrompt from "../components/QuestionPrompt.vue";
 import Toast from "@/components/Toast.vue";
 
 export default {
@@ -476,7 +476,7 @@ export default {
     },
   },
   components: {
-    QuestionPrompt,
+    // QuestionPrompt,
     Toast,
   },
 };

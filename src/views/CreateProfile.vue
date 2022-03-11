@@ -93,7 +93,6 @@
                         <v-text-field
                           dense
                           outlined
-                          readonly
                           :rules="[rules.required]"
                           v-model="consumerProfile.town"
                           label="City"
@@ -107,7 +106,6 @@
                         <v-text-field
                           dense
                           outlined
-                          readonly
                           :rules="[rules.required]"
                           v-model="consumerProfile.country"
                           label="Country"
@@ -543,7 +541,6 @@
                         <v-text-field
                           dense
                           outlined
-                          readonly
                           v-model="eateryProfile.town"
                           label="Town"
                           color="success"
@@ -556,7 +553,6 @@
                         <v-text-field
                           dense
                           outlined
-                          readonly
                           v-model="eateryProfile.country"
                           label="Country"
                           color="success"

@@ -1,59 +1,70 @@
 <template>
   <v-container fluid>
-    <v-card outlined class="rounded-lg">
-      <!-- Food data table -->
-      <v-data-table
-        divider
-        :loading="allFoods.length === 0"
-        loading-text="Fetching the foods... Please wait"
-        item-key="name"
-        :headers="headers"
-        :items="allFoods"
-        :items-per-page="5"
-        :search="searchFood"
-        sort-by="name"
-      >
-        <template v-slot:top>
-          <v-toolbar flat class="rounded-lg">
-            <!-- Search food field -->
-            <v-text-field
-              hide-details
-              outlined
-              dense
-              single-line
-              class="shrink"
-              v-model="searchFood"
-              append-icon="mdi-magnify"
-              label="Search for food..."
-              color="green"
-            ></v-text-field>
+    <v-card flat>
+      <!-- Load foods -->
+      <data-loader
+        :show="loadingData"
+        :message="loadingDataMessage"
+        :success="loadingDataSuccess"
+      ></data-loader>
 
-            <v-spacer></v-spacer>
+      <v-card-text v-if="!loadingData">
+        <!-- Food data table -->
+        <v-data-table
+          divider
+          item-key="name"
+          :headers="headers"
+          :items="allFoods"
+          :items-per-page="5"
+          :search="searchFood"
+          sort-by="name"
+        >
+          <template v-slot:top>
+            <v-toolbar flat class="rounded-lg">
+              <!-- Search food field -->
+              <v-text-field
+                hide-details
+                outlined
+                dense
+                single-line
+                class="shrink"
+                v-model="searchFood"
+                append-icon="mdi-magnify"
+                label="Search for food..."
+                color="green"
+              ></v-text-field>
 
-            <!-- Add food button -->
-            <v-btn rounded text color="success" @click="addNewFood">
-              <v-icon left>mdi-plus</v-icon>
-              Add food
+              <v-spacer></v-spacer>
+
+              <!-- Add food button -->
+              <v-btn
+                rounded
+                class="text-none"
+                color="success"
+                @click="addNewFood"
+              >
+                Add food
+              </v-btn>
+            </v-toolbar>
+          </template>
+
+          <template v-slot:[`item.nutrient`]="{ item }">
+            <span class="text-capitalize">{{ item.nutrient.name }}</span>
+          </template>
+
+          <template v-slot:[`item.actions`]="{ item }">
+            <v-btn icon @click="editFood(item)">
+              <v-icon small> mdi-pencil </v-icon>
             </v-btn>
-          </v-toolbar>
-        </template>
-
-        <template v-slot:[`item.nutrient`]="{ item }">
-          <span class="text-capitalize">{{ item.nutrient.name }}</span>
-        </template>
-
-        <template v-slot:[`item.actions`]="{ item }">
-          <v-btn icon @click="editFood(item)">
-            <v-icon small> mdi-pencil </v-icon>
-          </v-btn>
-          <v-btn icon @click="deleteFood(item)">
-            <v-icon small> mdi-delete </v-icon>
-          </v-btn>
-          <v-btn icon @click="vieFoodDetails(item)">
-            <v-icon small>mdi-information</v-icon>
-          </v-btn>
-        </template>
-      </v-data-table>
+            <v-btn icon @click="deleteFood(item)">
+              <v-icon small> mdi-delete </v-icon>
+            </v-btn>
+            <v-btn icon @click="vieFoodDetails(item)">
+              <v-icon small>mdi-information</v-icon>
+            </v-btn>
+          </template>
+        </v-data-table>
+      </v-card-text>
 
       <!-- Add food form dialog -->
       <food-form
@@ -103,16 +114,29 @@ import FoodForm from "@/components/FoodForm.vue";
 import Toast from "@/components/Toast.vue";
 import FoodDetails from "../components/FoodDetails.vue";
 import QuestionPrompt from "../components/QuestionPrompt.vue";
+import DataLoader from "@/components/DataLoader.vue";
 import { mapState, mapActions } from "vuex";
+import { getCounter, updateCounter } from "../utils";
 
 export default {
   title: "Foods",
   name: "Foods",
   async created() {
-    if (this.allFoods.length === 0) await this.getAllFoodsAction();
+    try {
+      this.loadingData = true;
+      if (this.allFoods.length === 0) await this.getAllFoodsAction();
+    } catch (error) {
+      this.loadingDataMessage = error.code;
+      this.loadingDataSuccess = false;
+    } finally {
+      this.loadingData = false;
+    }
   },
   data() {
     return {
+      loadingData: false,
+      loadingDataMessage: "Fetching foods...",
+      loadingDataSuccess: true,
       foodImg: undefined,
       foodFormDialog: false,
       foodAction: "new",
@@ -263,12 +287,16 @@ export default {
         try {
           if (this.foodAction === "new") {
             // Set the food id
-            this.selectedFood.id = this.allFoods.length;
+            const foodId = await getCounter("foods");
+            this.selectedFood.id = foodId;
 
             // Add new food
             this.addFoodAction(this.selectedFood);
             this.toastMessage = "Food added successfully!";
             this.actionSuccess = true;
+
+            // Update counter
+            await updateCounter("foods", { last: foodId + 1 });
           } else {
             // Edit food
             await this.updateFoodAction(this.selectedFood);
@@ -320,6 +348,7 @@ export default {
     FoodDetails,
     FoodForm,
     Toast,
+    DataLoader,
   },
 };
 </script>

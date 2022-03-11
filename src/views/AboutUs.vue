@@ -156,6 +156,3 @@ export default {
   title: "About us",
 };
 </script>
-
-<style>
-</style>
