@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 import { sortMessages, sortNotifications } from '../utils'
+import { differenceInDays } from "date-fns";
 import {
   doc,
   getDoc,
@@ -210,12 +211,26 @@ export default new Vuex.Store({
       await setDoc(docRef, settings, { merge: true });
       commit('setSettings', settings)
     },
-    async getMealsAction({ commit, state }) {
+    async getMealsAction({ commit, state, dispatch }) {
       const db = getFirestore();
       const docRef = collection(db, `users/${state.email}/meals`)
       const snapShot = await getDocs(docRef)
       const meals = snapShot.docs.map(doc => doc.data())
-      commit('setMeals', meals);
+
+      if (meals.length > 0) {
+        const daysPassed = differenceInDays(new Date(), meals[0].created.toDate())
+
+        if (daysPassed > 0) {
+          for (let index = 0; index < meals.length; index++) {
+            // Delete the meal
+            await dispatch('deleteMealAction', meals[index])
+            // Delete the suggested eatery
+            await dispatch('deleteSuggestedEateryAction', meals[index])
+          }
+
+          commit('setMeals', []);
+        } else commit('setMeals', meals);
+      } else commit('setMeals', []);
     },
     async getAvailableFoodsAction({ commit, state }) {
       // Get the foods from the database
@@ -248,6 +263,11 @@ export default new Vuex.Store({
       const docRef = doc(db, `users/${state.email}/meals/meal${meal.id}`)
       await setDoc(docRef, meal, { merge: true })
       commit('addMeal', meal)
+    },
+    async deleteMealAction({ state }, meal) {
+      const db = getFirestore();
+      const docRef = doc(db, `users/${state.email}/meals/meal${meal.id}`)
+      await deleteDoc(docRef)
     },
     async updateMealAction({ commit, state }, meal) {
       const db = getFirestore()
@@ -396,11 +416,6 @@ export default new Vuex.Store({
       // Sort the notifications according to created time
       const sortedNotifications = sortNotifications(notifications)
       commit('setNotifications', sortedNotifications)
-    },
-    async deleteUserDataAction({ state }) {
-      const db = getFirestore()
-      const docRef = doc(db, `users/${state.email}`)
-      await deleteDoc(docRef)
     },
   },
   getters: {

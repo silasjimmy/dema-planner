@@ -1,44 +1,31 @@
 <template>
   <v-app v-cloak>
-    <!-- Home app bar -->
-    <v-app-bar app elevate-on-scroll v-if="!viewDashboard">
-      <v-toolbar-title>
-        <v-btn text rounded>
-          <v-img
-            :width="logoWidth"
-            height="auto"
-            src="./assets/logo-text.svg"
-          ></v-img>
-        </v-btn>
-      </v-toolbar-title>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        outlined
-        rounded
-        link
-        :small="$vuetify.breakpoint.smAndDown"
-        to="/sign-in"
-        color="success"
-        class="text-none"
-        >Log in</v-btn
-      >
-    </v-app-bar>
-
-    <!-- Dashboard app bar -->
-    <v-app-bar app elevate-on-scroll v-if="viewDashboard">
+    <!-- App bar -->
+    <v-app-bar app elevate-on-scroll>
+      <!-- Meal info drawer activator -->
       <v-app-bar-nav-icon
         class="d-sm-none"
+        v-if="viewDashboard"
         @click="rightSidenav = true"
       ></v-app-bar-nav-icon>
 
-      <!-- Page title -->
-      <v-toolbar-title class="subtitle-1 text-md-h6 font-weight-medium">
-        {{ $store.state.pageTitle }}
+      <v-toolbar-title>
+        {{ viewDashboard ? `${$store.state.pageTitle}` : "Dema" }}
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
+
+      <!-- Log in button -->
+      <v-btn
+        link
+        outlined
+        active-class="success white--text"
+        :small="$vuetify.breakpoint.smAndDown"
+        to="/sign-in"
+        class="text-none"
+        v-if="!viewDashboard"
+        >Sign in</v-btn
+      >
 
       <!-- Extra links menu -->
       <v-menu
@@ -46,14 +33,12 @@
         offset-y
         min-width="200px"
         transition="slide-y-transition"
-        v-if="$vuetify.breakpoint.xs"
+        v-if="$vuetify.breakpoint.xs && viewDashboard"
       >
         <template v-slot:activator="{ on }">
-          <v-btn icon class="mr-1" v-on="on">
-            <v-avatar size="36">
-              <img :src="profile.imageUrl" :alt="profile.name" />
-            </v-avatar>
-          </v-btn>
+          <v-avatar size="36" class="mr-1" v-on="on">
+            <img :src="profile.imageUrl" :alt="profile.name" />
+          </v-avatar>
         </template>
 
         <v-card>
@@ -109,7 +94,7 @@
       </v-menu>
 
       <!-- Notifications menu -->
-      <v-menu
+      <!-- <v-menu
         bottom
         left
         offset-y
@@ -141,7 +126,6 @@
           <v-tab class="text-none font-weight-medium">Notifications</v-tab>
           <v-tab class="text-none font-weight-medium">Messages</v-tab>
 
-          <!-- Notifications tab -->
           <v-tab-item>
             <p
               v-if="!notifications"
@@ -179,7 +163,6 @@
                     </template>
                   </v-list-item>
 
-                  <!-- Notification divider -->
                   <v-divider
                     v-if="index < notifications.length - 1"
                     :key="index"
@@ -203,7 +186,6 @@
             </v-card>
           </v-tab-item>
 
-          <!-- Messages tab -->
           <v-tab-item>
             <p
               v-if="!messages"
@@ -249,7 +231,6 @@
                     </template>
                   </v-list-item>
 
-                  <!-- Message divider -->
                   <v-divider
                     inset
                     v-if="index < message.length - 1"
@@ -274,7 +255,7 @@
             </v-card>
           </v-tab-item>
         </v-tabs>
-      </v-menu>
+      </v-menu> -->
     </v-app-bar>
 
     <!-- Dashboard left-side navigation bar -->
@@ -678,6 +659,11 @@ export default {
         default:
           return "70px";
       }
+    },
+  },
+  watch: {
+    "$store.state.settings": function (settings) {
+      this.$vuetify.theme.dark = settings.appTheme === "dark";
     },
   },
   components: { MealsInfo },
