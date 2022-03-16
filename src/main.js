@@ -7,6 +7,8 @@ import titleMixin from './mixins/titleMixin'
 import { firestorePlugin } from 'vuefire'
 import { initializeApp } from "firebase/app";
 import VueGoogleCharts from 'vue-google-charts'
+import i18n from './i18n'
+import FlagIcon from 'vue-flag-icon';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -27,6 +29,9 @@ Vue.use(firestorePlugin)
 // Register Google Charts plugin
 Vue.use(VueGoogleCharts)
 
+// Flag icons
+Vue.use(FlagIcon);
+
 // Register title mixin
 Vue.mixin(titleMixin)
 
@@ -36,5 +41,6 @@ new Vue({
   router,
   store,
   vuetify,
+  i18n,
   render: h => h(App)
 }).$mount('#app')

@@ -256,6 +256,13 @@
           </v-tab-item>
         </v-tabs>
       </v-menu> -->
+
+      <!-- Language change button -->
+      <v-btn text small class="mx-2">
+        <flag iso="us" />
+        <span class="ml-3">EN</span>
+        <v-icon right>mdi-chevron-down</v-icon>
+      </v-btn>
     </v-app-bar>
 
     <!-- Dashboard left-side navigation bar -->
@@ -590,6 +597,7 @@ export default {
       notificationsMenu: false,
       isOnline: true,
       showBanner: false,
+      languages: [{ flag: "us", language: "en", title: "En" }],
       scrollOptions: {
         duration: 400,
         easing: "easeInQuint",
