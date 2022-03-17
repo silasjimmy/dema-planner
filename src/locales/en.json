@@ -1,3 +1,65 @@
 {
-  "message": "hello i18n !!"
+  "home": {
+    "row1": {
+      "title": "Your journey to a healthy lifestyle",
+      "subtitle": "Live longer and happier by planning healthy meals everyday. Explore the vast variety of foods and meals which you never knew about in your region.",
+      "btn": "Get started"
+    },
+    "row2": {
+      "title": {
+        "one": "Eat",
+        "two": "healthier",
+        "three": "with",
+        "four": "Dema"
+      },
+      "subtitle": "Nutrition plays a major role in our lives, despite the stage of life you are in. It is the center of human development, that is why we have put our interest in this field. Diet-related diseases continue to occur every day while the level of physical activity drops. As motivated students, we realized we could change the situation with the use of technology. We decided that prevention measures are much better and it was about time to start educating people on the importance of healthy diets. If you are here that means you want to do something about your health. Before you do, maybe get to know us better.",
+      "btn": "Learn more"
+    },
+    "row3": {
+      "title": {
+        "one": "Why",
+        "two": "Dema",
+        "three": "?"
+      },
+      "subtitle": {
+        "one": {
+          "title": "Balanced diets",
+          "subtitle": "Your body needs different types of nutrients in order to function optimally. With a balanced diet, you get all the nutrients necessary for good health."
+        },
+        "two": {
+          "title": "Local foods",
+          "subtitle": "Get a chance to taste and enjoy all the foods in your region. We make sure that all meals generated are easily available in your area."
+        },
+        "three": {
+          "title": "Nearest eateries",
+          "subtitle": "You don't have time to prepare the meal? Don't worry, we got you. With our eatery suggestions, you can book a seat for any meal in any eatery near you with ease."
+        }
+      }
+    },
+    "row4": {
+      "title": "What we offer",
+      "subtitle": {
+        "one": {
+          "title": "For consumers",
+          "subtitle": {
+            "one": "Plan your daily meals",
+            "two": "Track your nutrient and caloric intake",
+            "three": "Book a seat for a meal in an eatery near you"
+          }
+        },
+        "two": {
+          "title": "For eateries",
+          "subtitle": {
+            "one": "Share your menu with consumers",
+            "two": "Receive and arrange bookings"
+          }
+        }
+      }
+    },
+    "row5": {
+      "title": "Any questions?",
+      "subtitle": "If you have any questions or just want to know more, don't hesitate to get in touch.",
+      "btn": "Contact us"
+    }
+  }
 }

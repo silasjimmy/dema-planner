@@ -9,23 +9,17 @@
         @click="rightSidenav = true"
       ></v-app-bar-nav-icon>
 
+      <!-- Landing pages nav activator -->
+      <v-app-bar-nav-icon
+        v-if="!viewDashboard"
+        @click="homeSideNav = true"
+      ></v-app-bar-nav-icon>
+
       <v-toolbar-title>
         {{ viewDashboard ? `${$store.state.pageTitle}` : "Dema" }}
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
-
-      <!-- Log in button -->
-      <v-btn
-        link
-        outlined
-        active-class="success white--text"
-        :small="$vuetify.breakpoint.smAndDown"
-        to="/sign-in"
-        class="text-none"
-        v-if="!viewDashboard"
-        >Sign in</v-btn
-      >
 
       <!-- Extra links menu -->
       <v-menu
@@ -36,7 +30,7 @@
         v-if="$vuetify.breakpoint.xs && viewDashboard"
       >
         <template v-slot:activator="{ on }">
-          <v-avatar size="36" class="mr-1" v-on="on">
+          <v-avatar size="34" class="mr-1" v-on="on">
             <img :src="profile.imageUrl" :alt="profile.name" />
           </v-avatar>
         </template>
@@ -258,12 +252,83 @@
       </v-menu> -->
 
       <!-- Language change button -->
-      <v-btn text small class="mx-2">
-        <flag iso="us" />
-        <span class="ml-3">EN</span>
-        <v-icon right>mdi-chevron-down</v-icon>
-      </v-btn>
+      <v-menu offset-y>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            text
+            outlined
+            :small="$vuetify.breakpoint.smAndDown"
+            v-bind="attrs"
+            v-on="on"
+            class="mx-2"
+          >
+            <flag :iso="selectedLanguage.flag" />
+            <span class="ml-3">{{ selectedLanguage.language }}</span>
+            <v-icon right>mdi-chevron-down</v-icon>
+          </v-btn>
+        </template>
+
+        <v-list>
+          <v-list-item-group mandatory color="success" v-model="languageIndex">
+            <v-list-item
+              v-for="(lang, index) in languages"
+              :key="index"
+              @click="changeLanguage(lang)"
+            >
+              <v-list-item-title>{{ lang.title }}</v-list-item-title>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </v-menu>
     </v-app-bar>
+
+    <!-- Home navigation drawer -->
+    <v-navigation-drawer app v-if="!viewDashboard" v-model="homeSideNav">
+      <v-list rounded>
+        <v-list-item-group color="success">
+          <v-list-item link to="/home">
+            <v-list-item-icon>
+              <v-icon>mdi-home</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Home</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item link to="/about-us">
+            <v-list-item-icon>
+              <v-icon>mdi-information</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>About us</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item link to="/sign-up">
+            <v-list-item-icon>
+              <v-icon>mdi-account-plus</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Sign up</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item link to="/sign-in">
+            <v-list-item-icon>
+              <v-icon>mdi-login</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Log in</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item link to="/contact-us">
+            <v-list-item-icon>
+              <v-icon>mdi-phone</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Contact us</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </v-navigation-drawer>
 
     <!-- Dashboard left-side navigation bar -->
     <v-navigation-drawer
@@ -441,58 +506,11 @@
     <!-- Footer -->
     <v-footer app absolute padless v-if="!viewDashboard">
       <v-card flat tile color="success" class="white--text" width="100vw">
-        <v-card-text v-if="$vuetify.breakpoint.smAndDown" class="text-center">
-          <v-btn icon plain rounded link class="mx-2" to="/home" color="white">
-            <v-icon>mdi-home</v-icon>
-          </v-btn>
-          <v-btn plain rounded link class="mx-2" to="/about-us" color="white">
-            <v-icon>mdi-information</v-icon>
-          </v-btn>
-          <v-btn
-            icon
-            plain
-            rounded
-            link
-            class="mx-2"
-            to="/contact-us"
-            color="white"
-          >
-            <v-icon>mdi-phone-hangup</v-icon>
-          </v-btn>
-          <v-btn
-            icon
-            plain
-            rounded
-            link
-            class="mx-2"
-            to="/sign-in"
-            color="white"
-          >
-            <v-icon>mdi-login</v-icon>
-          </v-btn>
-          <v-btn
-            icon
-            plain
-            rounded
-            link
-            class="mx-2"
-            to="/sign-up"
-            color="white"
-          >
-            <v-icon>mdi-account-plus</v-icon>
-          </v-btn>
-        </v-card-text>
-
-        <v-card-text v-if="$vuetify.breakpoint.mdAndUp" class="text-center">
-          <v-btn plain rounded link to="/home" color="white">Home</v-btn>
-          <v-btn plain rounded link to="/about-us" color="white"
-            >About us</v-btn
-          >
-          <v-btn plain rounded link to="/contact-us" color="white"
-            >Contact us</v-btn
-          >
-          <v-btn plain rounded link to="/sign-in" color="white">Log in</v-btn>
-          <v-btn plain rounded link to="/sign-up" color="white">Sign up</v-btn>
+        <v-card-text class="text-center">
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eum
+          consequatur temporibus earum minus doloremque. Quae impedit nihil
+          similique sed quibusdam ratione minus, doloribus commodi reprehenderit
+          molestiae excepturi nam repudiandae. Architecto?
         </v-card-text>
 
         <!-- <v-card-text>
@@ -573,17 +591,20 @@ import MealsInfo from "./components/MealsInfo.vue";
 export default {
   name: "App",
   created() {
-    // Inform user of action
-    this.$store.commit("setPageLoadingMessage", "Loading...");
+    // // Inform user of action
+    // this.$store.commit("setPageLoadingMessage", "Loading...");
 
-    // Start loading page
-    this.$store.commit("setPageLoading", true);
+    // // Start loading page
+    // this.$store.commit("setPageLoading", true);
 
     if (!this.$store.state.loggedIn) {
       window.addEventListener("scroll", () => {
         this.scrollYPos = window.scrollY;
       });
     }
+  },
+  mounted() {
+    this.selectedLanguage = this.languages[this.languageIndex];
   },
   data() {
     return {
@@ -594,10 +615,16 @@ export default {
       pageLoadColor: "",
       pageLoadValue: 0,
       rightSidenav: false,
+      homeSideNav: false,
       notificationsMenu: false,
       isOnline: true,
       showBanner: false,
-      languages: [{ flag: "us", language: "en", title: "En" }],
+      languageIndex: 0,
+      selectedLanguage: {},
+      languages: [
+        { flag: "us", language: "en", title: "English" },
+        { flag: "ke", language: "sw", title: "Swahili" },
+      ],
       scrollOptions: {
         duration: 400,
         easing: "easeInQuint",
@@ -605,6 +632,10 @@ export default {
     };
   },
   methods: {
+    changeLanguage(language) {
+      this.selectedLanguage = language;
+      this.$i18n.locale = this.selectedLanguage.language;
+    },
     lastReply(message) {
       return message.replies[message.replies.length - 1];
     },

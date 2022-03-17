@@ -4,16 +4,14 @@
       <v-col cols="12" sm="6">
         <div class="text-center text-sm-left">
           <h1 class="text-h5 text-md-h4 font-weight-bold success--text">
-            Your journey to a healthy lifestyle
+            {{ $t("home.row1.title") }}
           </h1>
           <p class="my-2 subtitle-2 text-md-subtitle-1 font-weight-regular">
-            Live longer and happier by planning healthy meals everyday. Explore
-            the vast variety of foods and meals which you never knew about in
-            your region.
+            {{ $t("home.row1.subtitle") }}
           </p>
-          <v-btn rounded link to="/sign-up" color="success" class="text-none"
-            >Get started</v-btn
-          >
+          <v-btn rounded link to="/sign-up" color="success" class="text-none">{{
+            $t("home.row1.btn")
+          }}</v-btn>
         </div>
       </v-col>
       <v-col cols="12" sm="6">
@@ -27,8 +25,12 @@
     <v-row class="py-sm-4">
       <v-col cols="12" class="pb-0">
         <h1 class="text-h5 text-md-h4 font-weight-bold text-center">
-          Eat <strong class="orange--text">healthier</strong> with
-          <strong class="success--text">Dema</strong>
+          {{ $t("home.row2.title.one") }}
+          <strong class="orange--text">{{ $t("home.row2.title.two") }}</strong>
+          {{ $t("home.row2.title.three") }}
+          <strong class="success--text">
+            {{ $t("home.row2.title.four") }}
+          </strong>
         </h1>
       </v-col>
       <v-col cols="12" sm="10" md="8" lg="6" class="mx-auto">
@@ -41,39 +43,33 @@
             text-center
           "
         >
-          Nutrition plays a major role in our lives, despite the stage of life
-          you are in. It is the center of human development, that is why we have
-          put our interest in this field. Diet-related diseases continue to
-          occur every day while the level of physical activity drops. As
-          motivated students, we realized we could change the situation with the
-          use of technology. We decided that prevention measures are much better
-          and it was about time to start educating people on the importance of
-          healthy diets. If you are here that means you want to do something
-          about your health. Before you do, maybe get to know us better.
+          {{ $t("home.row2.subtitle") }}
         </p>
       </v-col>
       <v-col cols="12" class="text-center pt-0">
-        <v-btn rounded link to="/about-us" color="success" class="text-none"
-          >Learn more</v-btn
-        >
+        <v-btn rounded link to="/about-us" color="success" class="text-none">{{
+          $t("home.row2.btn")
+        }}</v-btn>
       </v-col>
     </v-row>
     <v-row class="py-sm-4">
       <v-col cols="12" class="pb-0">
         <h1 class="text-h5 text-md-h4 font-weight-bold text-center">
-          Why <strong class="success--text">Dema</strong>?
+          {{ $t("home.row3.title.one") }}
+          <strong class="success--text"
+            >{{ $t("home.row3.title.two") }}
+          </strong>
+          {{ $t("home.row3.title.three") }}
         </h1>
       </v-col>
       <v-col cols="12" sm="4">
         <div class="d-flex flex-column align-center text-center">
           <v-icon :size="iconSize" color="success">mdi-food-variant</v-icon>
           <h2 class="text-h6 text-md-h5 font-weight-medium my-1">
-            Balanced diets
+            {{ $t("home.row3.subtitle.one.title") }}
           </h2>
           <p class="ma-0 subtitle-2 text-md-subtitle-1 font-weight-regular">
-            Your body needs different types of nutrients in order to function
-            optimally. With a balanced diet, you get all the nutrients necessary
-            for good health.
+            {{ $t("home.row3.subtitle.one.subtitle") }}
           </p>
         </div>
       </v-col>
@@ -81,12 +77,10 @@
         <div class="d-flex flex-column align-center text-center">
           <v-icon :size="iconSize" color="success">mdi-noodles</v-icon>
           <h2 class="text-h6 text-md-h5 font-weight-medium my-1">
-            Local foods
+            {{ $t("home.row3.subtitle.two.title") }}
           </h2>
           <p class="ma-0 subtitle-2 text-md-subtitle-1 font-weight-regular">
-            Get a chance to taste and enjoy all the foods in your region. We
-            make sure that all meals generated are easily available in your
-            area.
+            {{ $t("home.row3.subtitle.two.subtitle") }}
           </p>
         </div>
       </v-col>
@@ -94,12 +88,10 @@
         <div class="d-flex flex-column align-center text-center">
           <v-icon :size="iconSize" color="success">mdi-home-group</v-icon>
           <h2 class="text-h6 text-md-h5 font-weight-medium my-1">
-            Nearest eateries
+            {{ $t("home.row3.subtitle.three.title") }}
           </h2>
           <p class="ma-0 subtitle-2 text-md-subtitle-1 font-weight-regular">
-            You don't have time to prepare the meal? Don't worry, we got you.
-            With our eatery suggestions, you can book a seat for any meal in any
-            eatery near you with ease.
+            {{ $t("home.row3.subtitle.three.subtitle") }}
           </p>
         </div>
       </v-col>
@@ -107,7 +99,7 @@
     <v-row class="py-sm-4">
       <v-col cols="12" class="pb-0">
         <h1 class="text-h5 text-md-h4 font-weight-bold text-center">
-          What we offer
+          {{ $t("home.row4.title") }}
         </h1>
       </v-col>
       <v-col cols="12" sm="6">
@@ -118,7 +110,7 @@
               text-h6 text-md-h5
               font-weight-medium
             "
-            >For consumers</v-card-title
+            >{{ $t("home.row4.subtitle.one.title") }}</v-card-title
           >
           <v-card-text
             class="
@@ -130,16 +122,20 @@
           >
             <div class="d-flex align-center">
               <v-icon size="18px" color="success">mdi-check</v-icon>
-              <span class="ml-2">Plan your daily meals</span>
+              <span class="ml-2">{{
+                $t("home.row4.subtitle.one.subtitle.one")
+              }}</span>
             </div>
             <div class="d-flex align-center">
               <v-icon size="18px" color="success">mdi-check</v-icon>
-              <span class="ml-2">Track your nutrient and caloric intake</span>
+              <span class="ml-2">{{
+                $t("home.row4.subtitle.one.subtitle.two")
+              }}</span>
             </div>
             <div class="d-flex align-center">
               <v-icon size="18px" color="success">mdi-check</v-icon>
-              <span class="ml-2"
-                >Book a seat for a meal in an eatery near you</span
+              <span class="ml-2">
+                {{ $t("home.row4.subtitle.one.subtitle.three") }}</span
               >
             </div>
           </v-card-text>
@@ -153,7 +149,7 @@
               text-h6 text-md-h5
               font-weight-medium
             "
-            >For eateries</v-card-title
+            >{{ $t("home.row4.subtitle.two.title") }}</v-card-title
           >
           <v-card-text
             class="
@@ -165,11 +161,15 @@
           >
             <div class="d-flex align-center">
               <v-icon size="18px" color="success">mdi-check</v-icon>
-              <span class="ml-2">Share your menu with consumers</span>
+              <span class="ml-2">
+                {{ $t("home.row4.subtitle.one.subtitle.one") }}</span
+              >
             </div>
             <div class="d-flex align-center">
               <v-icon size="18px" color="success">mdi-check</v-icon>
-              <span class="ml-2">Receive and arrange bookings</span>
+              <span class="ml-2">{{
+                $t("home.row4.subtitle.one.subtitle.one")
+              }}</span>
             </div>
           </v-card-text>
         </v-card>
@@ -245,7 +245,7 @@
     <v-row class="py-sm-4">
       <v-col cols="12">
         <h1 class="text-h5 text-md-h4 font-weight-bold text-center">
-          Any questions?
+          {{ $t("home.row5.title") }}
         </h1>
       </v-col>
       <v-col cols="12" sm="8" md="6" xl="4" class="mx-auto">
@@ -258,13 +258,17 @@
             text-center
           "
         >
-          If you have any questions or just want to know more, don't hesitate to
-          get in touch.
+          {{ $t("home.row5.subtitle") }}
         </p>
       </v-col>
       <v-col cols="12" class="text-center">
-        <v-btn rounded link to="/contact-us" color="success" class="text-none"
-          >Contact us</v-btn
+        <v-btn
+          rounded
+          link
+          to="/contact-us"
+          color="success"
+          class="text-none"
+          >{{ $t("home.row5.btn") }}</v-btn
         >
       </v-col>
     </v-row>

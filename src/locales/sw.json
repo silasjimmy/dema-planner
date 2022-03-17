@@ -1,0 +1,65 @@
+{
+    "home": {
+        "row1": {
+            "title": "Safari yako ya maisha yenye afya",
+            "subtitle": "Ishi kwa muda mrefu na kwa furaha zaidi kwa kupanga milo yenye afya kila siku. Chunguza aina mbalimbali ya vyakula na milo ambayo ipo katika eneo lako.",
+            "btn": "Anza leo"
+        },
+        "row2": {
+            "title": {
+                "one": "Imariasha",
+                "two": "afya",
+                "three": "na",
+                "four": "Dema"
+            },
+            "subtitle": "Lishe ina jukumu kubwa katika maisha yetu, licha ya hatua ya maisha uliyomo. Ni katikati ya maendeleo ya binadamu, ndiyo sababu tumeweka maslahi yetu katika uwanja huu. Magonjwa yanayohusiana na chakula yanaendelea kutokea kila siku wakati kiwango cha shughuli za kimwili kinapungua. Kama wanafunzi waliohamasishwa, tuligundua tunaweza kubadilisha hali kwa kutumia teknolojia. Tuliamua kwamba hatua za kuzuia ni bora zaidi na ilikuwa wakati wa kuanza kuelimisha watu juu ya umuhimu wa lishe bora. Ikiwa uko hapa inamaanisha kuwa unataka kufanya kitu kuhusu afya yako. Kabla ya kufanya hivyo, labda utujue zaidi.",
+            "btn": "Jua zaidi"
+        },
+        "row3": {
+            "title": {
+                "one": "Mbona",
+                "two": "Dema",
+                "three": "?"
+            },
+            "subtitle": {
+                "one": {
+                    "title": "Milo yenye usawa",
+                    "subtitle": "Mwili wako unahitaji aina tofauti za virutubisho ili kufanya kazi kikamilifu. Kwa lishe bora, unapata virutubishi vyote muhimu kwa afya njema."
+                },
+                "two": {
+                    "title": "Vyakula vya kienyeji",
+                    "subtitle": "Pata nafasi ya kuonja na kufurahia vyakula vyote katika eneo lako. Tunahakikisha kwamba milo yote inayozalishwa inapatikana kwa urahisi katika eneo lako."
+                },
+                "three": {
+                    "title": "Migahawa ya karibu",
+                    "subtitle": "Huna muda wa kuandaa chakula? Usijali, tumekupata. Kwa mapendekezo yetu ya mgahawa, unaweza kuweka nafasi kwa ajili ya mlo wowote katika mgahawa wowote ulio karibu nawe kwa urahisi."
+                }
+            }
+        },
+        "row4": {
+            "title": "Tunachokuahidi",
+            "subtitle": {
+                "one": {
+                    "title": "Kwa watumiaji",
+                    "subtitle": {
+                        "one": "Panga milo yako ya kila siku",
+                        "two": "Fuatilia ulaji wako wa virutubishi na kaloriki",
+                        "three": "Weka kiti kwa ajili ya mlo katika mgahawa ulio karibu nawe"
+                    }
+                },
+                "two": {
+                    "title": "Kwa migahawa",
+                    "subtitle": {
+                        "one": "Shiriki menyu yako na watumiaji",
+                        "two": "Pokea na panga uhifadhi"
+                    }
+                }
+            }
+        },
+        "row5": {
+            "title": "Maswali yoyote?",
+            "subtitle": "Ikiwa una maswali yoyote au unataka tu kujua zaidi, usisite kuwasiliana nasi.",
+            "btn": "Wasiliana nasi"
+        }
+    }
+}
