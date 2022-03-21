@@ -79,15 +79,17 @@
           <v-list-item-content>
             <v-list-item-title>{{ eatery.mealName }}</v-list-item-title>
             <v-list-item-subtitle>
-              {{ eatery.eateryName }}
+              <router-link :to="`/nearest-eateries/${eatery.eateryId}`">
+                {{ eatery.eateryName }}
+              </router-link>
             </v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>
             <v-tooltip
               left
+              color="transparent"
               :open-on-hover="false"
               :open-on-focus="false"
-              color="transparent"
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-btn icon v-bind="attrs" v-on="on">
@@ -106,12 +108,14 @@
                   <tbody>
                     <tr v-for="food in eatery.foods" :key="food.name">
                       <td>{{ food.name }}</td>
-                      <td>{{ food.cost }}</td>
+                      <td>{{ foodCost(eatery.mealName, food) }}</td>
                     </tr>
-                    <!-- <tr>
+                    <tr>
                       <td>Total</td>
-                      <td>100</td>
-                    </tr> -->
+                      <td>
+                        {{ totalFoodCost(eatery.mealName, eatery.foods) }}
+                      </td>
+                    </tr>
                   </tbody>
                 </template>
               </v-simple-table>
@@ -169,6 +173,24 @@ export default {
   },
   methods: {
     ...mapActions(["getSuggestedEateriesAction", "getMealsAction"]),
+    foodCost(mealName, food) {
+      const meal = this.meals.find((m) => m.name === mealName);
+      const foodObj = meal.foods.find((f) => f.name === food.name);
+      const foodCost = parseInt(food.cost * foodObj.serving);
+      return foodCost;
+    },
+    totalFoodCost(mealName, foods) {
+      const meal = this.meals.find((m) => m.name === mealName);
+      let totalCost = 0;
+
+      foods.forEach((food) => {
+        const foodObj = meal.foods.find((f) => f.name === food.name);
+        const foodCost = parseInt(food.cost * foodObj.serving);
+        totalCost += foodCost;
+      });
+
+      return totalCost;
+    },
   },
   computed: {
     ...mapState(["meals", "suggestedEateries"]),

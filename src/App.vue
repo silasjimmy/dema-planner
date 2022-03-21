@@ -260,6 +260,7 @@
             :small="$vuetify.breakpoint.smAndDown"
             v-bind="attrs"
             v-on="on"
+            v-if="!viewDashboard"
             class="mx-2"
           >
             <flag :iso="selectedLanguage.flag" />
@@ -283,7 +284,12 @@
     </v-app-bar>
 
     <!-- Home navigation drawer -->
-    <v-navigation-drawer app v-if="!viewDashboard" v-model="homeSideNav">
+    <v-navigation-drawer
+      app
+      temporary
+      v-if="!viewDashboard"
+      v-model="homeSideNav"
+    >
       <v-list rounded>
         <v-list-item-group color="success">
           <v-list-item link to="/home">
@@ -591,11 +597,11 @@ import MealsInfo from "./components/MealsInfo.vue";
 export default {
   name: "App",
   created() {
-    // // Inform user of action
-    // this.$store.commit("setPageLoadingMessage", "Loading...");
+    // Inform user of action
+    this.$store.commit("setPageLoadingMessage", "Loading...");
 
-    // // Start loading page
-    // this.$store.commit("setPageLoading", true);
+    // Start loading page
+    this.$store.commit("setPageLoading", true);
 
     if (!this.$store.state.loggedIn) {
       window.addEventListener("scroll", () => {

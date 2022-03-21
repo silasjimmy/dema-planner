@@ -16,6 +16,7 @@ import {
   query,
   where,
   updateDoc,
+  addDoc
 } from "firebase/firestore";
 
 export default new Vuex.Store({
@@ -393,6 +394,11 @@ export default new Vuex.Store({
       const docRef = doc(db, "foods", `food${food.id}`)
       await deleteDoc(docRef);
       commit('deleteFood', food)
+    },
+    async saveMealHistoryAction({ state }, meal) {
+      const db = getFirestore()
+      const docRef = collection(db, `users/${state.email}/history`)
+      await addDoc(docRef, meal)
     },
 
     async getMessagesAction({ commit, state }) {
