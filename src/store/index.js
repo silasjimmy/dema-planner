@@ -4,7 +4,6 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 import { sortMessages, sortNotifications } from '../utils'
-import { differenceInDays } from "date-fns";
 import {
   doc,
   getDoc,
@@ -16,7 +15,8 @@ import {
   query,
   where,
   updateDoc,
-  addDoc
+  addDoc,
+  arrayUnion,
 } from "firebase/firestore";
 
 export default new Vuex.Store({
@@ -40,6 +40,7 @@ export default new Vuex.Store({
     allMenus: [],
     suggestedEateries: [],
     mealTimes: [],
+    eateryBookings: [],
 
     allFoods: [],
     allUsers: [],
@@ -126,6 +127,11 @@ export default new Vuex.Store({
     addSuggestedEatery(state, eatery) {
       state.suggestedEateries.push(eatery)
     },
+    updateSuggestedEatery(state, eatery) {
+      const index = state.suggestedEateries.findIndex(e => e.mealId === eatery.mealId);
+      state.menu.splice(index, 1, eatery);
+      state.suggestedEateries = [...state.suggestedEateries]
+    },
     setSuggestedEateries(state, eateries) {
       state.suggestedEateries = eateries
     },
@@ -180,6 +186,12 @@ export default new Vuex.Store({
     setMeals(state, meals) {
       state.meals = meals
     },
+    setEateryBookings(state, bookings) {
+      state.eateryBookings = bookings
+    },
+    addEateryBooking(state, booking) {
+      state.eateryBookings.push(booking)
+    },
   },
   actions: {
     async getProfileAction({ commit, state }) {
@@ -219,9 +231,9 @@ export default new Vuex.Store({
       const meals = snapShot.docs.map(doc => doc.data())
 
       if (meals.length > 0) {
-        const daysPassed = differenceInDays(new Date(), meals[0].created.toDate())
+        const today = new Date()
 
-        if (daysPassed > 0) {
+        if (today.toDateString() !== meals[0].created.toDate().toDateString()) {
           for (let index = 0; index < meals.length; index++) {
             // Delete the meal
             await dispatch('deleteMealAction', meals[index])
@@ -359,6 +371,15 @@ export default new Vuex.Store({
       await setDoc(docRef, eatery)
       commit('addSuggestedEatery', eatery)
     },
+    async updateSuggestedEateryAction({ commit, state }, eatery) {
+      const db = getFirestore()
+      const docRef = doc(db, `users/${state.email}/suggestedEateries/meal${eatery.mealId}`)
+      await updateDoc(docRef, {
+        reservedSeat: true
+      })
+      eatery.reservedSeat = true
+      commit('updateSuggestedEatery', eatery)
+    },
     async deleteSuggestedEateryAction({ commit, state }, meal) {
       const db = getFirestore()
       const docRef = doc(db, `users/${state.email}/suggestedEateries/meal${meal.id}`)
@@ -399,6 +420,21 @@ export default new Vuex.Store({
       const db = getFirestore()
       const docRef = collection(db, `users/${state.email}/history`)
       await addDoc(docRef, meal)
+    },
+    async getEateryBookingsAction({ commit, state }) {
+      const db = getFirestore()
+      const collectionRef = collection(db, `users/${state.email}/bookings`)
+      const snapShot = await getDocs(collectionRef)
+      const eateryBookings = snapShot.docs.map(doc => doc.data())
+      commit('setEateryBookings', eateryBookings)
+    },
+    async addEateryBookingAction({ commit, state }, payload) {
+      const db = getFirestore()
+      const docRef = doc(db, `users/${payload.email}/bookings/${state.email}`)
+      await setDoc(docRef, {
+        meals: arrayUnion(payload.booking)
+      }, { merge: true })
+      commit('addEateryBooking', payload.booking)
     },
 
     async getMessagesAction({ commit, state }) {

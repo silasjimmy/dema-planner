@@ -1,8 +1,8 @@
 <template>
   <v-container fluid>
-    <!-- Back button -->
     <v-card outlined class="rounded-lg">
       <v-card-title>
+        <!-- Back button -->
         <v-btn icon @click="$router.go(-1)">
           <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
@@ -53,6 +53,31 @@
                 <p class="blockquote pl-0 py-0">
                   {{ eatery.bio }}
                 </p>
+              </div>
+            </v-col>
+
+            <v-col cols="12" v-if="userMeals.length > 0">
+              <p class="text-center mb-0">
+                You have meals suggested in this eatery
+              </p>
+              <div
+                v-for="(meal, index) in userMeals"
+                :key="index"
+                class="d-flex justify-space-between align-center mt-4"
+              >
+                <span class="subtitle-1 text--primary">{{
+                  meal.mealName
+                }}</span>
+                <v-btn
+                  small
+                  :disabled="meal.reservedSeat"
+                  :loading="bookSeatLoading[index]"
+                  color="success"
+                  @click="bookSeat(index)"
+                >
+                  {{ meal.reservedSeat ? "seat booked" : "book a seat" }}
+                  <v-icon right v-if="meal.reservedSeat">mdi-check-all</v-icon>
+                </v-btn>
               </div>
             </v-col>
 
@@ -173,11 +198,20 @@
         </v-container>
       </v-card-text>
     </v-card>
+
+    <!-- Action toast -->
+    <toast
+      :show="showToast"
+      :message="toastMessage"
+      :success="actionSuccess"
+      @close="showToast = false"
+    ></toast>
   </v-container>
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
+import Toast from "@/components/Toast.vue";
 
 export default {
   name: "EateryDetails",
@@ -185,16 +219,26 @@ export default {
   async created() {
     if (this.$store.state.eateries.length === 0) await this.getEateriesAction();
     if (this.$store.state.allMenus.length === 0) await this.setAllMenusAction();
+    if (this.$store.state.suggestedEateries.length === 0)
+      await this.getSuggestedEateriesAction();
 
-    // Retrieve the eatery with the specified id
     this.eatery = this.getEateryById(this.id);
     this.menu = this.getMenuById(this.eatery.id);
+    this.userMeals = this.suggestedEateries.filter(
+      (e) => e.eateryName === this.eatery.name
+    );
+    this.bookSeatLoading = this.userMeals.map(() => false);
   },
   data() {
     return {
       eatery: {},
       menu: {},
+      userMeals: [],
+      bookSeatLoading: [],
       searchFood: "",
+      showToast: false,
+      toastMessage: "",
+      actionSuccess: true,
       headers: [
         { text: "Name", value: "name", align: "center" },
         { text: "Cost", value: "cost", align: "center", sortable: false },
@@ -202,16 +246,54 @@ export default {
     };
   },
   computed: {
+    ...mapState(["suggestedEateries"]),
     ...mapGetters(["getEateryById", "getMenuById"]),
   },
   methods: {
-    ...mapActions(["getEateriesAction", "setAllMenusAction"]),
+    ...mapActions([
+      "getEateriesAction",
+      "setAllMenusAction",
+      "getSuggestedEateriesAction",
+      "updateSuggestedEateryAction",
+      "addEateryBookingAction",
+    ]),
+    async bookSeat(index) {
+      try {
+        this.$set(this.bookSeatLoading, index, true);
+        const meal = this.userMeals[index];
+
+        const booking = {
+          name: this.$store.state.profile.name,
+          email: this.$store.state.email,
+          time: meal.mealTime,
+          foods: meal.foods,
+        };
+
+        await this.addEateryBookingAction({
+          email: this.eatery.email,
+          booking: booking,
+        });
+        await this.updateSuggestedEateryAction(meal);
+
+        this.toastMessage = "Seat booked successfully!";
+        this.actionSuccess = true;
+      } catch (error) {
+        this.toastMessage = error.code;
+        this.actionSuccess = false;
+      } finally {
+        this.$set(this.bookSeatLoading, index, false);
+        this.showToast = true;
+      }
+    },
   },
   props: {
     id: {
       type: Number,
       default: 0,
     },
+  },
+  components: {
+    Toast,
   },
 };
 </script>
