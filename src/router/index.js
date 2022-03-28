@@ -23,6 +23,7 @@ import PageNotFound from '@/views/PageNotFound.vue';
 import Notifications from '@/views/Notifications.vue';
 import Messages from '@/views/Messages.vue';
 import Chat from '@/views/Chat.vue';
+import Bookings from '@/views/Bookings.vue';
 
 Vue.use(VueRouter)
 
@@ -135,6 +136,16 @@ const routes = [
       requiresAuth: true,
       role: 'eatery',
       title: 'Menu'
+    }
+  },
+  {
+    path: '/bookings',
+    name: 'bookings',
+    component: Bookings,
+    meta: {
+      requiresAuth: true,
+      role: 'eatery',
+      title: 'Bookings'
     }
   },
   {

@@ -86,6 +86,7 @@ export default new Vuex.Store({
         case 'eatery':
           state.dashboardLinks = [
             { url: "/menu", icon: "mdi-book-open-variant", text: "Menu" },
+            { url: "/bookings", icon: "mdi-book", text: "Bookings" },
             { url: "/food-request", icon: "mdi-food-off-outline", text: "Food request" },
           ]
           break;
@@ -431,9 +432,14 @@ export default new Vuex.Store({
     async addEateryBookingAction({ commit, state }, payload) {
       const db = getFirestore()
       const docRef = doc(db, `users/${payload.email}/bookings/${state.email}`)
-      await setDoc(docRef, {
-        meals: arrayUnion(payload.booking)
-      }, { merge: true })
+      const snapShot = await getDoc(docRef);
+
+      if (snapShot.exists()) {
+        await updateDoc(docRef, {
+          meals: arrayUnion(payload.booking.meals[0])
+        })
+      } else { await setDoc(docRef, payload.booking) }
+
       commit('addEateryBooking', payload.booking)
     },
 

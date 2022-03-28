@@ -260,20 +260,24 @@ export default {
     async bookSeat(index) {
       try {
         this.$set(this.bookSeatLoading, index, true);
-        const meal = this.userMeals[index];
+        const userMeal = this.userMeals[index];
 
         const booking = {
           name: this.$store.state.profile.name,
           email: this.$store.state.email,
-          time: meal.mealTime,
-          foods: meal.foods,
+          meals: [
+            {
+              time: userMeal.mealTime,
+              foods: userMeal.foods.map((f) => f.name),
+            },
+          ],
         };
 
         await this.addEateryBookingAction({
           email: this.eatery.email,
           booking: booking,
         });
-        await this.updateSuggestedEateryAction(meal);
+        await this.updateSuggestedEateryAction(userMeal);
 
         this.toastMessage = "Seat booked successfully!";
         this.actionSuccess = true;
