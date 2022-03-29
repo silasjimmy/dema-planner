@@ -62,5 +62,37 @@
       "btn": "Contact us"
     }
   },
-  "mealplanner": {}
+  "mealplanner": {},
+  "settings": {
+    "row1": {
+      "subheader": "General",
+      "sect1": {
+        "title": "Notifications",
+        "subtitle": "Send me news about Dema"
+      },
+      "sect2": {
+        "title": "Sound",
+        "subtitle": "Alert me of any notifications"
+      },
+      "sect3": {
+        "title": "Location",
+        "subtitle": "Update my location automatically"
+      }
+    },
+    "row2": {
+      "subheader": "Appearance",
+      "sect1": {
+        "title": "Theme",
+        "subtitle": "theme",
+        "dtitle": "Choose theme"
+      },
+      "sect2": {
+        "title": "Language",
+        "dtitle": "Choose language"
+      }
+    },
+    "row3": {
+      "subheader": "Preferences"
+    }
+  }
 }

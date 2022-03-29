@@ -1079,7 +1079,7 @@ export default {
         receiveNews: true,
         notificationsAlert: false,
         autoUpdateLocation: true,
-        appLanguage: "english",
+        appLanguage: "en",
         appTheme: "light",
         mealTimes: [
           {
@@ -1107,7 +1107,7 @@ export default {
       eaterySettings: {
         receiveNews: true,
         notificationsAlert: false,
-        appLanguage: "english",
+        appLanguage: "en",
         appTheme: "light",
       },
       rules: {

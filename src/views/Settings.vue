@@ -2,8 +2,8 @@
   <v-container fluid>
     <v-card outlined class="rounded-lg">
       <v-list flat subheader>
-        <v-subheader>General</v-subheader>
-        <!-- Dema notifications -->
+        <v-subheader>{{ $t("settings.row1.subheader") }}</v-subheader>
+
         <v-list-item two-line>
           <v-list-item-action>
             <v-checkbox
@@ -13,11 +13,15 @@
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title>Notifications</v-list-item-title>
-            <v-list-item-subtitle>Send me news about Dema</v-list-item-subtitle>
+            <v-list-item-title>{{
+              $t("settings.row1.sect1.title")
+            }}</v-list-item-title>
+            <v-list-item-subtitle>{{
+              $t("settings.row1.sect1.subtitle")
+            }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
-        <!-- Sound notifications -->
+
         <v-list-item two-line>
           <v-list-item-action>
             <v-checkbox
@@ -27,13 +31,15 @@
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title>Sound</v-list-item-title>
-            <v-list-item-subtitle
-              >Alert me of any notifications</v-list-item-subtitle
-            >
+            <v-list-item-title>{{
+              $t("settings.row1.sect2.title")
+            }}</v-list-item-title>
+            <v-list-item-subtitle>{{
+              $t("settings.row1.sect2.subtitle")
+            }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
-        <!-- Location change -->
+
         <v-list-item two-line>
           <v-list-item-action>
             <v-checkbox
@@ -43,23 +49,27 @@
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title>Location</v-list-item-title>
-            <v-list-item-subtitle
-              >Update my location automatically</v-list-item-subtitle
-            >
+            <v-list-item-title>{{
+              $t("settings.row1.sect3.title")
+            }}</v-list-item-title>
+            <v-list-item-subtitle>{{
+              $t("settings.row1.sect3.title")
+            }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
 
         <v-divider></v-divider>
 
-        <v-subheader>Appearance</v-subheader>
+        <v-subheader>{{ $t("settings.row2.subheader") }}</v-subheader>
 
         <!-- Theme change -->
         <v-dialog persistent width="auto" v-model="themeChangeDialog">
           <template v-slot:activator="{ on, attrs }">
             <v-list-item two-line v-bind="attrs" v-on="on">
               <v-list-item-content>
-                <v-list-item-title>Theme</v-list-item-title>
+                <v-list-item-title>{{
+                  $t("settings.row2.sect1.title")
+                }}</v-list-item-title>
                 <v-list-item-subtitle>
                   {{ settings.appTheme === "light" ? "Light" : "Dark" }} theme
                 </v-list-item-subtitle>
@@ -78,7 +88,9 @@
           </template>
 
           <v-card>
-            <v-card-title class="justify-center">Choose theme</v-card-title>
+            <v-card-title class="justify-center">{{
+              $t("settings.row2.sect1.dtitle")
+            }}</v-card-title>
 
             <v-divider></v-divider>
 
@@ -130,9 +142,11 @@
           <template v-slot:activator="{ on, attrs }">
             <v-list-item two-line v-bind="attrs" v-on="on">
               <v-list-item-content>
-                <v-list-item-title>Language</v-list-item-title>
+                <v-list-item-title>{{
+                  $t("settings.row2.sect2.title")
+                }}</v-list-item-title>
                 <v-list-item-subtitle class="text-capitalize">
-                  {{ settings.appLanguage }}
+                  {{ language(settings.appLanguage) }}
                 </v-list-item-subtitle>
               </v-list-item-content>
 
@@ -143,7 +157,7 @@
           </template>
 
           <v-card>
-            <v-card-title>Choose language</v-card-title>
+            <v-card-title>{{ $t("settings.row2.sect2.dtitle") }}</v-card-title>
 
             <v-divider></v-divider>
 
@@ -160,7 +174,18 @@
                         <v-radio
                           color="success"
                           label="English"
-                          value="english"
+                          value="en"
+                        ></v-radio>
+                      </v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-list-item-content>
+                      <v-list-item-title>
+                        <v-radio
+                          color="success"
+                          label="Swahili"
+                          value="sw"
                         ></v-radio>
                       </v-list-item-title>
                     </v-list-item-content>
@@ -182,7 +207,7 @@
         <v-divider v-if="$store.state.role === 'consumer'"></v-divider>
 
         <v-subheader v-if="$store.state.role === 'consumer'"
-          >Preferences
+          >{{ $t("settings.row3.subheader") }}
         </v-subheader>
 
         <!-- Meal time edit -->
@@ -421,11 +446,22 @@ export default {
     formatTime(time) {
       return format(new Date("1970-1-1 " + time), "HH:mm a");
     },
+    language(lang) {
+      switch (lang) {
+        case "en":
+          return "English";
+        case "sw":
+          return "Swahili";
+        default:
+          return "English";
+      }
+    },
     changeAppTheme() {
       this.$vuetify.theme.dark = this.settings.appTheme === "dark";
       this.themeChangeDialog = false;
     },
     changeAppLanguage() {
+      this.$i18n.locale = this.settings.appLanguage;
       this.languageChangeDialog = false;
     },
     changeEmail() {

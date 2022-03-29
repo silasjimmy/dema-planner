@@ -711,6 +711,7 @@ export default {
   watch: {
     "$store.state.settings": function (settings) {
       this.$vuetify.theme.dark = settings.appTheme === "dark";
+      this.$i18n.locale = settings.appLanguage;
     },
   },
   components: { MealsInfo, EaterySummary },

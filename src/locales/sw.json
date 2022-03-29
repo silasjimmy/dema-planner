@@ -61,5 +61,36 @@
             "subtitle": "Ikiwa una maswali yoyote au unataka tu kujua zaidi, usisite kuwasiliana nasi.",
             "btn": "Wasiliana nasi"
         }
+    },
+    "settings": {
+        "row1": {
+            "subheader": "Jumla",
+            "sect1": {
+                "title": "Arifa",
+                "subtitle": "Nitumie habari kuhusu Dema"
+            },
+            "sect2": {
+                "title": "Sauti",
+                "subtitle": "Niarifu kuhusu arifa zozote"
+            },
+            "sect3": {
+                "title": "Mahali",
+                "subtitle": "Sasisha eneo langu kiotomatiki"
+            }
+        },
+        "row2": {
+            "subheader": "Mwonekano",
+            "sect1": {
+                "title": "Mandhari",
+                "dtitle": "Chagua mandhari"
+            },
+            "sect2": {
+                "title": "Lugha",
+                "dtitle": "Chagua lugha"
+            }
+        },
+        "row3": {
+            "subheader": "Mapendeleo"
+        }
     }
 }
