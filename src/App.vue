@@ -422,6 +422,8 @@
       <meals-info
         v-if="$store.state.role === 'consumer' && $store.state.meals"
       ></meals-info>
+
+      <eatery-summary v-if="$store.state.role === 'eatery'"></eatery-summary>
     </v-navigation-drawer>
 
     <!-- Dashboard bottom navigation -->
@@ -593,6 +595,7 @@
 import { getAuth, signOut } from "firebase/auth";
 import { mapState, mapGetters } from "vuex";
 import MealsInfo from "./components/MealsInfo.vue";
+import EaterySummary from "./components/EaterySummary.vue";
 
 export default {
   name: "App",
@@ -610,10 +613,6 @@ export default {
         this.scrollYPos = window.scrollY;
       });
     }
-  },
-  mounted() {
-    // const today = new Date();
-    // console.log(today.toDateString());
   },
   data() {
     return {
@@ -714,7 +713,7 @@ export default {
       this.$vuetify.theme.dark = settings.appTheme === "dark";
     },
   },
-  components: { MealsInfo },
+  components: { MealsInfo, EaterySummary },
 };
 </script>
 
