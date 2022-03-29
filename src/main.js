@@ -12,12 +12,12 @@ import FlagIcon from 'vue-flag-icon';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAc_ClA6u_XdAQ4Mw8ZLwQ1IfS2UNbvXs4",
-  authDomain: "demaplanner.app",
-  projectId: "demaplanner",
-  storageBucket: "demaplanner.appspot.com",
-  messagingSenderId: "725807988259",
-  appId: "1:725807988259:web:3edc7ad409145c83bcfb96"
+  apiKey: process.env.VUE_APP_API_KEY,
+  authDomain: process.env.VUE_APP_AUTH_DOMAIN,
+  projectId: process.env.VUE_APP_PROJECT_ID,
+  storageBucket: process.env.VUE_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.VUE_APP_MESSAGING_SENDER_ID,
+  appId: process.env.VUE_APP_APP_ID
 };
 
 // Initialize Firebase
