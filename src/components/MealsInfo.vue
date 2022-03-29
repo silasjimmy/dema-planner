@@ -1,10 +1,12 @@
 <template>
   <v-card flat>
-    <v-card-title class="justify-center">Summary</v-card-title>
+    <v-card-title class="justify-center">{{
+      $t("mealsinfo.title")
+    }}</v-card-title>
     <v-card-subtitle
       class="text-center text--primary font-weight-regular subtitle-1 py-2"
     >
-      Nutritional content
+      {{ $t("mealsinfo.subtitle1") }}
     </v-card-subtitle>
 
     <!-- Load meals -->
@@ -55,7 +57,7 @@
     <v-card-subtitle
       class="text-center text--primary font-weight-regular subtitle-1 py-2"
     >
-      Sugessted eateries
+      {{ $t("mealsinfo.subtitle2") }}
     </v-card-subtitle>
 
     <!-- Load suggested eateries -->

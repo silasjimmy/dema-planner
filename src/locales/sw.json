@@ -62,6 +62,23 @@
             "btn": "Wasiliana nasi"
         }
     },
+    "mealplanner": {
+        "info": {
+            "p": "Inaonekana huna milo ya leo. Bofya zalisha ili kuunda mpango wa chakula kiotomatiki. Usijali, tunajua unachopenda...",
+            "btn": "Tengeneza"
+        },
+        "meal": {
+            "ate": "Nilikula chakula hiki"
+        },
+        "serving": {
+            "title": "Vitengo",
+            "btn": "Hariri",
+            "edit": {
+                "title": "Hariri vitengo",
+                "btn": "Hifadhi"
+            }
+        }
+    },
     "settings": {
         "row1": {
             "subheader": "Jumla",
@@ -92,5 +109,53 @@
         "row3": {
             "subheader": "Mapendeleo"
         }
+    },
+    "profile": {
+        "dialog": {
+            "title": "Hariri wasifu",
+            "btn": "Hifadhi"
+        },
+        "row1": {
+            "subtitle": "umri"
+        },
+        "row2": {
+            "title": "Eneo"
+        }
+    },
+    "eateries": {
+        "p": {
+            "no": "Hakuna migahawa iliyosajiliwa karibu nawe.",
+            "yes": "Migahawa karibu na wewe."
+        },
+        "btn": "Maelezo zaidi"
+    },
+    "eaterydetails": {
+        "meals": {
+            "info": "Una milo iliyopendekezwa katika mkahawa huu",
+            "btn": {
+                "no": "weka kiti",
+                "yes": "kiti kishaekwa"
+            }
+        },
+        "sect1": {
+            "title": "Eneo"
+        },
+        "sect2": {
+            "title": "Barua pepe"
+        },
+        "sect3": {
+            "title": "Nambari ya simu"
+        },
+        "sect4": {
+            "title": "Tovuti"
+        },
+        "sect5": {
+            "title": "Menyu"
+        }
+    },
+    "mealsinfo": {
+        "title": "Summary",
+        "subtitle1": "Maudhui ya lishe",
+        "subtitle2": "Migahawa iliyopendekezwa"
     }
 }

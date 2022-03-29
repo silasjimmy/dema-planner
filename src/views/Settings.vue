@@ -53,7 +53,7 @@
               $t("settings.row1.sect3.title")
             }}</v-list-item-title>
             <v-list-item-subtitle>{{
-              $t("settings.row1.sect3.title")
+              $t("settings.row1.sect3.subtitle")
             }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>

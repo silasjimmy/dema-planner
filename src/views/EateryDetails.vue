@@ -58,7 +58,7 @@
 
             <v-col cols="12" v-if="userMeals.length > 0">
               <p class="text-center mb-0">
-                You have meals suggested in this eatery
+                {{ $t("eaterydetails.meals.info") }}
               </p>
               <div
                 v-for="(meal, index) in userMeals"
@@ -75,7 +75,11 @@
                   color="success"
                   @click="bookSeat(index)"
                 >
-                  {{ meal.reservedSeat ? "seat booked" : "book a seat" }}
+                  {{
+                    meal.reservedSeat
+                      ? $t("eaterydetails.meals.btn.yes")
+                      : $t("eaterydetails.meals.btn.no")
+                  }}
                   <v-icon right v-if="meal.reservedSeat">mdi-check-all</v-icon>
                 </v-btn>
               </div>
@@ -89,7 +93,9 @@
                     <v-icon> mdi-map-marker </v-icon>
                   </v-list-item-icon>
                   <v-list-item-content>
-                    <v-list-item-title>Location</v-list-item-title>
+                    <v-list-item-title>{{
+                      $t("eaterydetails.sect1.title")
+                    }}</v-list-item-title>
                     <v-list-item-subtitle class="text-capitalize"
                       >{{ eatery.town }},
                       {{ eatery.country }}</v-list-item-subtitle
@@ -103,7 +109,9 @@
                     <v-icon> mdi-email </v-icon>
                   </v-list-item-icon>
                   <v-list-item-content>
-                    <v-list-item-title>Email address</v-list-item-title>
+                    <v-list-item-title>{{
+                      $t("eaterydetails.sect2.title")
+                    }}</v-list-item-title>
                     <v-list-item-subtitle>{{
                       eatery.email
                     }}</v-list-item-subtitle>
@@ -116,7 +124,9 @@
                     <v-icon> mdi-phone </v-icon>
                   </v-list-item-icon>
                   <v-list-item-content>
-                    <v-list-item-title>Phone number</v-list-item-title>
+                    <v-list-item-title>{{
+                      $t("eaterydetails.sect3.title")
+                    }}</v-list-item-title>
                     <v-list-item-subtitle>{{
                       eatery.phoneNumber
                     }}</v-list-item-subtitle>
@@ -129,7 +139,9 @@
                     <v-icon>mdi-web</v-icon>
                   </v-list-item-icon>
                   <v-list-item-content>
-                    <v-list-item-title>Website</v-list-item-title>
+                    <v-list-item-title>{{
+                      $t("eaterydetails.sect4.title")
+                    }}</v-list-item-title>
                     <v-list-item-subtitle>{{
                       eatery.website
                     }}</v-list-item-subtitle>
@@ -165,7 +177,9 @@
               >
                 <template v-slot:top>
                   <v-toolbar flat class="rounded-lg">
-                    <v-toolbar-title>Menu</v-toolbar-title>
+                    <v-toolbar-title class="d-none d-sm-flex">{{
+                      $t("eaterydetails.sect5.title")
+                    }}</v-toolbar-title>
 
                     <v-spacer></v-spacer>
 

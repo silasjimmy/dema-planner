@@ -62,7 +62,23 @@
       "btn": "Contact us"
     }
   },
-  "mealplanner": {},
+  "mealplanner": {
+    "info": {
+      "p": "It seems you don't have meals for today. Click generate to automatically create a meal plan. Don't worry, we know what you like...",
+      "btn": "Generate"
+    },
+    "meal": {
+      "ate": "I ate this meal"
+    },
+    "serving": {
+      "title": "Servings",
+      "btn": "Edit",
+      "edit": {
+        "title": "Edit food servings",
+        "btn": "Save"
+      }
+    }
+  },
   "settings": {
     "row1": {
       "subheader": "General",
@@ -83,7 +99,6 @@
       "subheader": "Appearance",
       "sect1": {
         "title": "Theme",
-        "subtitle": "theme",
         "dtitle": "Choose theme"
       },
       "sect2": {
@@ -94,5 +109,53 @@
     "row3": {
       "subheader": "Preferences"
     }
+  },
+  "profile": {
+    "dialog": {
+      "title": "Edit profile",
+      "btn": "Save"
+    },
+    "row1": {
+      "subtitle": "years old"
+    },
+    "row2": {
+      "title": "Location"
+    }
+  },
+  "eateries": {
+    "p": {
+      "no": "There are no registered eateries around you.",
+      "yes": "Eateries near you."
+    },
+    "btn": "More info"
+  },
+  "eaterydetails": {
+    "meals": {
+      "info": "You have meals suggested in this eatery",
+      "btn": {
+        "no": "book a seat",
+        "yes": "seat booked"
+      }
+    },
+    "sect1": {
+      "title": "Location"
+    },
+    "sect2": {
+      "title": "Email address"
+    },
+    "sect3": {
+      "title": "Phone number"
+    },
+    "sect4": {
+      "title": "Website"
+    },
+    "sect5": {
+      "title": "Menu"
+    }
+  },
+  "mealsinfo": {
+    "title": "Summary",
+    "subtitle1": "Nutritional content",
+    "subtitle2": "Suggested eateries"
   }
 }

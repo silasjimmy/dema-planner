@@ -14,7 +14,7 @@
               class="text--primary"
               v-if="$store.state.role === 'consumer'"
             >
-              {{ age() }} years old
+              {{ age() }} {{ $t("profile.row1.subtitle") }}
             </v-list-item-subtitle>
             <v-list-item-subtitle v-if="$store.state.role === 'consumer'">
               {{ profile.gender }}
@@ -45,7 +45,9 @@
             <v-icon> mdi-map-marker </v-icon>
           </v-list-item-avatar>
           <v-list-item-content>
-            <v-list-item-title>Location</v-list-item-title>
+            <v-list-item-title>{{
+              $t("profile.row2.title")
+            }}</v-list-item-title>
             <v-list-item-subtitle
               >{{ profile.town }}, {{ profile.country }}</v-list-item-subtitle
             >
@@ -378,7 +380,7 @@
     >
       <v-card>
         <v-card-title>
-          <span>Edit profile</span>
+          <span>{{ $t("profile.dialog.title") }}</span>
           <v-spacer></v-spacer>
           <v-btn icon @click="editProfile = false">
             <v-icon>mdi-close</v-icon>
@@ -600,7 +602,7 @@
             :loading="loadingProfile"
             @click="saveProfile()"
           >
-            Save
+            {{ $t("profile.dialog.btn") }}
           </v-btn>
           <v-spacer></v-spacer>
         </v-card-actions>
@@ -616,7 +618,7 @@
     >
       <v-card>
         <v-card-title>
-          <span>Edit profile</span>
+          <span>{{ $t("profile.dialog.title") }}</span>
           <v-spacer></v-spacer>
           <v-btn icon @click="editProfile = false">
             <v-icon>mdi-close</v-icon>
@@ -671,7 +673,7 @@
             :loading="loadingProfile"
             @click="saveProfile()"
           >
-            Save
+            {{ $t("profile.dialog.btn") }}
           </v-btn>
           <v-spacer></v-spacer>
         </v-card-actions>

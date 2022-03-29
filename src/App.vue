@@ -600,11 +600,11 @@ import EaterySummary from "./components/EaterySummary.vue";
 export default {
   name: "App",
   created() {
-    // // Inform user of action
-    // this.$store.commit("setPageLoadingMessage", "Loading...");
+    // Inform user of action
+    this.$store.commit("setPageLoadingMessage", "Loading...");
 
-    // // Start loading page
-    // this.$store.commit("setPageLoading", true);
+    // Start loading page
+    this.$store.commit("setPageLoading", true);
 
     if (!this.$store.state.loggedIn) {
       this.selectedLanguage = this.languages[this.languageIndex];

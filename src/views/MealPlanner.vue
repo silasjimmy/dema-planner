@@ -90,9 +90,7 @@
         <!-- No meals message -->
         <div class="text-center" v-if="meals.length === 0">
           <p class="subtitle-1">
-            It seems you don't have meals for today. Click generate to
-            automatically create a meal plan. Don't worry, we know what you
-            like...
+            {{ $t("mealplanner.info.p") }}
           </p>
           <v-btn
             rounded
@@ -101,7 +99,7 @@
             color="success"
           >
             <v-icon left>mdi-rotate-right</v-icon>
-            Generate
+            {{ $t("mealplanner.info.btn") }}
           </v-btn>
         </div>
 
@@ -173,7 +171,7 @@
                     dense
                     @change="ateMeal(meal)"
                     v-model="meal.ate"
-                    label="I ate this meal"
+                    :label="$t(`mealplanner.meal.ate`)"
                     color="green"
                     class="pt-0"
                   ></v-checkbox>
@@ -199,7 +197,7 @@
                     height="100%"
                   >
                     <v-card-title class="py-2">
-                      <span>Servings</span>
+                      <span>{{ $t("mealplanner.serving.title") }}</span>
                       <v-spacer></v-spacer>
                       <v-btn icon @click="$set(servingsReveal, index, false)">
                         <v-icon>mdi-chevron-down</v-icon>
@@ -234,13 +232,15 @@
                             v-on="on"
                             color="success"
                           >
-                            Edit
+                            {{ $t("mealplanner.serving.btn") }}
                           </v-btn>
                         </template>
 
                         <v-card>
                           <v-card-title>
-                            <span>Edit food servings</span>
+                            <span>{{
+                              $t("mealplanner.serving.edit.title")
+                            }}</span>
                             <v-spacer></v-spacer>
                             <v-btn
                               icon
@@ -278,7 +278,7 @@
                               color="success"
                               @click="saveServings(meal, index)"
                             >
-                              save
+                              {{ $t("mealplanner.serving.edit.btn") }}
                             </v-btn>
                           </v-card-actions>
                         </v-card>

@@ -9,18 +9,17 @@
 
     <v-card-text v-if="!loadingData">
       <!-- No eateries message -->
-      <p
-        class="text-center subtitle-2 text-md-subtitle-1 font-weight-regular"
+      <v-subheader
+        class="justify-center subtitle-2 text-md-subtitle-1 font-weight-regular"
         v-if="eateries.length === 0"
+        >{{ $t("eateries.p.no") }}</v-subheader
       >
-        There are no registered eateries around you.
-      </p>
 
       <!-- Eateries list -->
       <v-subheader
         class="justify-center subtitle-2 text-md-subtitle-1 font-weight-regular"
         v-if="eateries.length > 0"
-        >Eateries near you.</v-subheader
+        >{{ $t("eateries.p.yes") }}</v-subheader
       >
       <v-container v-if="eateries.length > 0">
         <v-row>
@@ -77,9 +76,10 @@
                 <v-btn
                   link
                   plain
+                  rounded
                   class="subtitle-2 text-md-subtitle-1 font-weight-regular"
                   :to="{ name: 'eatery-details', params: { id: eatery.id } }"
-                  >More info</v-btn
+                  >{{ $t("eateries.btn") }}</v-btn
                 >
                 <v-spacer></v-spacer>
               </v-card-actions>
