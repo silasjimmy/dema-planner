@@ -3,7 +3,7 @@
     <v-row align="center">
       <v-col cols="12" class="pb-0">
         <h1 class="text-center text-h5 text-md-h4 font-weight-bold">
-          About us
+          {{ $t("about.title1") }}
         </h1>
       </v-col>
       <v-col cols="12" md="6">
@@ -16,13 +16,7 @@
             text-center text-md-left
           "
         >
-          We are a group of individuals trying to change the world through the
-          use of technology. Our interest in human health started when we
-          observed that not everyone is aware of how a simple thing as food
-          could change their lives. People spend a lot in treatment of
-          diet-related diseases which could be avoided by eating healthy foods.
-          In addition, there is more that could be done in the field of
-          nutrition and we felt that it is time we did something about that.
+          {{ $t("about.p1") }}
         </p>
       </v-col>
       <v-col cols="12" md="6">
@@ -42,11 +36,7 @@
             text-center
           "
         >
-          Food is more than just something to put to your stomach. To us, we see
-          food as medicine where an individual like you for instance needs to
-          know what to take, how much and how. The human body requires all sorts
-          of nutrients and with careful planning, you can afford a healthy diet
-          everyday and stop worrying about getting sick.
+          {{ $t("about.p2") }}
         </p>
       </v-col>
       <v-col cols="12" md="6">
@@ -66,20 +56,14 @@
             text-center text-md-left
           "
         >
-          Using a smart algorithm, we can create for you a meal that contains
-          all the nutrients required by the body within a matter of seconds. At
-          whatever time you choose your meal, you can have it in a nearest
-          eatery or simply decide to prepare at the comfort of your home. You
-          can edit the servings, select the eatery of your choice and reserve a
-          seat for that time. We have simplified the process of planning meals
-          to a fast and more robust activity.
+          {{ $t("about.p2") }}
         </p>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="12" class="pb-0">
         <h1 class="text-center text-h5 text-md-h4 font-weight-bold">
-          Our mission
+          {{ $t("about.title2") }}
         </h1>
       </v-col>
       <v-col cols="12" sm="10" md="8" lg="6" xl="4" class="mx-auto">
@@ -92,17 +76,14 @@
             text-center
           "
         >
-          Our mission is to enable each and everyone have the opportunity to
-          live a healthy lifestyle with ease. We have dedicated our time and
-          resources into this work to ensure that we provide our clients the
-          best of all.
+          {{ $t("about.p4") }}
         </p>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="12" class="pb-0">
         <h1 class="text-center text-h5 text-md-h4 font-weight-bold">
-          Meet the team
+          {{ $t("about.title3") }}
         </h1>
       </v-col>
       <v-col cols="12">
@@ -128,7 +109,9 @@
     </v-row>
     <v-row>
       <v-col cols="12" class="pb-0">
-        <h1 class="text-center text-h5 text-md-h4 font-weight-bold">Support</h1>
+        <h1 class="text-center text-h5 text-md-h4 font-weight-bold">
+          {{ $t("about.title4") }}
+        </h1>
       </v-col>
       <v-col cols="12" sm="10" md="8" lg="6" xl="4" class="mx-auto">
         <p
@@ -140,10 +123,7 @@
             text-center
           "
         >
-          Currently we are looking for support from volunteers to contribute in
-          creating the food database. We will also appreciate any contribution
-          in terms of money in order to fund this revolution. In whatever
-          capacity you can, just give. We appreciate the sacrifice already.
+          {{ $t("about.p5") }}
         </p>
       </v-col>
     </v-row>

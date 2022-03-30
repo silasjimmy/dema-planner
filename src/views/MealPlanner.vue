@@ -10,77 +10,70 @@
                   {{ weekday }}
                 </h1>
                 <h1 class="text-h3 font-weight-bold">{{ day }}</h1>
-                <h2 class="subtitle-1 font-weight-regular">
-                  {{ monthAndYear }}
-                </h2>
-
-                <!-- Date picker -->
-                <!-- <v-menu
-                    offset-y
-                    v-model="datePickerMenu"
-                    transition="scale-transition"
-                    ref="dateMenu"
-                    :return-value.sync="mealsDate"
-                    :close-on-content-click="false"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        icon
-                        class="mx-1"
-                        :disabled="!meals"
-                        v-bind="attrs"
-                        v-on="on"
-                      >
-                        <v-icon>mdi-calendar</v-icon>
-                      </v-btn>
-                    </template>
-
-                    <v-date-picker
-                      v-if="datePickerMenu"
-                      v-model="mealsDate"
-                      header-color="blue-grey"
-                      color="green"
-                      show-current="false"
+                <v-dialog
+                  ref="dateMenu"
+                  transition="scale-transition"
+                  v-model="datePickerMenu"
+                  :return-value.sync="mealsDate"
+                  persistent
+                  width="300px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      rounded
+                      text
+                      class="mx-1"
+                      :disabled="!meals"
+                      v-bind="attrs"
+                      v-on="on"
                     >
-                      <v-btn
-                        text
-                        color="red"
-                        class="font-weight-bold"
-                        @click="datePickerMenu = false"
-                      >
-                        Cancel
-                      </v-btn>
-                      <v-spacer></v-spacer>
-                      <v-btn
-                        text
-                        color="orange"
-                        class="font-weight-bold"
-                        @click="$refs.dateMenu.save(mealsDate)"
-                      >
-                        Ok
-                      </v-btn>
-                    </v-date-picker>
-                  </v-menu> -->
+                      {{ monthAndYear }}
+                      <v-icon right>mdi-calendar</v-icon>
+                    </v-btn>
+                  </template>
+
+                  <v-date-picker
+                    v-if="datePickerMenu"
+                    v-model="mealsDate"
+                    header-color="blue-grey"
+                    color="green"
+                    show-current="false"
+                  >
+                    <v-btn
+                      text
+                      rounded
+                      color="red"
+                      class="text-none"
+                      @click="datePickerMenu = false"
+                    >
+                      Cancel
+                    </v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      text
+                      rounded
+                      color="orange"
+                      class="text-none"
+                      @click="$refs.dateMenu.save(mealsDate)"
+                    >
+                      Ok
+                    </v-btn>
+                  </v-date-picker>
+                </v-dialog>
               </div>
             </v-col>
             <v-col cols="6" class="text-right">
-              <v-tooltip left color="black">
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                    fab
-                    small
-                    :disabled="meals.length === 0"
-                    :loading="loadingRegenerate"
-                    color="success"
-                    v-bind="attrs"
-                    v-on="on"
-                    @click="regenerateMeals"
-                  >
-                    <v-icon>mdi-rotate-right</v-icon>
-                  </v-btn>
-                </template>
-                <span>Regenerate all meals</span>
-              </v-tooltip>
+              <v-btn
+                fab
+                small
+                depressed
+                :disabled="meals.length === 0"
+                :loading="loadingRegenerate"
+                color="success"
+                @click="regenerateMeals"
+              >
+                <v-icon>mdi-rotate-right</v-icon>
+              </v-btn>
             </v-col>
           </v-row>
         </v-container>
@@ -97,9 +90,7 @@
         <!-- No meals message -->
         <div class="text-center" v-if="meals.length === 0">
           <p class="subtitle-1">
-            It seems you don't have meals for today. Click generate to
-            automatically create a meal plan. Don't worry, we know what you
-            like...
+            {{ $t("mealplanner.info.p") }}
           </p>
           <v-btn
             rounded
@@ -108,7 +99,7 @@
             color="success"
           >
             <v-icon left>mdi-rotate-right</v-icon>
-            Generate
+            {{ $t("mealplanner.info.btn") }}
           </v-btn>
         </div>
 
@@ -124,7 +115,7 @@
               v-for="(meal, index) in meals"
               :key="meal.id"
             >
-              <v-card outlined class="rounded-lg">
+              <v-card outlined :disabled="meal.ate" class="rounded-lg">
                 <div class="d-flex align-center justify-space-between pr-4">
                   <!-- Meal name and time -->
                   <div>
@@ -180,7 +171,7 @@
                     dense
                     @change="ateMeal(meal)"
                     v-model="meal.ate"
-                    label="I ate this meal"
+                    :label="$t(`mealplanner.meal.ate`)"
                     color="green"
                     class="pt-0"
                   ></v-checkbox>
@@ -206,7 +197,7 @@
                     height="100%"
                   >
                     <v-card-title class="py-2">
-                      <span>Servings</span>
+                      <span>{{ $t("mealplanner.serving.title") }}</span>
                       <v-spacer></v-spacer>
                       <v-btn icon @click="$set(servingsReveal, index, false)">
                         <v-icon>mdi-chevron-down</v-icon>
@@ -241,13 +232,15 @@
                             v-on="on"
                             color="success"
                           >
-                            Edit
+                            {{ $t("mealplanner.serving.btn") }}
                           </v-btn>
                         </template>
 
                         <v-card>
                           <v-card-title>
-                            <span>Edit food servings</span>
+                            <span>{{
+                              $t("mealplanner.serving.edit.title")
+                            }}</span>
                             <v-spacer></v-spacer>
                             <v-btn
                               icon
@@ -285,7 +278,7 @@
                               color="success"
                               @click="saveServings(meal, index)"
                             >
-                              save
+                              {{ $t("mealplanner.serving.edit.btn") }}
                             </v-btn>
                           </v-card-actions>
                         </v-card>
@@ -403,6 +396,7 @@ export default {
       "getEateriesAction",
       "addSuggestedEateryAction",
       "deleteSuggestedEateryAction",
+      "saveMealHistoryAction",
     ]),
     formatTime(timeString) {
       const date = new Date("1970-01-01 " + timeString);
@@ -494,7 +488,8 @@ export default {
     async ateMeal(meal) {
       try {
         await this.saveAteMealAction(meal);
-        this.toastMessage = "Congrats! That's the spirit!";
+        await this.saveMealHistoryAction(meal);
+        this.toastMessage = "Hope you enjoyed the meal!";
         this.actionSuccess = true;
       } catch (error) {
         this.toastMessage = error.message;

@@ -1,0 +1,243 @@
+{
+  "home": {
+    "row1": {
+      "title": "Your journey to a healthy lifestyle",
+      "subtitle": "Live longer and happier by planning healthy meals everyday. Explore the vast variety of foods and meals which you never knew about in your region.",
+      "btn": "Get started"
+    },
+    "row2": {
+      "title": {
+        "one": "Eat",
+        "two": "healthier",
+        "three": "with",
+        "four": "Dema"
+      },
+      "subtitle": "Nutrition plays a major role in our lives, despite the stage of life you are in. It is the center of human development, that is why we have put our interest in this field. Diet-related diseases continue to occur every day while the level of physical activity drops. As motivated students, we realized we could change the situation with the use of technology. We decided that prevention measures are much better and it was about time to start educating people on the importance of healthy diets. If you are here that means you want to do something about your health. Before you do, maybe get to know us better.",
+      "btn": "Learn more"
+    },
+    "row3": {
+      "title": {
+        "one": "Why",
+        "two": "Dema",
+        "three": "?"
+      },
+      "subtitle": {
+        "one": {
+          "title": "Balanced diets",
+          "subtitle": "Your body needs different types of nutrients in order to function optimally. With a balanced diet, you get all the nutrients necessary for good health."
+        },
+        "two": {
+          "title": "Local foods",
+          "subtitle": "Get a chance to taste and enjoy all the foods in your region. We make sure that all meals generated are easily available in your area."
+        },
+        "three": {
+          "title": "Nearest eateries",
+          "subtitle": "You don't have time to prepare the meal? Don't worry, we got you. With our eatery suggestions, you can book a seat for any meal in any eatery near you with ease."
+        }
+      }
+    },
+    "row4": {
+      "title": "What we offer",
+      "subtitle": {
+        "one": {
+          "title": "For consumers",
+          "subtitle": {
+            "one": "Plan your daily meals",
+            "two": "Track your nutrient and caloric intake",
+            "three": "Book a seat for a meal in an eatery near you"
+          }
+        },
+        "two": {
+          "title": "For eateries",
+          "subtitle": {
+            "one": "Share your menu with consumers",
+            "two": "Receive and arrange bookings"
+          }
+        }
+      }
+    },
+    "row5": {
+      "title": "Any questions?",
+      "subtitle": "If you have any questions or just want to know more, don't hesitate to get in touch.",
+      "btn": "Contact us"
+    }
+  },
+  "about": {
+    "title1": "About us",
+    "title2": "Our mission",
+    "title3": "Meet the team",
+    "title4": "Support",
+    "p1": "We are a group of individuals trying to change the world through the use of technology. Our interest in human health started when we observed that not everyone is aware of how a simple thing as food could change their lives. People spend a lot in treatment of diet-related diseases which could be avoided by eating healthy foods. In addition, there is more that could be done in the field of nutrition and we felt that it is time we did something about that.",
+    "p2": "Food is more than just something to put to your stomach. To us, we see food as medicine where an individual like you for instance needs to know what to take, how much and how. The human body requires all sorts of nutrients and with careful planning, you can afford a healthy diet everyday and stop worrying about getting sick.",
+    "p3": "Using a smart algorithm, we can create for you a meal that contains all the nutrients required by the body within a matter of seconds. At whatever time you choose your meal, you can have it in a nearest eatery or simply decide to prepare at the comfort of your home. You can edit the servings, select the eatery of your choice and reserve a seat for that time. We have simplified the process of planning meals to a fast and more robust activity.",
+    "p4": "Our mission is to enable each and everyone have the opportunity to live a healthy lifestyle with ease. We have dedicated our time and resources into this work to ensure that we provide our clients the best of all.",
+    "p5": "Currently we are looking for support from volunteers to contribute in creating the food database. We will also appreciate any contribution in terms of money in order to fund this revolution. In whatever capacity you can, just give. We appreciate the sacrifice already."
+  },
+  "login": {
+    "title": "Welcome back!",
+    "subtitle": "Log in to continue.",
+    "email": "Email address",
+    "password": "Password",
+    "btn": "Log in",
+    "noacc": "No account?",
+    "create": "Create one",
+    "alt": "or log in with"
+  },
+  "signup": {
+    "title": "Get started!",
+    "subtitle": "Create an account to continue.",
+    "email": "Email address",
+    "password": "Password",
+    "btn": "Create",
+    "yesacc": "Already have an account?",
+    "login": "Log in",
+    "alt": "or sign up with"
+  },
+  "contact": {
+    "title": "Contact us",
+    "name": "Name",
+    "email": "Email address",
+    "message": "Message",
+    "btn": "Send"
+  },
+  "createprofile": {
+    "title": "Create your profile",
+    "subtitle": "This will help us know you better.",
+    "psubheader": "Primary",
+    "name": "Name",
+    "country": "Country",
+    "town": "Town",
+    "dob": "Date of birth",
+    "gender": "Gender",
+    "website": "Website",
+    "phone": "Phone number",
+    "bio": "Bio",
+    "btnnext": "Next",
+    "btnprev": "Back",
+    "btnfinish": "Finish",
+    "tandc": "I have read and i accept the terms and conditions.",
+    "news": "Send me any news or updates about Dema.",
+    "consumer": {
+      "header": "Consumer",
+      "title1": "Personal information",
+      "title2": "Finish up",
+      "subtitle1": "Take your time and tell us about yourself.",
+      "subtitle2": "Just one more thing..."
+    },
+    "eatery": {
+      "header": "Eatery",
+      "title1": "Primary information",
+      "title2": "Finish up",
+      "subtitle1": "Tell us about your eatery.",
+      "subtitle2": "Just one more thing..."
+    }
+  },
+  "mealplanner": {
+    "info": {
+      "p": "It seems you don't have meals for today. Click generate to automatically create a meal plan. Don't worry, we know what you like...",
+      "btn": "Generate"
+    },
+    "meal": {
+      "ate": "I ate this meal"
+    },
+    "serving": {
+      "title": "Servings",
+      "btn": "Edit",
+      "edit": {
+        "title": "Edit food servings",
+        "btn": "Save"
+      }
+    }
+  },
+  "settings": {
+    "row1": {
+      "subheader": "General",
+      "sect1": {
+        "title": "Notifications",
+        "subtitle": "Send me news about Dema"
+      },
+      "sect2": {
+        "title": "Sound",
+        "subtitle": "Alert me of any notifications"
+      },
+      "sect3": {
+        "title": "Location",
+        "subtitle": "Update my location automatically"
+      }
+    },
+    "row2": {
+      "subheader": "Appearance",
+      "sect1": {
+        "title": "Theme",
+        "dtitle": "Choose theme"
+      },
+      "sect2": {
+        "title": "Language",
+        "dtitle": "Choose language"
+      }
+    },
+    "row3": {
+      "subheader": "Preferences"
+    }
+  },
+  "profile": {
+    "dialog": {
+      "title": "Edit profile",
+      "btn": "Save"
+    },
+    "row1": {
+      "subtitle": "years old"
+    },
+    "row2": {
+      "title": "Location"
+    }
+  },
+  "eateries": {
+    "p": {
+      "no": "There are no registered eateries around you.",
+      "yes": "Eateries near you."
+    },
+    "btn": "More info"
+  },
+  "eaterydetails": {
+    "meals": {
+      "info": "You have meals suggested in this eatery",
+      "btn": {
+        "no": "book a seat",
+        "yes": "seat booked"
+      }
+    },
+    "sect1": {
+      "title": "Location"
+    },
+    "sect2": {
+      "title": "Email address"
+    },
+    "sect3": {
+      "title": "Phone number"
+    },
+    "sect4": {
+      "title": "Website"
+    },
+    "sect5": {
+      "title": "Menu"
+    }
+  },
+  "mealsinfo": {
+    "title": "Summary",
+    "subtitle1": "Nutritional content",
+    "subtitle2": "Suggested eateries",
+    "p1": "No data available",
+    "p2": "No suggested eateries found"
+  },
+  "app": {
+    "links": {
+      "one": "Meal planner",
+      "two": "Available foods",
+      "three": "Nearest eateries",
+      "four": "Profile",
+      "five": "Settings",
+      "six": "Logout"
+    }
+  }
+}

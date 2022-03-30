@@ -3,7 +3,7 @@
     <v-row align="center" class="my-2 px-4">
       <v-col cols="12">
         <h1 class="text-h5 text-md-h4 font-weight-bold text-center">
-          Contact us
+          {{ $t("contact.title") }}
         </h1>
       </v-col>
       <v-col cols="12" md="6">
@@ -16,7 +16,7 @@
             outlined
             color="success"
             prepend-icon="mdi-account"
-            label="Name"
+            :label="$t(`contact.name`)"
             v-model="name"
             :rules="[rules.required]"
           ></v-text-field>
@@ -27,7 +27,7 @@
             :rules="[rules.required]"
             color="success"
             prepend-icon="mdi-email"
-            label="Email address"
+            :label="$t(`contact.email`)"
           ></v-text-field>
           <v-textarea
             dense
@@ -36,11 +36,11 @@
             :rules="[rules.required]"
             color="success"
             prepend-icon="mdi-message"
-            label="Message"
+            :label="$t(`contact.message`)"
           ></v-textarea>
         </v-form>
         <v-btn rounded @click="send" class="text-none" color="success">
-          Send
+          {{ $t("contact.btn") }}
         </v-btn>
       </v-col>
     </v-row>

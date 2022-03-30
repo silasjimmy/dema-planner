@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import checkAuth from './routeGuards'
+import i18n from '../i18n'
 
 import Users from '@/views/Users.vue';
 import Home from '@/views/Home.vue';
@@ -23,6 +24,7 @@ import PageNotFound from '@/views/PageNotFound.vue';
 import Notifications from '@/views/Notifications.vue';
 import Messages from '@/views/Messages.vue';
 import Chat from '@/views/Chat.vue';
+import Bookings from '@/views/Bookings.vue';
 
 Vue.use(VueRouter)
 
@@ -93,7 +95,7 @@ const routes = [
     meta: {
       requiresAuth: true,
       role: 'consumer',
-      title: 'Meal planner'
+      title: i18n.t("app.links.one")
     }
   },
   {
@@ -135,6 +137,16 @@ const routes = [
       requiresAuth: true,
       role: 'eatery',
       title: 'Menu'
+    }
+  },
+  {
+    path: '/bookings',
+    name: 'bookings',
+    component: Bookings,
+    meta: {
+      requiresAuth: true,
+      role: 'eatery',
+      title: 'Bookings'
     }
   },
   {

@@ -1,0 +1,243 @@
+{
+    "home": {
+        "row1": {
+            "title": "Safari yako ya maisha yenye afya",
+            "subtitle": "Ishi kwa muda mrefu na kwa furaha zaidi kwa kupanga milo yenye afya kila siku. Chunguza aina mbalimbali ya vyakula na milo ambayo ipo katika eneo lako.",
+            "btn": "Anza leo"
+        },
+        "row2": {
+            "title": {
+                "one": "Imariasha",
+                "two": "afya",
+                "three": "na",
+                "four": "Dema"
+            },
+            "subtitle": "Lishe ina jukumu kubwa katika maisha yetu, licha ya hatua ya maisha uliyomo. Ni katikati ya maendeleo ya binadamu, ndiyo sababu tumeweka maslahi yetu katika uwanja huu. Magonjwa yanayohusiana na chakula yanaendelea kutokea kila siku wakati kiwango cha shughuli za kimwili kinapungua. Kama wanafunzi waliohamasishwa, tuligundua tunaweza kubadilisha hali kwa kutumia teknolojia. Tuliamua kwamba hatua za kuzuia ni bora zaidi na ilikuwa wakati wa kuanza kuelimisha watu juu ya umuhimu wa lishe bora. Ikiwa uko hapa inamaanisha kuwa unataka kufanya kitu kuhusu afya yako. Kabla ya kufanya hivyo, labda utujue zaidi.",
+            "btn": "Jua zaidi"
+        },
+        "row3": {
+            "title": {
+                "one": "Mbona",
+                "two": "Dema",
+                "three": "?"
+            },
+            "subtitle": {
+                "one": {
+                    "title": "Milo yenye usawa",
+                    "subtitle": "Mwili wako unahitaji aina tofauti za virutubisho ili kufanya kazi kikamilifu. Kwa lishe bora, unapata virutubishi vyote muhimu kwa afya njema."
+                },
+                "two": {
+                    "title": "Vyakula vya kienyeji",
+                    "subtitle": "Pata nafasi ya kuonja na kufurahia vyakula vyote katika eneo lako. Tunahakikisha kwamba milo yote inayozalishwa inapatikana kwa urahisi katika eneo lako."
+                },
+                "three": {
+                    "title": "Migahawa ya karibu",
+                    "subtitle": "Huna muda wa kuandaa chakula? Usijali, tumekupata. Kwa mapendekezo yetu ya mgahawa, unaweza kuweka nafasi kwa ajili ya mlo wowote katika mgahawa wowote ulio karibu nawe kwa urahisi."
+                }
+            }
+        },
+        "row4": {
+            "title": "Tunachokuahidi",
+            "subtitle": {
+                "one": {
+                    "title": "Kwa watumiaji",
+                    "subtitle": {
+                        "one": "Panga milo yako ya kila siku",
+                        "two": "Fuatilia ulaji wako wa virutubishi na kaloriki",
+                        "three": "Weka kiti kwa ajili ya mlo katika mgahawa ulio karibu nawe"
+                    }
+                },
+                "two": {
+                    "title": "Kwa migahawa",
+                    "subtitle": {
+                        "one": "Shiriki menyu yako na watumiaji",
+                        "two": "Pokea na panga uhifadhi"
+                    }
+                }
+            }
+        },
+        "row5": {
+            "title": "Maswali yoyote?",
+            "subtitle": "Ikiwa una maswali yoyote au unataka tu kujua zaidi, usisite kuwasiliana nasi.",
+            "btn": "Wasiliana nasi"
+        }
+    },
+    "about": {
+        "title1": "Kutuhusu",
+        "title2": "Dhamira yetu",
+        "title3": "Timu yetu",
+        "title4": "Msaada",
+        "p1": "Sisi ni kundi la watu binafsi wanaojaribu kubadilisha ulimwengu kupitia matumizi ya teknolojia. Kupendezwa kwetu na afya ya binadamu kulianza tulipoona kwamba si kila mtu anafahamu jinsi kitu rahisi kama chakula kinaweza kubadilisha maisha yao. Watu hutumia pesa nyingi katika matibabu ya magonjwa yanayohusiana na lishe ambayo yanaweza kuepukwa kwa kula vyakula vyenye afya. Kwa kuongezea, kuna zaidi ambayo inaweza kufanywa katika uwanja wa lishe na tulihisi kuwa ni wakati wa kufanya jambo kuhusu hilo.",
+        "p2": "Chakula ni zaidi ya kitu cha kuweka tumboni mwako. Kwetu, tunaona chakula kama dawa ambapo mtu kama wewe kwa mfano anahitaji kujua anachopaswa kunywa, kiasi gani na jinsi gani. Mwili wa mwanadamu unahitaji kila aina ya virutubisho na kwa kupanga kwa makini, unaweza kumudu chakula cha afya kila siku na kuacha kuwa na wasiwasi kuhusu ugonjwa.",
+        "p3": "Kwa kutumia algoriti mahiri, tunaweza kukuandalia chakula ambacho kina virutubishi vyote vinavyohitajika na mwili ndani ya sekunde chache. Wakati wowote unapochagua mlo wako, unaweza kuupata kwenye mgahawa ulio karibu nawe au uamue tu kutayarisha ukiwa nyumbani kwako. Unaweza kuhariri vyakula, chagua mgahawa unaopenda na uhifadhi kiti kwa wakati huo. Tumerahisisha mchakato wa kupanga milo kwa shughuli ya haraka na thabiti zaidi.",
+        "p4": "Dhamira yetu ni kuwezesha kila mmoja na kila mtu kuwa na fursa ya kuishi maisha yenye afya kwa urahisi. Tumejitolea wakati na rasilimali zetu katika kazi hii ili kuhakikisha kuwa tunawapa wateja wetu vilivyo bora zaidi ya yote.",
+        "p5": "Kwa sasa tunatafuta usaidizi kutoka kwa watu waliojitolea ili kuchangia katika kuunda hifadhidata ya chakula. Pia tutathamini mchango wowote wa fedha ili kufadhili mapinduzi haya. Kwa uwezo wowote unaoweza, toa tu. Tunashukuru dhabihu tayari."
+    },
+    "login": {
+        "title": "Karibu tena!",
+        "subtitle": "Jisajili ili kuendelea.",
+        "email": "Barua pepe",
+        "password": "Nenosiri",
+        "btn": "Ingia",
+        "noacc": "Je, huna akaunti?",
+        "create": "Tengeneza",
+        "alt": "au jisajili na"
+    },
+    "signup": {
+        "title": "Anza sasa!",
+        "subtitle": "Fungua akaunti ili kuendelea.",
+        "email": "Barua pepe",
+        "password": "Nenosiri",
+        "btn": "Tengeneza",
+        "yesacc": "Je, tayari una akaunti?",
+        "login": "Ingia",
+        "alt": "au ingia na"
+    },
+    "contact": {
+        "title": "Wasiliana nasi",
+        "name": "Jina",
+        "email": "Barua pepe",
+        "message": "Message",
+        "btn": "Tuma"
+    },
+    "createprofile": {
+        "title": "Unda wasifu wako",
+        "subtitle": "Hii itatusaidia kukujua vyema.",
+        "psubheader": "Msingi",
+        "name": "Jina",
+        "country": "Nchi",
+        "town": "Mji",
+        "dob": "Tarehe ya kuzaliwa",
+        "gender": "Jinsia",
+        "website": "Tovuti",
+        "phone": "Nambari ya simu",
+        "bio": "Wasifu",
+        "btnnext": "Mbele",
+        "btnprev": "Nyuma",
+        "btnfinish": "Maliza",
+        "tandc": "Nimesoma na ninakubali sheria na masharti.",
+        "news": "Nitumie habari au taarifa zozote kuhusu Dema.",
+        "consumer": {
+            "header": "Mtumiaji",
+            "title1": "Taarifa za kibinafsi",
+            "title2": "Malizia",
+            "subtitle1": "Chukua wakati wako na utuambie kukuhusu.",
+            "subtitle2": "Jambo moja zaidi..."
+        },
+        "eatery": {
+            "header": "Mgahawa",
+            "title1": "Taarifa za msingi",
+            "title2": "Malizia",
+            "subtitle1": "Tuambie kuhusu mgahawa wako.",
+            "subtitle2": "Jambo moja zaidi..."
+        }
+    },
+    "mealplanner": {
+        "info": {
+            "p": "Inaonekana huna milo ya leo. Bofya zalisha ili kuunda mpango wa chakula kiotomatiki. Usijali, tunajua unachopenda...",
+            "btn": "Tengeneza"
+        },
+        "meal": {
+            "ate": "Nilikula chakula hiki"
+        },
+        "serving": {
+            "title": "Vitengo",
+            "btn": "Hariri",
+            "edit": {
+                "title": "Hariri vitengo",
+                "btn": "Hifadhi"
+            }
+        }
+    },
+    "settings": {
+        "row1": {
+            "subheader": "Jumla",
+            "sect1": {
+                "title": "Arifa",
+                "subtitle": "Nitumie habari kuhusu Dema"
+            },
+            "sect2": {
+                "title": "Sauti",
+                "subtitle": "Niarifu kuhusu arifa zozote"
+            },
+            "sect3": {
+                "title": "Mahali",
+                "subtitle": "Sasisha eneo langu kiotomatiki"
+            }
+        },
+        "row2": {
+            "subheader": "Mwonekano",
+            "sect1": {
+                "title": "Mandhari",
+                "dtitle": "Chagua mandhari"
+            },
+            "sect2": {
+                "title": "Lugha",
+                "dtitle": "Chagua lugha"
+            }
+        },
+        "row3": {
+            "subheader": "Mapendeleo"
+        }
+    },
+    "profile": {
+        "dialog": {
+            "title": "Hariri wasifu",
+            "btn": "Hifadhi"
+        },
+        "row1": {
+            "subtitle": "umri"
+        },
+        "row2": {
+            "title": "Eneo"
+        }
+    },
+    "eateries": {
+        "p": {
+            "no": "Hakuna migahawa iliyosajiliwa karibu nawe.",
+            "yes": "Migahawa karibu na wewe."
+        },
+        "btn": "Maelezo zaidi"
+    },
+    "eaterydetails": {
+        "meals": {
+            "info": "Una milo iliyopendekezwa katika mkahawa huu",
+            "btn": {
+                "no": "weka kiti",
+                "yes": "kiti kishaekwa"
+            }
+        },
+        "sect1": {
+            "title": "Eneo"
+        },
+        "sect2": {
+            "title": "Barua pepe"
+        },
+        "sect3": {
+            "title": "Nambari ya simu"
+        },
+        "sect4": {
+            "title": "Tovuti"
+        },
+        "sect5": {
+            "title": "Menyu"
+        }
+    },
+    "mealsinfo": {
+        "title": "Muhtasari",
+        "subtitle1": "Maudhui ya lishe",
+        "subtitle2": "Migahawa iliyopendekezwa",
+        "p1": "Hakuna data iliyopatikana",
+        "p2": "Hakuna data iliyopatikana"
+    },
+    "app": {
+        "links": {
+            "one": "Milo",
+            "two": "Vyakula",
+            "three": "Migahawa",
+            "four": "Wasifu",
+            "five": "Mipangilio",
+            "six": "Toka"
+        }
+    }
+}

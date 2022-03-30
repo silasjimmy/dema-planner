@@ -1,41 +1,22 @@
 <template>
   <v-app v-cloak>
-    <!-- Home app bar -->
-    <v-app-bar app elevate-on-scroll v-if="!viewDashboard">
-      <v-toolbar-title>
-        <v-btn text rounded>
-          <v-img
-            :width="logoWidth"
-            height="auto"
-            src="./assets/logo-text.svg"
-          ></v-img>
-        </v-btn>
-      </v-toolbar-title>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        outlined
-        rounded
-        link
-        :small="$vuetify.breakpoint.smAndDown"
-        to="/sign-in"
-        color="success"
-        class="text-none"
-        >Log in</v-btn
-      >
-    </v-app-bar>
-
-    <!-- Dashboard app bar -->
-    <v-app-bar app elevate-on-scroll v-if="viewDashboard">
+    <!-- App bar -->
+    <v-app-bar app elevate-on-scroll>
+      <!-- Meal info drawer activator -->
       <v-app-bar-nav-icon
         class="d-sm-none"
+        v-if="viewDashboard"
         @click="rightSidenav = true"
       ></v-app-bar-nav-icon>
 
-      <!-- Page title -->
-      <v-toolbar-title class="subtitle-1 text-md-h6 font-weight-medium">
-        {{ $store.state.pageTitle }}
+      <!-- Landing pages nav activator -->
+      <v-app-bar-nav-icon
+        v-if="!viewDashboard"
+        @click="homeSideNav = true"
+      ></v-app-bar-nav-icon>
+
+      <v-toolbar-title>
+        {{ viewDashboard ? `${$store.state.pageTitle}` : "Dema" }}
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
@@ -46,14 +27,12 @@
         offset-y
         min-width="200px"
         transition="slide-y-transition"
-        v-if="$vuetify.breakpoint.xs"
+        v-if="$vuetify.breakpoint.xs && viewDashboard"
       >
         <template v-slot:activator="{ on }">
-          <v-btn icon class="mr-1" v-on="on">
-            <v-avatar size="36">
-              <img :src="profile.imageUrl" :alt="profile.name" />
-            </v-avatar>
-          </v-btn>
+          <v-avatar size="34" class="mr-1" v-on="on">
+            <img :src="profile.imageUrl" :alt="profile.name" />
+          </v-avatar>
         </template>
 
         <v-card>
@@ -81,7 +60,9 @@
                   <v-icon>mdi-account-details</v-icon>
                 </v-list-item-avatar>
                 <v-list-item-content>
-                  <v-list-item-title>Profile</v-list-item-title>
+                  <v-list-item-title>{{
+                    $t("app.links.four")
+                  }}</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
               <v-list-item link to="/settings">
@@ -89,7 +70,9 @@
                   <v-icon>mdi-cog</v-icon>
                 </v-list-item-avatar>
                 <v-list-item-content>
-                  <v-list-item-title>Settings</v-list-item-title>
+                  <v-list-item-title>{{
+                    $t("app.links.five")
+                  }}</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
 
@@ -100,7 +83,9 @@
                   <v-icon>mdi-logout</v-icon>
                 </v-list-item-avatar>
                 <v-list-item-content>
-                  <v-list-item-title>Logout</v-list-item-title>
+                  <v-list-item-title>{{
+                    $t("app.links.six")
+                  }}</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list-item-group>
@@ -109,7 +94,7 @@
       </v-menu>
 
       <!-- Notifications menu -->
-      <v-menu
+      <!-- <v-menu
         bottom
         left
         offset-y
@@ -141,7 +126,6 @@
           <v-tab class="text-none font-weight-medium">Notifications</v-tab>
           <v-tab class="text-none font-weight-medium">Messages</v-tab>
 
-          <!-- Notifications tab -->
           <v-tab-item>
             <p
               v-if="!notifications"
@@ -179,7 +163,6 @@
                     </template>
                   </v-list-item>
 
-                  <!-- Notification divider -->
                   <v-divider
                     v-if="index < notifications.length - 1"
                     :key="index"
@@ -203,7 +186,6 @@
             </v-card>
           </v-tab-item>
 
-          <!-- Messages tab -->
           <v-tab-item>
             <p
               v-if="!messages"
@@ -249,7 +231,6 @@
                     </template>
                   </v-list-item>
 
-                  <!-- Message divider -->
                   <v-divider
                     inset
                     v-if="index < message.length - 1"
@@ -274,8 +255,92 @@
             </v-card>
           </v-tab-item>
         </v-tabs>
+      </v-menu> -->
+
+      <!-- Language change button -->
+      <v-menu offset-y>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            text
+            outlined
+            :small="$vuetify.breakpoint.smAndDown"
+            v-bind="attrs"
+            v-on="on"
+            v-if="!viewDashboard"
+            class="mx-2"
+          >
+            <flag :iso="selectedLanguage.flag" />
+            <span class="ml-3">{{ selectedLanguage.language }}</span>
+            <v-icon right>mdi-chevron-down</v-icon>
+          </v-btn>
+        </template>
+
+        <v-list class="py-0">
+          <v-list-item-group mandatory color="success" v-model="languageIndex">
+            <v-list-item
+              v-for="(lang, index) in languages"
+              :key="index"
+              @click="changeLanguage(lang)"
+            >
+              <v-list-item-title>{{ lang.title }}</v-list-item-title>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
       </v-menu>
     </v-app-bar>
+
+    <!-- Home navigation drawer -->
+    <v-navigation-drawer
+      app
+      temporary
+      v-if="!viewDashboard"
+      v-model="homeSideNav"
+    >
+      <v-list rounded>
+        <v-list-item-group color="success">
+          <v-list-item link to="/home">
+            <v-list-item-icon>
+              <v-icon>mdi-home</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Home</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item link to="/about-us">
+            <v-list-item-icon>
+              <v-icon>mdi-information</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>About us</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item link to="/sign-up">
+            <v-list-item-icon>
+              <v-icon>mdi-account-plus</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Sign up</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item link to="/sign-in">
+            <v-list-item-icon>
+              <v-icon>mdi-login</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Log in</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item link to="/contact-us">
+            <v-list-item-icon>
+              <v-icon>mdi-phone</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Contact us</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </v-navigation-drawer>
 
     <!-- Dashboard left-side navigation bar -->
     <v-navigation-drawer
@@ -324,7 +389,7 @@
               <v-icon>mdi-account-details</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title>Profile</v-list-item-title>
+              <v-list-item-title>{{ $t("app.links.four") }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-list-item link to="/settings">
@@ -332,7 +397,7 @@
               <v-icon>mdi-cog</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title>Settings</v-list-item-title>
+              <v-list-item-title>{{ $t("app.links.five") }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
@@ -345,7 +410,7 @@
             <v-icon>mdi-logout</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title>Log out</v-list-item-title>
+            <v-list-item-title>{{ $t("app.links.six") }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </template>
@@ -363,6 +428,8 @@
       <meals-info
         v-if="$store.state.role === 'consumer' && $store.state.meals"
       ></meals-info>
+
+      <eatery-summary v-if="$store.state.role === 'eatery'"></eatery-summary>
     </v-navigation-drawer>
 
     <!-- Dashboard bottom navigation -->
@@ -382,16 +449,16 @@
         <span>{{ link.text }}</span>
         <v-icon>{{ link.icon }}</v-icon>
       </v-btn>
-      <v-btn link to="/settings" v-if="$vuetify.breakpoint.smAndUp">
-        <span>Settings</span>
-        <v-icon>mdi-cog</v-icon>
-      </v-btn>
       <v-btn link to="/profile" v-if="$vuetify.breakpoint.smAndUp">
-        <span>Profile</span>
+        <span>{{ $t("app.links.four") }}</span>
         <v-icon>mdi-account-details</v-icon>
       </v-btn>
+      <v-btn link to="/settings" v-if="$vuetify.breakpoint.smAndUp">
+        <span>{{ $t("app.links.five") }}</span>
+        <v-icon>mdi-cog</v-icon>
+      </v-btn>
       <v-btn link v-if="$vuetify.breakpoint.smAndUp" @click="logout">
-        <span>Log out</span>
+        <span>{{ $t("app.links.six") }}</span>
         <v-icon left>mdi-logout</v-icon>
       </v-btn>
     </v-bottom-navigation>
@@ -453,96 +520,50 @@
     <!-- Footer -->
     <v-footer app absolute padless v-if="!viewDashboard">
       <v-card flat tile color="success" class="white--text" width="100vw">
-        <v-card-text v-if="$vuetify.breakpoint.smAndDown" class="text-center">
-          <v-btn icon plain rounded link class="mx-2" to="/home" color="white">
-            <v-icon>mdi-home</v-icon>
-          </v-btn>
-          <v-btn plain rounded link class="mx-2" to="/about-us" color="white">
-            <v-icon>mdi-information</v-icon>
-          </v-btn>
-          <v-btn
-            icon
-            plain
-            rounded
-            link
-            class="mx-2"
-            to="/contact-us"
-            color="white"
-          >
-            <v-icon>mdi-phone-hangup</v-icon>
-          </v-btn>
-          <v-btn
-            icon
-            plain
-            rounded
-            link
-            class="mx-2"
-            to="/sign-in"
-            color="white"
-          >
-            <v-icon>mdi-login</v-icon>
-          </v-btn>
-          <v-btn
-            icon
-            plain
-            rounded
-            link
-            class="mx-2"
-            to="/sign-up"
-            color="white"
-          >
-            <v-icon>mdi-account-plus</v-icon>
-          </v-btn>
-        </v-card-text>
-
-        <v-card-text v-if="$vuetify.breakpoint.mdAndUp" class="text-center">
-          <v-btn plain rounded link to="/home" color="white">Home</v-btn>
-          <v-btn plain rounded link to="/about-us" color="white"
-            >About us</v-btn
-          >
-          <v-btn plain rounded link to="/contact-us" color="white"
-            >Contact us</v-btn
-          >
-          <v-btn plain rounded link to="/sign-in" color="white">Log in</v-btn>
-          <v-btn plain rounded link to="/sign-up" color="white">Sign up</v-btn>
-        </v-card-text>
-
-        <!-- <v-card-text>
+        <v-card-text>
           <v-row class="text-center">
             <v-col cols="12" md="6">
-              <h3 class="subtitle-1 text--secondary">Find us in:</h3>
-              <v-btn text rounded class="text-none">
-                <v-icon left size="24px">mdi-map-marker</v-icon>
+              <h3 class="subtitle-1 white--text">Find us in:</h3>
+              <!-- <v-btn text rounded class="text-none white--text">
+                <v-icon left size="24px" color="grey lighten-3"
+                  >mdi-map-marker</v-icon
+                >
                 P.O Box 000-00000, City, Country
+              </v-btn> -->
+              <v-btn text rounded class="text-none white--text">
+                <v-icon left size="24px" color="grey lighten-3"
+                  >mdi-email</v-icon
+                >
+                jimmysilas17@gmail.com
               </v-btn>
-              <v-btn text rounded class="text-none">
-                <v-icon left size="24px">mdi-email</v-icon>
-                dema@domain.com
-              </v-btn>
-              <v-btn text rounded class="text-none">
-                <v-icon left size="24px">mdi-phone</v-icon>
-                +254 000 000 000
+              <v-btn text rounded class="text-none white--text">
+                <v-icon left size="24px" color="grey lighten-3"
+                  >mdi-phone</v-icon
+                >
+                +254 719 773 594
               </v-btn>
             </v-col>
             <v-col cols="12" md="6">
-              <h3 class="subtitle-1 text--secondary">
+              <h3 class="subtitle-1 white--text">
                 Stay updated on our social platforms
               </h3>
               <v-btn class="mx-2" icon>
-                <v-icon size="24px">mdi-facebook</v-icon>
+                <v-icon size="24px" color="grey lighten-3">mdi-facebook</v-icon>
               </v-btn>
               <v-btn class="mx-2" icon>
-                <v-icon size="24px">mdi-linkedin</v-icon>
+                <v-icon size="24px" color="grey lighten-3">mdi-linkedin</v-icon>
               </v-btn>
               <v-btn class="mx-2" icon>
-                <v-icon size="24px">mdi-twitter</v-icon>
+                <v-icon size="24px" color="grey lighten-3">mdi-twitter</v-icon>
               </v-btn>
               <v-btn class="mx-2" icon>
-                <v-icon size="24px">mdi-instagram</v-icon>
+                <v-icon size="24px" color="grey lighten-3"
+                  >mdi-instagram</v-icon
+                >
               </v-btn>
             </v-col>
           </v-row>
-        </v-card-text> -->
+        </v-card-text>
 
         <v-divider></v-divider>
 
@@ -581,6 +602,7 @@
 import { getAuth, signOut } from "firebase/auth";
 import { mapState, mapGetters } from "vuex";
 import MealsInfo from "./components/MealsInfo.vue";
+import EaterySummary from "./components/EaterySummary.vue";
 
 export default {
   name: "App",
@@ -592,6 +614,8 @@ export default {
     this.$store.commit("setPageLoading", true);
 
     if (!this.$store.state.loggedIn) {
+      this.selectedLanguage = this.languages[this.languageIndex];
+
       window.addEventListener("scroll", () => {
         this.scrollYPos = window.scrollY;
       });
@@ -606,9 +630,16 @@ export default {
       pageLoadColor: "",
       pageLoadValue: 0,
       rightSidenav: false,
+      homeSideNav: false,
       notificationsMenu: false,
       isOnline: true,
       showBanner: false,
+      languageIndex: 0,
+      selectedLanguage: {},
+      languages: [
+        { flag: "us", language: "en", title: "English" },
+        { flag: "ke", language: "sw", title: "Swahili" },
+      ],
       scrollOptions: {
         duration: 400,
         easing: "easeInQuint",
@@ -616,6 +647,10 @@ export default {
     };
   },
   methods: {
+    changeLanguage(language) {
+      this.selectedLanguage = language;
+      this.$i18n.locale = this.selectedLanguage.language;
+    },
     lastReply(message) {
       return message.replies[message.replies.length - 1];
     },
@@ -680,7 +715,13 @@ export default {
       }
     },
   },
-  components: { MealsInfo },
+  watch: {
+    "$store.state.settings": function (settings) {
+      this.$vuetify.theme.dark = settings.appTheme === "dark";
+      this.$i18n.locale = settings.appLanguage;
+    },
+  },
+  components: { MealsInfo, EaterySummary },
 };
 </script>
 

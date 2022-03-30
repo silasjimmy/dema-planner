@@ -1,19 +1,25 @@
 <template>
   <v-card flat :width="cardWidth" class="mx-auto">
-    <v-card-title class="justify-center">Create your profile</v-card-title>
-    <v-card-subtitle class="text-center"
-      >This will help us know you better</v-card-subtitle
-    >
+    <v-card-title class="justify-center">{{
+      $t("createprofile.title")
+    }}</v-card-title>
+    <v-card-subtitle class="text-center">{{
+      $t("createprofile.subtitle")
+    }}</v-card-subtitle>
 
     <v-card-text>
       <v-tabs fixed-tabs icons-and-text v-model="tab" color="success">
         <v-tabs-slider></v-tabs-slider>
         <v-tab class="text-capitalize">
-          <span v-if="$vuetify.breakpoint.smAndUp">Consumer</span>
+          <span v-if="$vuetify.breakpoint.smAndUp">{{
+            $t("createprofile.consumer.header")
+          }}</span>
           <v-icon>mdi-account-details</v-icon>
         </v-tab>
         <v-tab class="text-capitalize">
-          <span v-if="$vuetify.breakpoint.smAndUp">Eatery</span>
+          <span v-if="$vuetify.breakpoint.smAndUp">{{
+            $t("createprofile.eatery.header")
+          }}</span>
           <v-icon>mdi-table-chair</v-icon>
         </v-tab>
       </v-tabs>
@@ -44,7 +50,7 @@
 
             <v-window v-model="consumerWindowStep">
               <v-window-item :value="1">
-                <v-subheader>Primary</v-subheader>
+                <v-subheader>{{ $t("createprofile.psubheader") }}</v-subheader>
                 <v-form ref="consumerOne" lazy-validation>
                   <v-container>
                     <v-row>
@@ -55,7 +61,7 @@
                           outlined
                           :rules="[rules.required]"
                           v-model="consumerProfile.name"
-                          label="Name"
+                          :label="$t(`createprofile.name`)"
                           color="success"
                           type="text"
                           prepend-icon="mdi-account"
@@ -68,7 +74,7 @@
                           outlined
                           :rules="[rules.required, rules.age]"
                           v-model="consumerProfile.dateOfBirth"
-                          label="Date of birth"
+                          :label="$t(`createprofile.dob`)"
                           color="success"
                           type="date"
                           prepend-icon="mdi-calendar"
@@ -84,7 +90,7 @@
                           color="success"
                           item-color="success"
                           :items="['Male', 'Female']"
-                          label="Gender"
+                          :label="$t(`createprofile.gender`)"
                           prepend-icon="mdi-gender-male-female"
                         ></v-select>
                       </v-col>
@@ -95,7 +101,7 @@
                           outlined
                           :rules="[rules.required]"
                           v-model="consumerProfile.town"
-                          label="City"
+                          :label="$t(`createprofile.town`)"
                           color="success"
                           type="text"
                           prepend-icon="mdi-map-marker"
@@ -108,7 +114,7 @@
                           outlined
                           :rules="[rules.required]"
                           v-model="consumerProfile.country"
-                          label="Country"
+                          :label="$t(`createprofile.country`)"
                           color="success"
                           type="text"
                           prepend-icon="mdi-map-marker"
@@ -390,63 +396,12 @@
                         conditions</span
                       >
                     </v-btn>
-
-                    <!-- Terms and conditions dialog -->
-                    <v-dialog
-                      scrollable
-                      v-model="termsAndConditionsDialog"
-                      width="600"
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <span
-                          class="green--text"
-                          v-bind="attrs"
-                          v-on="on"
-                          @click.stop
-                        ></span>
-                      </template>
-
-                      <v-card height="70vh">
-                        <v-card-title
-                          class="d-flex align-center justify-space-between"
-                        >
-                          <span class="text-h6">Terms &amp; Conditions</span>
-                          <v-btn icon @click="termsAndConditionsDialog = false">
-                            <v-icon>mdi-close</v-icon>
-                          </v-btn>
-                        </v-card-title>
-                        <v-card-text>
-                          <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit, sed do eiusmod tempor incididunt ut labore et
-                            dolore magna aliqua. Ut enim ad minim veniam, quis
-                            nostrud exercitation ullamco laboris nisi ut aliquip
-                            ex ea commodo consequat. Duis aute irure dolor in
-                            reprehenderit in voluptate velit esse cillum dolore
-                            eu fugiat nulla pariatur. Excepteur sint occaecat
-                            cupidatat non proident, sunt in culpa qui officia
-                            deserunt mollit anim id est laborum. Lorem ipsum
-                            dolor sit, amet consectetur adipisicing elit. Quos
-                            modi unde quis harum nihil possimus dolorem hic, ea
-                            mollitia dolor asperiores, nemo quasi aliquam
-                            aperiam voluptatem. Dolores voluptatem consectetur
-                            dolor.
-                          </p>
-                          <v-checkbox
-                            label="I agree with these terms and conditions"
-                            color="success"
-                            hide-details
-                            dense
-                          ></v-checkbox>
-                        </v-card-text>
-                      </v-card>
-                    </v-dialog>
                   </div>
 
                   <!-- Terms and conditions checkbox -->
                   <v-checkbox
                     v-model="agreeTermsAndConditions"
-                    label="I have read and i accept the terms and conditions"
+                    :label="$t(`createprofile.tandc`)"
                     color="success"
                     hide-details
                     dense
@@ -457,7 +412,7 @@
                   <v-checkbox
                     v-model="consumerSettings.receiveNews"
                     color="success"
-                    label="Send me any news or updates about Dema"
+                    :label="$t(`createprofile.news`)"
                     hide-details
                     dense
                   ></v-checkbox>
@@ -477,7 +432,7 @@
                 @click="consumerWindowStep--"
               >
                 <v-icon left>mdi-chevron-left</v-icon>
-                <span class="mr-2">Back</span>
+                <span class="mr-2">{{ $t("createprofile.btnprev") }}</span>
               </v-btn>
 
               <v-spacer></v-spacer>
@@ -490,7 +445,7 @@
                 v-if="consumerWindowStep < 2"
                 @click="consumerNext"
               >
-                <span class="ml-2">Next</span>
+                <span class="ml-2">{{ $t("createprofile.btnnext") }}</span>
                 <v-icon right>mdi-chevron-right</v-icon>
               </v-btn>
 
@@ -504,7 +459,7 @@
                 class="text-none"
               >
                 <v-icon left>mdi-check-all</v-icon>
-                <span class="mr-2">Finish</span>
+                <span class="mr-2">{{ $t("createprofile.btnfinish") }}</span>
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -519,7 +474,7 @@
 
             <v-window v-model="eateryWindowStep">
               <v-window-item :value="1">
-                <v-subheader>Primary</v-subheader>
+                <v-subheader>{{ $t("createprofile.psubheader") }}</v-subheader>
                 <v-form lazy-validation ref="eateryOne">
                   <v-container>
                     <v-row>
@@ -530,7 +485,7 @@
                           outlined
                           :rules="[rules.required]"
                           v-model="eateryProfile.name"
-                          label="Name"
+                          :label="$t(`createprofile.name`)"
                           color="success"
                           type="text"
                           prepend-icon="mdi-account"
@@ -541,8 +496,9 @@
                         <v-text-field
                           dense
                           outlined
+                          :rules="[rules.required]"
                           v-model="eateryProfile.town"
-                          label="Town"
+                          :label="$t(`createprofile.town`)"
                           color="success"
                           type="text"
                           prepend-icon="mdi-map-marker"
@@ -553,8 +509,9 @@
                         <v-text-field
                           dense
                           outlined
+                          :rules="[rules.required]"
                           v-model="eateryProfile.country"
-                          label="Country"
+                          :label="$t(`createprofile.country`)"
                           color="success"
                           type="text"
                           prepend-icon="mdi-map-marker"
@@ -567,7 +524,7 @@
                           outlined
                           :rules="[rules.required]"
                           v-model="eateryProfile.website"
-                          label="Website link"
+                          :label="$t(`createprofile.website`)"
                           color="success"
                           type="url"
                           prepend-icon="mdi-web"
@@ -580,7 +537,7 @@
                           outlined
                           :rules="[rules.required]"
                           v-model="eateryProfile.phoneNumber"
-                          label="Phone number"
+                          :label="$t(`createprofile.phone`)"
                           color="success"
                           type="tel"
                           prepend-icon="mdi-phone"
@@ -596,7 +553,7 @@
                           v-model="eateryProfile.bio"
                           rows="1"
                           color="success"
-                          label="Bio"
+                          :label="$t(`createprofile.bio`)"
                           prepend-icon="mdi-message"
                         ></v-textarea>
                       </v-col>
@@ -876,63 +833,12 @@
                         conditions</span
                       >
                     </v-btn>
-
-                    <!-- Terms and conditions dialog -->
-                    <v-dialog
-                      scrollable
-                      v-model="termsAndConditionsDialog"
-                      width="600"
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <span
-                          class="green--text"
-                          v-bind="attrs"
-                          v-on="on"
-                          @click.stop
-                        ></span>
-                      </template>
-
-                      <v-card height="70vh">
-                        <v-card-title
-                          class="d-flex align-center justify-space-between"
-                        >
-                          <span class="text-h6">Terms &amp; Conditions</span>
-                          <v-btn icon @click="termsAndConditionsDialog = false">
-                            <v-icon>mdi-close</v-icon>
-                          </v-btn>
-                        </v-card-title>
-                        <v-card-text>
-                          <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit, sed do eiusmod tempor incididunt ut labore et
-                            dolore magna aliqua. Ut enim ad minim veniam, quis
-                            nostrud exercitation ullamco laboris nisi ut aliquip
-                            ex ea commodo consequat. Duis aute irure dolor in
-                            reprehenderit in voluptate velit esse cillum dolore
-                            eu fugiat nulla pariatur. Excepteur sint occaecat
-                            cupidatat non proident, sunt in culpa qui officia
-                            deserunt mollit anim id est laborum. Lorem ipsum
-                            dolor sit, amet consectetur adipisicing elit. Quos
-                            modi unde quis harum nihil possimus dolorem hic, ea
-                            mollitia dolor asperiores, nemo quasi aliquam
-                            aperiam voluptatem. Dolores voluptatem consectetur
-                            dolor.
-                          </p>
-                          <v-checkbox
-                            label="I agree with these terms and conditions"
-                            color="success"
-                            hide-details
-                            dense
-                          ></v-checkbox>
-                        </v-card-text>
-                      </v-card>
-                    </v-dialog>
                   </div>
                   <v-row>
                     <v-col cols="12">
                       <v-checkbox
                         v-model="agreeTermsAndConditions"
-                        label="I have read and i accept the terms and conditions"
+                        :label="$t(`createprofile.tandc`)"
                         color="success"
                         hide-details
                         dense
@@ -941,7 +847,7 @@
                       <v-checkbox
                         v-model="eaterySettings.receiveNews"
                         color="success"
-                        label="Send me any news or updates about Dema"
+                        :label="$t(`createprofile.news`)"
                         hide-details
                         dense
                       ></v-checkbox>
@@ -963,7 +869,7 @@
                 @click="eateryWindowStep--"
               >
                 <v-icon left>mdi-chevron-left</v-icon>
-                <span class="mr-2">Back</span>
+                <span class="mr-2">{{ $t("createprofile.btnprev") }}</span>
               </v-btn>
 
               <v-spacer></v-spacer>
@@ -976,7 +882,7 @@
                 v-if="eateryWindowStep < 2"
                 @click="eateryNext"
               >
-                <span class="ml-2">Next</span>
+                <span class="ml-2">{{ $t("createprofile.btnnext") }}</span>
                 <v-icon right>mdi-chevron-right</v-icon>
               </v-btn>
 
@@ -989,11 +895,36 @@
                 color="success"
               >
                 <v-icon left>mdi-check-all</v-icon>
-                <span class="text-none mr-2">Finish</span>
+                <span class="text-none mr-2">{{
+                  $t("createprofile.btnfinish")
+                }}</span>
               </v-btn>
             </v-card-actions>
           </v-card>
         </v-tab-item>
+
+        <!-- Terms and conditions dialog -->
+        <v-dialog scrollable v-model="termsAndConditionsDialog" width="600">
+          <v-card max-height="70vh">
+            <v-card-title class="justify-center"
+              >Terms &amp; Conditions
+            </v-card-title>
+            <v-card-text class="text-center">
+              By accepting this you agree that you are 18 years and above. Any
+              data acquired through this platform will not be shared with anyone
+              else.
+            </v-card-text>
+            <v-card-actions class="justify-center">
+              <v-btn
+                text
+                rounded
+                @click="termsAndConditionsDialog = false"
+                color="success"
+                >close</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-tabs-items>
     </v-card-text>
   </v-card>
@@ -1079,7 +1010,7 @@ export default {
         receiveNews: true,
         notificationsAlert: false,
         autoUpdateLocation: true,
-        appLanguage: "english",
+        appLanguage: "en",
         appTheme: "light",
         mealTimes: [
           {
@@ -1107,7 +1038,7 @@ export default {
       eaterySettings: {
         receiveNews: true,
         notificationsAlert: false,
-        appLanguage: "english",
+        appLanguage: "en",
         appTheme: "light",
       },
       rules: {
@@ -1125,41 +1056,41 @@ export default {
     currentConsumerTitle() {
       switch (this.consumerWindowStep) {
         case 1:
-          return "Personal information";
+          return this.$t("createprofile.consumer.title1");
         // case 2:
         //   return "Dietary information";
         // case 3:
         //   return "Goals";
         default:
-          return "Finish up";
+          return this.$t("createprofile.consumer.title2");
       }
     },
     currentConsumerSubtitle() {
       switch (this.consumerWindowStep) {
         case 1:
-          return "Take your time and tell us about yourself.";
+          return this.$t("createprofile.consumer.subtitle1");
         // case 2:
         //   return "Select your preferred diet and any foods you are allergic to.";
         // case 3:
         //   return "Anything you want to achieve by doing this?";
         default:
-          return "Just one more thing...";
+          return this.$t("createprofile.consumer.subtitle2");
       }
     },
     currentEateryTitle() {
       switch (this.eateryWindowStep) {
         case 1:
-          return "Primary information";
+          return this.$t("createprofile.eatery.title1");
         default:
-          return "Finish up";
+          return this.$t("createprofile.eatery.title2");
       }
     },
     currentEaterySubtitle() {
       switch (this.eateryWindowStep) {
         case 1:
-          return "Tell us about your eatery.";
+          return this.$t("createprofile.eatery.subtitle1");
         default:
-          return "Just one more thing...";
+          return this.$t("createprofile.eatery.title2");
       }
     },
     cardWidth() {

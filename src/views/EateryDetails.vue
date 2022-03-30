@@ -1,8 +1,8 @@
 <template>
   <v-container fluid>
-    <!-- Back button -->
     <v-card outlined class="rounded-lg">
       <v-card-title>
+        <!-- Back button -->
         <v-btn icon @click="$router.go(-1)">
           <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
@@ -56,6 +56,35 @@
               </div>
             </v-col>
 
+            <v-col cols="12" v-if="userMeals.length > 0">
+              <p class="text-center mb-0">
+                {{ $t("eaterydetails.meals.info") }}
+              </p>
+              <div
+                v-for="(meal, index) in userMeals"
+                :key="index"
+                class="d-flex justify-space-between align-center mt-4"
+              >
+                <span class="subtitle-1 text--primary">{{
+                  meal.mealName
+                }}</span>
+                <v-btn
+                  small
+                  :disabled="meal.reservedSeat"
+                  :loading="bookSeatLoading[index]"
+                  color="success"
+                  @click="bookSeat(index)"
+                >
+                  {{
+                    meal.reservedSeat
+                      ? $t("eaterydetails.meals.btn.yes")
+                      : $t("eaterydetails.meals.btn.no")
+                  }}
+                  <v-icon right v-if="meal.reservedSeat">mdi-check-all</v-icon>
+                </v-btn>
+              </div>
+            </v-col>
+
             <v-col cols="12" lg="5" class="mx-auto mx-lg-0">
               <v-list two-line class="py-0">
                 <!-- Location -->
@@ -64,7 +93,9 @@
                     <v-icon> mdi-map-marker </v-icon>
                   </v-list-item-icon>
                   <v-list-item-content>
-                    <v-list-item-title>Location</v-list-item-title>
+                    <v-list-item-title>{{
+                      $t("eaterydetails.sect1.title")
+                    }}</v-list-item-title>
                     <v-list-item-subtitle class="text-capitalize"
                       >{{ eatery.town }},
                       {{ eatery.country }}</v-list-item-subtitle
@@ -78,7 +109,9 @@
                     <v-icon> mdi-email </v-icon>
                   </v-list-item-icon>
                   <v-list-item-content>
-                    <v-list-item-title>Email address</v-list-item-title>
+                    <v-list-item-title>{{
+                      $t("eaterydetails.sect2.title")
+                    }}</v-list-item-title>
                     <v-list-item-subtitle>{{
                       eatery.email
                     }}</v-list-item-subtitle>
@@ -91,7 +124,9 @@
                     <v-icon> mdi-phone </v-icon>
                   </v-list-item-icon>
                   <v-list-item-content>
-                    <v-list-item-title>Phone number</v-list-item-title>
+                    <v-list-item-title>{{
+                      $t("eaterydetails.sect3.title")
+                    }}</v-list-item-title>
                     <v-list-item-subtitle>{{
                       eatery.phoneNumber
                     }}</v-list-item-subtitle>
@@ -104,7 +139,9 @@
                     <v-icon>mdi-web</v-icon>
                   </v-list-item-icon>
                   <v-list-item-content>
-                    <v-list-item-title>Website</v-list-item-title>
+                    <v-list-item-title>{{
+                      $t("eaterydetails.sect4.title")
+                    }}</v-list-item-title>
                     <v-list-item-subtitle>{{
                       eatery.website
                     }}</v-list-item-subtitle>
@@ -140,7 +177,9 @@
               >
                 <template v-slot:top>
                   <v-toolbar flat class="rounded-lg">
-                    <v-toolbar-title>Menu</v-toolbar-title>
+                    <v-toolbar-title class="d-none d-sm-flex">{{
+                      $t("eaterydetails.sect5.title")
+                    }}</v-toolbar-title>
 
                     <v-spacer></v-spacer>
 
@@ -173,11 +212,20 @@
         </v-container>
       </v-card-text>
     </v-card>
+
+    <!-- Action toast -->
+    <toast
+      :show="showToast"
+      :message="toastMessage"
+      :success="actionSuccess"
+      @close="showToast = false"
+    ></toast>
   </v-container>
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
+import Toast from "@/components/Toast.vue";
 
 export default {
   name: "EateryDetails",
@@ -185,16 +233,26 @@ export default {
   async created() {
     if (this.$store.state.eateries.length === 0) await this.getEateriesAction();
     if (this.$store.state.allMenus.length === 0) await this.setAllMenusAction();
+    if (this.$store.state.suggestedEateries.length === 0)
+      await this.getSuggestedEateriesAction();
 
-    // Retrieve the eatery with the specified id
     this.eatery = this.getEateryById(this.id);
     this.menu = this.getMenuById(this.eatery.id);
+    this.userMeals = this.suggestedEateries.filter(
+      (e) => e.eateryName === this.eatery.name
+    );
+    this.bookSeatLoading = this.userMeals.map(() => false);
   },
   data() {
     return {
       eatery: {},
       menu: {},
+      userMeals: [],
+      bookSeatLoading: [],
       searchFood: "",
+      showToast: false,
+      toastMessage: "",
+      actionSuccess: true,
       headers: [
         { text: "Name", value: "name", align: "center" },
         { text: "Cost", value: "cost", align: "center", sortable: false },
@@ -202,16 +260,59 @@ export default {
     };
   },
   computed: {
+    ...mapState(["suggestedEateries"]),
     ...mapGetters(["getEateryById", "getMenuById"]),
   },
   methods: {
-    ...mapActions(["getEateriesAction", "setAllMenusAction"]),
+    ...mapActions([
+      "getEateriesAction",
+      "setAllMenusAction",
+      "getSuggestedEateriesAction",
+      "updateSuggestedEateryAction",
+      "addEateryBookingAction",
+    ]),
+    async bookSeat(index) {
+      try {
+        this.$set(this.bookSeatLoading, index, true);
+        const userMeal = this.userMeals[index];
+
+        const booking = {
+          name: this.$store.state.profile.name,
+          email: this.$store.state.email,
+          created: new Date(),
+          meals: [
+            {
+              time: userMeal.mealTime,
+              foods: userMeal.foods.map((f) => f.name),
+            },
+          ],
+        };
+
+        await this.addEateryBookingAction({
+          email: this.eatery.email,
+          booking: booking,
+        });
+        await this.updateSuggestedEateryAction(userMeal);
+
+        this.toastMessage = "Seat booked successfully!";
+        this.actionSuccess = true;
+      } catch (error) {
+        this.toastMessage = error.code;
+        this.actionSuccess = false;
+      } finally {
+        this.$set(this.bookSeatLoading, index, false);
+        this.showToast = true;
+      }
+    },
   },
   props: {
     id: {
       type: Number,
       default: 0,
     },
+  },
+  components: {
+    Toast,
   },
 };
 </script>
