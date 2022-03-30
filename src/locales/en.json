@@ -62,6 +62,76 @@
       "btn": "Contact us"
     }
   },
+  "about": {
+    "title1": "About us",
+    "title2": "Our mission",
+    "title3": "Meet the team",
+    "title4": "Support",
+    "p1": "We are a group of individuals trying to change the world through the use of technology. Our interest in human health started when we observed that not everyone is aware of how a simple thing as food could change their lives. People spend a lot in treatment of diet-related diseases which could be avoided by eating healthy foods. In addition, there is more that could be done in the field of nutrition and we felt that it is time we did something about that.",
+    "p2": "Food is more than just something to put to your stomach. To us, we see food as medicine where an individual like you for instance needs to know what to take, how much and how. The human body requires all sorts of nutrients and with careful planning, you can afford a healthy diet everyday and stop worrying about getting sick.",
+    "p3": "Using a smart algorithm, we can create for you a meal that contains all the nutrients required by the body within a matter of seconds. At whatever time you choose your meal, you can have it in a nearest eatery or simply decide to prepare at the comfort of your home. You can edit the servings, select the eatery of your choice and reserve a seat for that time. We have simplified the process of planning meals to a fast and more robust activity.",
+    "p4": "Our mission is to enable each and everyone have the opportunity to live a healthy lifestyle with ease. We have dedicated our time and resources into this work to ensure that we provide our clients the best of all.",
+    "p5": "Currently we are looking for support from volunteers to contribute in creating the food database. We will also appreciate any contribution in terms of money in order to fund this revolution. In whatever capacity you can, just give. We appreciate the sacrifice already."
+  },
+  "login": {
+    "title": "Welcome back!",
+    "subtitle": "Log in to continue.",
+    "email": "Email address",
+    "password": "Password",
+    "btn": "Log in",
+    "noacc": "No account?",
+    "create": "Create one",
+    "alt": "or log in with"
+  },
+  "signup": {
+    "title": "Get started!",
+    "subtitle": "Create an account to continue.",
+    "email": "Email address",
+    "password": "Password",
+    "btn": "Create",
+    "yesacc": "Already have an account?",
+    "login": "Log in",
+    "alt": "or sign up with"
+  },
+  "contact": {
+    "title": "Contact us",
+    "name": "Name",
+    "email": "Email address",
+    "message": "Message",
+    "btn": "Send"
+  },
+  "createprofile": {
+    "title": "Create your profile",
+    "subtitle": "This will help us know you better.",
+    "psubheader": "Primary",
+    "name": "Name",
+    "country": "Country",
+    "town": "Town",
+    "dob": "Date of birth",
+    "gender": "Gender",
+    "website": "Website",
+    "phone": "Phone number",
+    "bio": "Bio",
+    "btnnext": "Next",
+    "btnprev": "Back",
+    "btnfinish": "Finish",
+    "tandc": "I have read and i accept the terms and conditions.",
+    "news": "Send me any news or updates about Dema.",
+    "consumer": {
+      "header": "Consumer",
+      "title1": "Personal information",
+      "title2": "Finish up",
+      "subtitle1": "Take your time and tell us about yourself.",
+      "subtitle2": "Just one more thing..."
+    },
+    "eatery": {
+      "header": "Eatery",
+      "title1": "Primary information",
+      "title2": "Finish up",
+      "subtitle1": "Tell us about your eatery.",
+      "subtitle2": "Just one more thing..."
+    }
+  },
   "mealplanner": {
     "info": {
       "p": "It seems you don't have meals for today. Click generate to automatically create a meal plan. Don't worry, we know what you like...",
@@ -156,6 +226,18 @@
   "mealsinfo": {
     "title": "Summary",
     "subtitle1": "Nutritional content",
-    "subtitle2": "Suggested eateries"
+    "subtitle2": "Suggested eateries",
+    "p1": "No data available",
+    "p2": "No suggested eateries found"
+  },
+  "app": {
+    "links": {
+      "one": "Meal planner",
+      "two": "Available foods",
+      "three": "Nearest eateries",
+      "four": "Profile",
+      "five": "Settings",
+      "six": "Logout"
+    }
   }
 }

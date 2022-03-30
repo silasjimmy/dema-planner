@@ -279,6 +279,7 @@ export default {
         const booking = {
           name: this.$store.state.profile.name,
           email: this.$store.state.email,
+          created: new Date(),
           meals: [
             {
               time: userMeal.mealTime,

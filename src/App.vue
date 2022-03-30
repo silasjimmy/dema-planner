@@ -60,7 +60,9 @@
                   <v-icon>mdi-account-details</v-icon>
                 </v-list-item-avatar>
                 <v-list-item-content>
-                  <v-list-item-title>Profile</v-list-item-title>
+                  <v-list-item-title>{{
+                    $t("app.links.four")
+                  }}</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
               <v-list-item link to="/settings">
@@ -68,7 +70,9 @@
                   <v-icon>mdi-cog</v-icon>
                 </v-list-item-avatar>
                 <v-list-item-content>
-                  <v-list-item-title>Settings</v-list-item-title>
+                  <v-list-item-title>{{
+                    $t("app.links.five")
+                  }}</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
 
@@ -79,7 +83,9 @@
                   <v-icon>mdi-logout</v-icon>
                 </v-list-item-avatar>
                 <v-list-item-content>
-                  <v-list-item-title>Logout</v-list-item-title>
+                  <v-list-item-title>{{
+                    $t("app.links.six")
+                  }}</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list-item-group>
@@ -269,7 +275,7 @@
           </v-btn>
         </template>
 
-        <v-list>
+        <v-list class="py-0">
           <v-list-item-group mandatory color="success" v-model="languageIndex">
             <v-list-item
               v-for="(lang, index) in languages"
@@ -383,7 +389,7 @@
               <v-icon>mdi-account-details</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title>Profile</v-list-item-title>
+              <v-list-item-title>{{ $t("app.links.four") }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-list-item link to="/settings">
@@ -391,7 +397,7 @@
               <v-icon>mdi-cog</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title>Settings</v-list-item-title>
+              <v-list-item-title>{{ $t("app.links.five") }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
@@ -404,7 +410,7 @@
             <v-icon>mdi-logout</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title>Log out</v-list-item-title>
+            <v-list-item-title>{{ $t("app.links.six") }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </template>
@@ -443,16 +449,16 @@
         <span>{{ link.text }}</span>
         <v-icon>{{ link.icon }}</v-icon>
       </v-btn>
-      <v-btn link to="/settings" v-if="$vuetify.breakpoint.smAndUp">
-        <span>Settings</span>
-        <v-icon>mdi-cog</v-icon>
-      </v-btn>
       <v-btn link to="/profile" v-if="$vuetify.breakpoint.smAndUp">
-        <span>Profile</span>
+        <span>{{ $t("app.links.four") }}</span>
         <v-icon>mdi-account-details</v-icon>
       </v-btn>
+      <v-btn link to="/settings" v-if="$vuetify.breakpoint.smAndUp">
+        <span>{{ $t("app.links.five") }}</span>
+        <v-icon>mdi-cog</v-icon>
+      </v-btn>
       <v-btn link v-if="$vuetify.breakpoint.smAndUp" @click="logout">
-        <span>Log out</span>
+        <span>{{ $t("app.links.six") }}</span>
         <v-icon left>mdi-logout</v-icon>
       </v-btn>
     </v-bottom-navigation>
@@ -514,49 +520,50 @@
     <!-- Footer -->
     <v-footer app absolute padless v-if="!viewDashboard">
       <v-card flat tile color="success" class="white--text" width="100vw">
-        <v-card-text class="text-center">
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eum
-          consequatur temporibus earum minus doloremque. Quae impedit nihil
-          similique sed quibusdam ratione minus, doloribus commodi reprehenderit
-          molestiae excepturi nam repudiandae. Architecto?
-        </v-card-text>
-
-        <!-- <v-card-text>
+        <v-card-text>
           <v-row class="text-center">
             <v-col cols="12" md="6">
-              <h3 class="subtitle-1 text--secondary">Find us in:</h3>
-              <v-btn text rounded class="text-none">
-                <v-icon left size="24px">mdi-map-marker</v-icon>
+              <h3 class="subtitle-1 white--text">Find us in:</h3>
+              <!-- <v-btn text rounded class="text-none white--text">
+                <v-icon left size="24px" color="grey lighten-3"
+                  >mdi-map-marker</v-icon
+                >
                 P.O Box 000-00000, City, Country
+              </v-btn> -->
+              <v-btn text rounded class="text-none white--text">
+                <v-icon left size="24px" color="grey lighten-3"
+                  >mdi-email</v-icon
+                >
+                jimmysilas17@gmail.com
               </v-btn>
-              <v-btn text rounded class="text-none">
-                <v-icon left size="24px">mdi-email</v-icon>
-                dema@domain.com
-              </v-btn>
-              <v-btn text rounded class="text-none">
-                <v-icon left size="24px">mdi-phone</v-icon>
-                +254 000 000 000
+              <v-btn text rounded class="text-none white--text">
+                <v-icon left size="24px" color="grey lighten-3"
+                  >mdi-phone</v-icon
+                >
+                +254 719 773 594
               </v-btn>
             </v-col>
             <v-col cols="12" md="6">
-              <h3 class="subtitle-1 text--secondary">
+              <h3 class="subtitle-1 white--text">
                 Stay updated on our social platforms
               </h3>
               <v-btn class="mx-2" icon>
-                <v-icon size="24px">mdi-facebook</v-icon>
+                <v-icon size="24px" color="grey lighten-3">mdi-facebook</v-icon>
               </v-btn>
               <v-btn class="mx-2" icon>
-                <v-icon size="24px">mdi-linkedin</v-icon>
+                <v-icon size="24px" color="grey lighten-3">mdi-linkedin</v-icon>
               </v-btn>
               <v-btn class="mx-2" icon>
-                <v-icon size="24px">mdi-twitter</v-icon>
+                <v-icon size="24px" color="grey lighten-3">mdi-twitter</v-icon>
               </v-btn>
               <v-btn class="mx-2" icon>
-                <v-icon size="24px">mdi-instagram</v-icon>
+                <v-icon size="24px" color="grey lighten-3"
+                  >mdi-instagram</v-icon
+                >
               </v-btn>
             </v-col>
           </v-row>
-        </v-card-text> -->
+        </v-card-text>
 
         <v-divider></v-divider>
 

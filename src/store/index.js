@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import i18n from '../i18n'
 
 Vue.use(Vuex)
 
@@ -74,12 +75,12 @@ export default new Vuex.Store({
       switch (role) {
         case 'consumer':
           state.dashboardLinks = [
-            { url: "/meal-planner", icon: "mdi-hamburger", text: "Meal planner" },
-            { url: "/available-foods", icon: "mdi-pizza", text: "Available foods" },
+            { url: "/meal-planner", icon: "mdi-hamburger", text: i18n.t("app.links.one") },
+            { url: "/available-foods", icon: "mdi-pizza", text: i18n.t("app.links.two") },
             {
               url: "/nearest-eateries",
               icon: "mdi-table-chair",
-              text: "Nearest eateries",
+              text: i18n.t("app.links.three"),
             },
           ]
           break;
@@ -426,7 +427,23 @@ export default new Vuex.Store({
       const db = getFirestore()
       const collectionRef = collection(db, `users/${state.email}/bookings`)
       const snapShot = await getDocs(collectionRef)
-      const eateryBookings = snapShot.docs.map(doc => doc.data())
+      let eateryBookings = snapShot.docs.map(doc => doc.data())
+      const bookingsCopy = [...eateryBookings]
+
+      if (eateryBookings.length > 0) {
+        const today = new Date()
+
+        for (let i = 0; i < bookingsCopy.length; i++) {
+          if (today.toDateString() !== bookingsCopy[i].created.toDate().toDateString()) {
+            // Delete in firestore
+            const docRef = docRef(db, `users/${state.email}/bookings/${bookingsCopy[i].email}`)
+            await deleteDoc(docRef)
+            // Delete in array
+            eateryBookings.splice(i, 1);
+          }
+        }
+      }
+
       commit('setEateryBookings', eateryBookings)
     },
     async addEateryBookingAction({ commit, state }, payload) {

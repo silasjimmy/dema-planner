@@ -18,7 +18,7 @@
 
     <v-card-text v-if="!loadingData">
       <v-subheader class="justify-center" v-if="meals.length === 0">
-        No data available
+        {{ $t("mealsinfo.p1") }}
       </v-subheader>
 
       <div v-if="meals.length > 0">
@@ -69,7 +69,7 @@
 
     <v-card-text v-if="!loadingData">
       <v-subheader class="justify-center" v-if="suggestedEateries.length === 0">
-        No suggested eateries found
+        {{ $t("mealsinfo.p2") }}
       </v-subheader>
 
       <v-list class="py-0" two-line v-if="suggestedEateries.length > 0">
