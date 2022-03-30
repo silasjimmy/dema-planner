@@ -520,49 +520,50 @@
     <!-- Footer -->
     <v-footer app absolute padless v-if="!viewDashboard">
       <v-card flat tile color="success" class="white--text" width="100vw">
-        <v-card-text class="text-center">
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eum
-          consequatur temporibus earum minus doloremque. Quae impedit nihil
-          similique sed quibusdam ratione minus, doloribus commodi reprehenderit
-          molestiae excepturi nam repudiandae. Architecto?
-        </v-card-text>
-
-        <!-- <v-card-text>
+        <v-card-text>
           <v-row class="text-center">
             <v-col cols="12" md="6">
-              <h3 class="subtitle-1 text--secondary">Find us in:</h3>
-              <v-btn text rounded class="text-none">
-                <v-icon left size="24px">mdi-map-marker</v-icon>
+              <h3 class="subtitle-1 white--text">Find us in:</h3>
+              <!-- <v-btn text rounded class="text-none white--text">
+                <v-icon left size="24px" color="grey lighten-3"
+                  >mdi-map-marker</v-icon
+                >
                 P.O Box 000-00000, City, Country
+              </v-btn> -->
+              <v-btn text rounded class="text-none white--text">
+                <v-icon left size="24px" color="grey lighten-3"
+                  >mdi-email</v-icon
+                >
+                jimmysilas17@gmail.com
               </v-btn>
-              <v-btn text rounded class="text-none">
-                <v-icon left size="24px">mdi-email</v-icon>
-                dema@domain.com
-              </v-btn>
-              <v-btn text rounded class="text-none">
-                <v-icon left size="24px">mdi-phone</v-icon>
-                +254 000 000 000
+              <v-btn text rounded class="text-none white--text">
+                <v-icon left size="24px" color="grey lighten-3"
+                  >mdi-phone</v-icon
+                >
+                +254 719 773 594
               </v-btn>
             </v-col>
             <v-col cols="12" md="6">
-              <h3 class="subtitle-1 text--secondary">
+              <h3 class="subtitle-1 white--text">
                 Stay updated on our social platforms
               </h3>
               <v-btn class="mx-2" icon>
-                <v-icon size="24px">mdi-facebook</v-icon>
+                <v-icon size="24px" color="grey lighten-3">mdi-facebook</v-icon>
               </v-btn>
               <v-btn class="mx-2" icon>
-                <v-icon size="24px">mdi-linkedin</v-icon>
+                <v-icon size="24px" color="grey lighten-3">mdi-linkedin</v-icon>
               </v-btn>
               <v-btn class="mx-2" icon>
-                <v-icon size="24px">mdi-twitter</v-icon>
+                <v-icon size="24px" color="grey lighten-3">mdi-twitter</v-icon>
               </v-btn>
               <v-btn class="mx-2" icon>
-                <v-icon size="24px">mdi-instagram</v-icon>
+                <v-icon size="24px" color="grey lighten-3"
+                  >mdi-instagram</v-icon
+                >
               </v-btn>
             </v-col>
           </v-row>
-        </v-card-text> -->
+        </v-card-text>
 
         <v-divider></v-divider>
 

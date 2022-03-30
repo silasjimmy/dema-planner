@@ -427,7 +427,23 @@ export default new Vuex.Store({
       const db = getFirestore()
       const collectionRef = collection(db, `users/${state.email}/bookings`)
       const snapShot = await getDocs(collectionRef)
-      const eateryBookings = snapShot.docs.map(doc => doc.data())
+      let eateryBookings = snapShot.docs.map(doc => doc.data())
+      const bookingsCopy = [...eateryBookings]
+
+      if (eateryBookings.length > 0) {
+        const today = new Date()
+
+        for (let i = 0; i < bookingsCopy.length; i++) {
+          if (today.toDateString() !== bookingsCopy[i].created.toDate().toDateString()) {
+            // Delete in firestore
+            const docRef = docRef(db, `users/${state.email}/bookings/${bookingsCopy[i].email}`)
+            await deleteDoc(docRef)
+            // Delete in array
+            eateryBookings.splice(i, 1);
+          }
+        }
+      }
+
       commit('setEateryBookings', eateryBookings)
     },
     async addEateryBookingAction({ commit, state }, payload) {
