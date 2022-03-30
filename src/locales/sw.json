@@ -62,6 +62,76 @@
             "btn": "Wasiliana nasi"
         }
     },
+    "about": {
+        "title1": "Kutuhusu",
+        "title2": "Dhamira yetu",
+        "title3": "Timu yetu",
+        "title4": "Msaada",
+        "p1": "Sisi ni kundi la watu binafsi wanaojaribu kubadilisha ulimwengu kupitia matumizi ya teknolojia. Kupendezwa kwetu na afya ya binadamu kulianza tulipoona kwamba si kila mtu anafahamu jinsi kitu rahisi kama chakula kinaweza kubadilisha maisha yao. Watu hutumia pesa nyingi katika matibabu ya magonjwa yanayohusiana na lishe ambayo yanaweza kuepukwa kwa kula vyakula vyenye afya. Kwa kuongezea, kuna zaidi ambayo inaweza kufanywa katika uwanja wa lishe na tulihisi kuwa ni wakati wa kufanya jambo kuhusu hilo.",
+        "p2": "Chakula ni zaidi ya kitu cha kuweka tumboni mwako. Kwetu, tunaona chakula kama dawa ambapo mtu kama wewe kwa mfano anahitaji kujua anachopaswa kunywa, kiasi gani na jinsi gani. Mwili wa mwanadamu unahitaji kila aina ya virutubisho na kwa kupanga kwa makini, unaweza kumudu chakula cha afya kila siku na kuacha kuwa na wasiwasi kuhusu ugonjwa.",
+        "p3": "Kwa kutumia algoriti mahiri, tunaweza kukuandalia chakula ambacho kina virutubishi vyote vinavyohitajika na mwili ndani ya sekunde chache. Wakati wowote unapochagua mlo wako, unaweza kuupata kwenye mgahawa ulio karibu nawe au uamue tu kutayarisha ukiwa nyumbani kwako. Unaweza kuhariri vyakula, chagua mgahawa unaopenda na uhifadhi kiti kwa wakati huo. Tumerahisisha mchakato wa kupanga milo kwa shughuli ya haraka na thabiti zaidi.",
+        "p4": "Dhamira yetu ni kuwezesha kila mmoja na kila mtu kuwa na fursa ya kuishi maisha yenye afya kwa urahisi. Tumejitolea wakati na rasilimali zetu katika kazi hii ili kuhakikisha kuwa tunawapa wateja wetu vilivyo bora zaidi ya yote.",
+        "p5": "Kwa sasa tunatafuta usaidizi kutoka kwa watu waliojitolea ili kuchangia katika kuunda hifadhidata ya chakula. Pia tutathamini mchango wowote wa fedha ili kufadhili mapinduzi haya. Kwa uwezo wowote unaoweza, toa tu. Tunashukuru dhabihu tayari."
+    },
+    "login": {
+        "title": "Karibu tena!",
+        "subtitle": "Jisajili ili kuendelea.",
+        "email": "Barua pepe",
+        "password": "Nenosiri",
+        "btn": "Ingia",
+        "noacc": "Je, huna akaunti?",
+        "create": "Tengeneza",
+        "alt": "au jisajili na"
+    },
+    "signup": {
+        "title": "Anza sasa!",
+        "subtitle": "Fungua akaunti ili kuendelea.",
+        "email": "Barua pepe",
+        "password": "Nenosiri",
+        "btn": "Tengeneza",
+        "yesacc": "Je, tayari una akaunti?",
+        "login": "Ingia",
+        "alt": "au ingia na"
+    },
+    "contact": {
+        "title": "Wasiliana nasi",
+        "name": "Jina",
+        "email": "Barua pepe",
+        "message": "Message",
+        "btn": "Tuma"
+    },
+    "createprofile": {
+        "title": "Unda wasifu wako",
+        "subtitle": "Hii itatusaidia kukujua vyema.",
+        "psubheader": "Msingi",
+        "name": "Jina",
+        "country": "Nchi",
+        "town": "Mji",
+        "dob": "Tarehe ya kuzaliwa",
+        "gender": "Jinsia",
+        "website": "Tovuti",
+        "phone": "Nambari ya simu",
+        "bio": "Wasifu",
+        "btnnext": "Mbele",
+        "btnprev": "Nyuma",
+        "btnfinish": "Maliza",
+        "tandc": "Nimesoma na ninakubali sheria na masharti.",
+        "news": "Nitumie habari au taarifa zozote kuhusu Dema.",
+        "consumer": {
+            "header": "Mtumiaji",
+            "title1": "Taarifa za kibinafsi",
+            "title2": "Malizia",
+            "subtitle1": "Chukua wakati wako na utuambie kukuhusu.",
+            "subtitle2": "Jambo moja zaidi..."
+        },
+        "eatery": {
+            "header": "Mgahawa",
+            "title1": "Taarifa za msingi",
+            "title2": "Malizia",
+            "subtitle1": "Tuambie kuhusu mgahawa wako.",
+            "subtitle2": "Jambo moja zaidi..."
+        }
+    },
     "mealplanner": {
         "info": {
             "p": "Inaonekana huna milo ya leo. Bofya zalisha ili kuunda mpango wa chakula kiotomatiki. Usijali, tunajua unachopenda...",
@@ -154,8 +224,20 @@
         }
     },
     "mealsinfo": {
-        "title": "Summary",
+        "title": "Muhtasari",
         "subtitle1": "Maudhui ya lishe",
-        "subtitle2": "Migahawa iliyopendekezwa"
+        "subtitle2": "Migahawa iliyopendekezwa",
+        "p1": "Hakuna data iliyopatikana",
+        "p2": "Hakuna data iliyopatikana"
+    },
+    "app": {
+        "links": {
+            "one": "Milo",
+            "two": "Vyakula",
+            "three": "Migahawa",
+            "four": "Wasifu",
+            "five": "Mipangilio",
+            "six": "Toka"
+        }
     }
 }

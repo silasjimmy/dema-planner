@@ -462,6 +462,7 @@ export default {
     },
     changeAppLanguage() {
       this.$i18n.locale = this.settings.appLanguage;
+      this.$store.commit("setDashboardLinks", this.$store.state.profile.role);
       this.languageChangeDialog = false;
     },
     changeEmail() {

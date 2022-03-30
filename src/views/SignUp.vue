@@ -1,11 +1,11 @@
 <template>
   <v-card flat class="rounded-lg mx-auto my-8" :width="cardWidth">
-    <v-card-title class="justify-center text-h5 text-md-h4 font-weight-bold"
-      >Get started!</v-card-title
-    >
+    <v-card-title class="justify-center text-h5 text-md-h4 font-weight-bold">{{
+      $t("signup.title")
+    }}</v-card-title>
     <v-card-subtitle
       class="text-center subtitle-2 text-md-subtitle-1 font-weight-regular"
-      >Create an account to continue</v-card-subtitle
+      >{{ $t("signup.subtitle") }}</v-card-subtitle
     >
 
     <v-card-text class="text-center py-2">
@@ -36,7 +36,7 @@
           color="success"
           prepend-icon="mdi-email"
           v-model="email"
-          label="Email address"
+          :label="$t(`signup.email`)"
           type="email"
         ></v-text-field>
 
@@ -53,7 +53,7 @@
           color="success"
           prepend-icon="mdi-lock"
           v-model="password"
-          label="Password"
+          :label="$t(`signup.password`)"
           :type="showPassword ? 'text' : 'password'"
         ></v-text-field>
 
@@ -64,20 +64,20 @@
           @click="emailSignUp"
           color="success"
           class="text-none"
-          >Create</v-btn
+          >{{ $t("signup.btn") }}</v-btn
         >
       </v-form>
 
       <!-- Log in link -->
       <v-btn text rounded link to="/sign-in" class="text-none mt-4">
-        Already have an account?
-        <span class="success--text"> Log in</span>
+        {{ $t("signup.yesacc") }}
+        <span class="success--text"> {{ $t("signup.login") }}</span>
       </v-btn>
     </v-card-text>
 
     <v-card-subtitle
       class="text-center subtitle-2 text-md-subtitle-1 font-weight-regular"
-      >or sign up with...</v-card-subtitle
+      >{{ $t("signup.alt") }}</v-card-subtitle
     >
 
     <v-card-actions class="justify-center">
@@ -113,7 +113,7 @@ import {
 
 export default {
   name: "SignUp",
-  title: "Create account",
+  title: "Sign up",
   data() {
     return {
       email: "",

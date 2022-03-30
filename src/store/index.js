@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import i18n from '../i18n'
 
 Vue.use(Vuex)
 
@@ -74,12 +75,12 @@ export default new Vuex.Store({
       switch (role) {
         case 'consumer':
           state.dashboardLinks = [
-            { url: "/meal-planner", icon: "mdi-hamburger", text: "Meal planner" },
-            { url: "/available-foods", icon: "mdi-pizza", text: "Available foods" },
+            { url: "/meal-planner", icon: "mdi-hamburger", text: i18n.t("app.links.one") },
+            { url: "/available-foods", icon: "mdi-pizza", text: i18n.t("app.links.two") },
             {
               url: "/nearest-eateries",
               icon: "mdi-table-chair",
-              text: "Nearest eateries",
+              text: i18n.t("app.links.three"),
             },
           ]
           break;

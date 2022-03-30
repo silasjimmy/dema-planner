@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import checkAuth from './routeGuards'
+import i18n from '../i18n'
 
 import Users from '@/views/Users.vue';
 import Home from '@/views/Home.vue';
@@ -94,7 +95,7 @@ const routes = [
     meta: {
       requiresAuth: true,
       role: 'consumer',
-      title: 'Meal planner'
+      title: i18n.t("app.links.one")
     }
   },
   {

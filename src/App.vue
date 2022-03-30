@@ -60,7 +60,9 @@
                   <v-icon>mdi-account-details</v-icon>
                 </v-list-item-avatar>
                 <v-list-item-content>
-                  <v-list-item-title>Profile</v-list-item-title>
+                  <v-list-item-title>{{
+                    $t("app.links.four")
+                  }}</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
               <v-list-item link to="/settings">
@@ -68,7 +70,9 @@
                   <v-icon>mdi-cog</v-icon>
                 </v-list-item-avatar>
                 <v-list-item-content>
-                  <v-list-item-title>Settings</v-list-item-title>
+                  <v-list-item-title>{{
+                    $t("app.links.five")
+                  }}</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
 
@@ -79,7 +83,9 @@
                   <v-icon>mdi-logout</v-icon>
                 </v-list-item-avatar>
                 <v-list-item-content>
-                  <v-list-item-title>Logout</v-list-item-title>
+                  <v-list-item-title>{{
+                    $t("app.links.six")
+                  }}</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list-item-group>
@@ -269,7 +275,7 @@
           </v-btn>
         </template>
 
-        <v-list>
+        <v-list class="py-0">
           <v-list-item-group mandatory color="success" v-model="languageIndex">
             <v-list-item
               v-for="(lang, index) in languages"
@@ -383,7 +389,7 @@
               <v-icon>mdi-account-details</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title>Profile</v-list-item-title>
+              <v-list-item-title>{{ $t("app.links.four") }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-list-item link to="/settings">
@@ -391,7 +397,7 @@
               <v-icon>mdi-cog</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title>Settings</v-list-item-title>
+              <v-list-item-title>{{ $t("app.links.five") }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
@@ -404,7 +410,7 @@
             <v-icon>mdi-logout</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title>Log out</v-list-item-title>
+            <v-list-item-title>{{ $t("app.links.six") }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </template>
@@ -443,16 +449,16 @@
         <span>{{ link.text }}</span>
         <v-icon>{{ link.icon }}</v-icon>
       </v-btn>
-      <v-btn link to="/settings" v-if="$vuetify.breakpoint.smAndUp">
-        <span>Settings</span>
-        <v-icon>mdi-cog</v-icon>
-      </v-btn>
       <v-btn link to="/profile" v-if="$vuetify.breakpoint.smAndUp">
-        <span>Profile</span>
+        <span>{{ $t("app.links.four") }}</span>
         <v-icon>mdi-account-details</v-icon>
       </v-btn>
+      <v-btn link to="/settings" v-if="$vuetify.breakpoint.smAndUp">
+        <span>{{ $t("app.links.five") }}</span>
+        <v-icon>mdi-cog</v-icon>
+      </v-btn>
       <v-btn link v-if="$vuetify.breakpoint.smAndUp" @click="logout">
-        <span>Log out</span>
+        <span>{{ $t("app.links.six") }}</span>
         <v-icon left>mdi-logout</v-icon>
       </v-btn>
     </v-bottom-navigation>
