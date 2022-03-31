@@ -17,7 +17,7 @@
       <v-col cols="12" sm="6">
         <v-img
           class="rounded-lg mx-auto"
-          src="../assets/images/home-1.jpg"
+          src="https://firebasestorage.googleapis.com/v0/b/demaplanner.appspot.com/o/home%2Fhome-1.jpg?alt=media&token=ea6e5c3d-8d95-4c1f-99a6-eecad52d40d1"
           :height="imgHeight"
         ></v-img>
       </v-col>

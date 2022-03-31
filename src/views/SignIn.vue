@@ -97,7 +97,7 @@
         <v-img
           width="20px"
           height="20px"
-          src="../assets/icons/google.svg"
+          src="https://firebasestorage.googleapis.com/v0/b/demaplanner.appspot.com/o/home%2Fgoogle.svg?alt=media&token=40337d13-a3fa-4f2a-9651-b1e5f8471584"
         ></v-img>
         <span class="text-capitalize grey--text text--darken-4 ml-2"
           >Google</span
