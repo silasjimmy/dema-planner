@@ -79,14 +79,7 @@ npm run lint
 Within the three months that we have been developing this prototype, we have managed to amerse over 10 active users who were constantly using the app and suggesting areas of improvement. Feedback was mainly collected by individuals in our team through whatsapp since we did not have an official email to submit responses. Suggestions ranging fromthe UI of the app to functionalities to add to the app were considered and added.
 
 ## Deployment
-The deployed site is available here at [Dema planner](demaplanner.app). For installation, follow the following steps:
-
-### Desktop
-1. Open the above link in Chrome
-2. On the right side of the search bar you will see an installation icon
-3. Click the icon then click ```install```
-
-### Phone
+The deployed site is available here at [Dema planner](demaplanner.app).
 
 ## Drawbacks
 Due to the wide natire of the project, we encountered some drawbacks along the way some of which we did not get enough time to solve.
