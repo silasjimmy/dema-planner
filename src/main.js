@@ -9,6 +9,7 @@ import { initializeApp } from "firebase/app";
 import VueGoogleCharts from 'vue-google-charts'
 import i18n from './i18n'
 import FlagIcon from 'vue-flag-icon';
+import './registerServiceWorker'
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
