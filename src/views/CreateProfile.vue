@@ -384,7 +384,7 @@
                       class="mx-auto mb-1"
                       width="100px"
                       height="100px"
-                      src="../assets/logo.png"
+                      src="https://firebasestorage.googleapis.com/v0/b/demaplanner.appspot.com/o/home%2Flogo.png?alt=media&token=c87c23a7-786d-4e72-82a2-7841f2abbeaa"
                     ></v-img>
                     <v-btn
                       text
@@ -821,7 +821,7 @@
                       class="mx-auto mb-1"
                       width="100px"
                       height="100px"
-                      src="../assets/logo.png"
+                      src="https://firebasestorage.googleapis.com/v0/b/demaplanner.appspot.com/o/home%2Flogo.png?alt=media&token=c87c23a7-786d-4e72-82a2-7841f2abbeaa"
                     ></v-img>
                     <v-btn
                       text

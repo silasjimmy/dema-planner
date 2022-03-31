@@ -7,7 +7,10 @@
         </h1>
       </v-col>
       <v-col cols="12" md="6">
-        <v-img height="300px" src="../assets/images/contact-us.jpg"></v-img>
+        <v-img
+          height="300px"
+          src="https://firebasestorage.googleapis.com/v0/b/demaplanner.appspot.com/o/home%2Fcontact-us.jpg?alt=media&token=9344b594-ec2d-497c-ba3d-1094e4035c9d"
+        ></v-img>
       </v-col>
       <v-col cols="12" md="6" class="text-center">
         <v-form lazy-validation ref="contactForm">

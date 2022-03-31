@@ -23,7 +23,7 @@
         <v-img
           contain
           height="300px"
-          src="../assets/images/about-1.jpg"
+          src="https://firebasestorage.googleapis.com/v0/b/demaplanner.appspot.com/o/home%2Fabout-1.jpg?alt=media&token=24c00841-53bd-4eae-8397-0f43aa7ff4cb"
         ></v-img>
       </v-col>
       <v-col cols="12">
@@ -43,7 +43,7 @@
         <v-img
           contain
           height="300px"
-          src="../assets/images/about-2.jpg"
+          src="https://firebasestorage.googleapis.com/v0/b/demaplanner.appspot.com/o/home%2Fabout-2.jpg?alt=media&token=2286b57f-7b5f-4c81-a60c-c74a13d30e77"
         ></v-img>
       </v-col>
       <v-col cols="12" md="6" class="pb-0">
@@ -89,7 +89,7 @@
       <v-col cols="12">
         <v-card outlined width="250px" class="rounded-lg mx-auto my-2">
           <v-img
-            src="../assets/images/silas-jimmy.jpg"
+            src="https://firebasestorage.googleapis.com/v0/b/demaplanner.appspot.com/o/home%2Fsilas-jimmy.jpg?alt=media&token=daf2f6c0-34b7-483e-9dc9-abc8e076b97b"
             class="d-flex align-end"
             gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.3), rgba(0,0,0,.8)"
           >
