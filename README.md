@@ -53,8 +53,6 @@ The backend of the app is purely made of firebase products:
 3. ```storage``` for storing app media.
 4. ``hosting`` for hosting the app.
 
-The end result is a Progressive Web Application (PWA) which is installable in desktop and mobile devices using Google Chrome.
-
 ## Project setup for local development
 ```
 npm install
